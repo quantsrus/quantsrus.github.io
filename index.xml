@@ -21,5 +21,14 @@
 The blog post shows eventual unstability with the piecewise constant approach, not visible with a linear interpolation. I wondered then if we should not go to the next level: use a spline on N values where N is the number of market options prices.</description>
     </item>
     
+    <item>
+      <title>About</title>
+      <link>http://quantsrus.github.io/about/</link>
+      <pubDate>Sat, 17 Dec 2016 10:05:07 +0100</pubDate>
+      
+      <guid>http://quantsrus.github.io/about/</guid>
+      <description>Hello, my name is Loic Nouet and I am writing here about random quantitative finance matters.</description>
+    </item>
+    
   </channel>
 </rss>
