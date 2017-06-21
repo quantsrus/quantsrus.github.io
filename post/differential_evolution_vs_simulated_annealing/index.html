@@ -1,0 +1,173 @@
+    <!DOCTYPE html>
+<html lang="en-us">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="author" content="Quants R Us">
+		
+		<meta name="generator" content="Hugo 0.23" />
+		<title>Differential evolution vs. Simulated annealing &middot; Quants R Us</title>
+		<link rel="shortcut icon" href="https://quantsrus.github.io/images/favicon.ico">
+		<link rel="stylesheet" href="https://quantsrus.github.io/css/style.css">
+		<link rel="stylesheet" href="https://quantsrus.github.io/css/highlight.css">
+		
+
+		
+		<link rel="stylesheet" href="https://quantsrus.github.io/css/font-awesome.min.css">
+		
+
+		
+		<link href="https://quantsrus.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Quants R Us" />
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='https://quantsrus.github.io/'> <span class="arrow">←</span>Home</a>
+	
+	<a href='https://quantsrus.github.io/post'>Archive</a>
+	<a href='https://quantsrus.github.io/tags'>Tags</a>
+	<a href='https://quantsrus.github.io/about'>About</a>
+
+	
+
+	
+	<a class="cta" href="https://quantsrus.github.io/index.xml">Subscribe</a>
+	
+</nav>
+
+
+        <section id="wrapper">
+            <article class="post">
+                <header>
+                    <h1>
+                        Differential evolution vs. Simulated annealing
+                    </h1>
+                    <h2 class="headline">
+                    Jun 21, 2017 22:48
+                    · 655 words
+                    · 4 minutes read
+                      <span class="tags">
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                <section id="post-body">
+                    <p>The differential evolution (DE) algorithm is somewhat popular in quantitative finance, for example to calibrate stochastic volatility models such as Heston.
+There are a few parameters to setup properly but in general, it is not too difficult to find those, and the algorithm works well on many different problems.</p>
+
+<p>An older technique, much more popular in physics is simulated annealing (SA). There are few papers on its use for stochastic volatility calibration, most don&rsquo;t find
+the technique competitive (the ASA algorithm appear very slow in <a href="https://arxiv.org/pdf/1502.02963">this paper from Ricardo Crisostomo</a>, more standard SA is worse than a random search <a href="http://ta.twi.tudelft.nl/mf/users/oosterle/oosterlee/ng.pdf">according to ManWo Ng</a>)
+or even usable (see <a href="https://books.google.fr/books?id=NJZB_cMoZ_EC&amp;pg=PT495&amp;lpg=PT495&amp;dq=Simulated+Annealing+heston&amp;source=bl&amp;ots=1p4kh6qoyg&amp;sig=_jNljoksnBR8W0fEmSYJAwwhICA&amp;hl=en&amp;sa=X&amp;ved=0ahUKEwjH79Ltus_UAhWBExoKHXqjAbQQ6AEIVDAH">Jorg Kienitz book</a>).</p>
+
+<p>There are many different algorithm for SA and it&rsquo;s not really easy to find out which one would be appropriate. I stumbled upon the <a href="http://jblevins.org/mirror/amiller/simann.f90">Fortran code from Alan Miller</a> for the <a href="http://people.sc.fsu.edu/~inavon/5420a/corana.pdf">algorithm of Corana et al.</a>. I liked
+that it looked relatively simple (less than 200 lines of code) and yet it still includes practicle improvements over the most basic algorithm. I did not like the <a href="https://www.ingber.com/#ASA">ASA algorithm</a> as much, even if tends
+to be more frequently quoted on forums and finance papers, as the C code is quite large and it looks too much like a black box whose magic is difficult to grasp.</p>
+
+<p>My first trial with SA was not very successful. There are many parameters (a few more than for differential evolution), and I just picked the official recommendation, that is
+$$T_0=1.0, R_T = 0.85, N_S = 20, N_T = 100, N_{\epsilon}=4$$ with a tolerance \(\epsilon=10^{-4}\) and a maximum of 2000 function evaluations.</p>
+
+<p>I obtained an RMSE of 2.41E-2 along with a completely unrealistic \( \kappa \) value: \( v_0 = 0.0014926198, \kappa = 11.6967708372, \theta=0.0243195875, \sigma=2.0133153096, \rho=-0.6130317709\).</p>
+
+<p>It turns out that the recommendation is valid on specific problems: most papers work with fast to evaluate objective functions (typically some analytical function), and are ok with more than 100 000
+function evaluations.</p>
+
+<p>I tried to change the temperature, as it was supposedly key. On some calibration problems the resulting RMSE became lower, on this one, it did not.
+  With \(T_0=0.001\), I obtained an RMSE of 4.94E-2 for the parameters  \( v_0 = 0.0514607073, \kappa = 15.9510297320, \theta=0.0162640037, \sigma=1.7068530314, \rho=-0.9950165035\).</p>
+
+<p>Using a small temperature makes the algorithm effectively work as a local minimizer as the Metropolis step is then always bypassed.</p>
+
+<p>The typical settings for SA are not really appropriate for Heston, as computing the RMSE of a full options surface is costly. I aim for around 1000 function evaluations, which takes around 2s.
+With this in mind and the need for the temperature to decrease, it appears that one should use a small \(R_T=0.2\), a smaller number of cycles \(N_S = 5\), and a smaller number of iterations before temperature reduction \(N_T=5\).
+With those settings, the RMSE becomes 1.22E-2 and the parameters are much more moderate \( v_0 =0.0123858333, \kappa = 2.9627864991, \theta=0.0237545288, \sigma= 0.5081900883, \rho=-0.6414988464\).</p>
+
+<p>It is then competitive to differential evolution with a population    NP = 10, a frequency F = 0.9 and a crossover rate CR = 0.5.</p>
+
+<table>
+<thead>
+<tr>
+<th>Minimizer</th>
+<th align="right">RMSE</th>
+<th align="right">v0</th>
+<th align="right">kappa</th>
+<th align="right">theta</th>
+<th align="right">sigma</th>
+<th align="right">rho</th>
+<th align="right">time(s)</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>DE</td>
+<td align="right">1.201569e-02</td>
+<td align="right">0.0132292369</td>
+<td align="right">2.2958411359</td>
+<td align="right">0.0241039435</td>
+<td align="right">0.4283830267</td>
+<td align="right">-0.6458778100</td>
+<td align="right">3.65</td>
+</tr>
+
+<tr>
+<td>SA</td>
+<td align="right">1.222159e-02</td>
+<td align="right">0.0123858333</td>
+<td align="right">2.9627864991</td>
+<td align="right">0.0237545288</td>
+<td align="right">0.5081900883</td>
+<td align="right">-0.6414988464</td>
+<td align="right">3.63</td>
+</tr>
+</tbody>
+</table>
+
+<!--SA-SIMPSON 4.939476e-02 Heston[0.0514607073, 15.9510297320, 0.0162640037, 1.7068530314, -0.9950165035] 3.916672717s
+SA-SIMPSON 2.414559e-02 Heston[0.0014926198, 11.6967708372, 0.0243195875, 2.0133153096, -0.6130317709] 4.062156221s //-->
+
+<p>At the end of the day, simulated annealing can work well for Heston calibration. On some better behaved calibration problems, it is often faster and more accurate than DE (although I am sure one could tune
+the DE or SA parameters a bit better). The settings have a drastic impact, and tuning the settings is only possible with an understanding the algorithm (i.e. by using a simple algorithm).</p>
+
+<p>In reality, the Heston calibration is most of the time well behaved if one is careful with the accuracy of the numerical option prices. For this example, I used on purpose a somewhat bad basic Simpson quadrature with 100 points, which is going to add noise for out-of-the-money options.</p>
+
+                </section>
+            </article>
+
+            
+
+            
+
+            
+
+            <footer id="footer">
+    
+    <p class="small">
+    
+       © Copyright 2017 <i class="fa fa-heart" aria-hidden="true"></i> Quants R Us
+    
+    </p>
+</footer>
+<script type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+        </section>
+
+        <script src="https://quantsrus.github.io/js/jquery-2.2.4.min.js"></script>
+<script src="https://quantsrus.github.io/js/main.js"></script>
+<script src="https://quantsrus.github.io/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+
+
+
+    </body>
+</html>

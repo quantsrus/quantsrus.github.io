@@ -6,10 +6,20 @@
     <description>Recent content in Posts on Quants R Us</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 11 May 2017 22:48:01 +0200</lastBuildDate>
+    <lastBuildDate>Wed, 21 Jun 2017 22:48:01 +0200</lastBuildDate>
     
 	<atom:link href="https://quantsrus.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Differential evolution vs. Simulated annealing</title>
+      <link>https://quantsrus.github.io/post/differential_evolution_vs_simulated_annealing/</link>
+      <pubDate>Wed, 21 Jun 2017 22:48:01 +0200</pubDate>
+      
+      <guid>https://quantsrus.github.io/post/differential_evolution_vs_simulated_annealing/</guid>
+      <description>The differential evolution (DE) algorithm is somewhat popular in quantitative finance, for example to calibrate stochastic volatility models such as Heston. There are a few parameters to setup properly but in general, it is not too difficult to find those, and the algorithm works well on many different problems.
+An older technique, much more popular in physics is simulated annealing (SA). There are few papers on its use for stochastic volatility calibration, most don&amp;rsquo;t find the technique competitive (the ASA algorithm appear very slow in this paper from Ricardo Crisostomo, more standard SA is worse than a random search according to ManWo Ng) or even usable (see Jorg Kienitz book).</description>
+    </item>
     
     <item>
       <title>A spline to fill the gaps with Andreasen-Huge one-step method</title>
