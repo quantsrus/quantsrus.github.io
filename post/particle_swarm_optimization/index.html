@@ -1,0 +1,130 @@
+    <!DOCTYPE html>
+<html lang="en-us">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="author" content="Quants R Us">
+		
+		<meta name="generator" content="Hugo 0.24.1" />
+		<title>Particle Swarm Optimization &middot; Quants R Us</title>
+		<link rel="shortcut icon" href="https://quantsrus.github.io/images/favicon.ico">
+		<link rel="stylesheet" href="https://quantsrus.github.io/css/style.css">
+		<link rel="stylesheet" href="https://quantsrus.github.io/css/highlight.css">
+		
+
+		
+		<link rel="stylesheet" href="https://quantsrus.github.io/css/font-awesome.min.css">
+		
+
+		
+		<link href="https://quantsrus.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Quants R Us" />
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='https://quantsrus.github.io/'> <span class="arrow">←</span>Home</a>
+	
+	<a href='https://quantsrus.github.io/post'>Archive</a>
+	<a href='https://quantsrus.github.io/tags'>Tags</a>
+	<a href='https://quantsrus.github.io/about'>About</a>
+
+	
+
+	
+	<a class="cta" href="https://quantsrus.github.io/index.xml">Subscribe</a>
+	
+</nav>
+
+
+        <section id="wrapper">
+            <article class="post">
+                <header>
+                    <h1>
+                        Particle Swarm Optimization
+                    </h1>
+                    <h2 class="headline">
+                    Jun 30, 2017 07:48
+                    · 544 words
+                    · 3 minutes read
+                      <span class="tags">
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                <section id="post-body">
+                    <p>In my <a href="/post/differential_evolution_vs_simulated_annealing/">previous post</a>, I looked at simulated annealing to calibrate Heston.
+A less well-known and more fancy global minimizer is the particle swarm optimization (PSO). I stumbled upon it
+by accident through a <a href="https://www.youtube.com/watch?v=bVDX_UwthZI">youtube presentation from James McCaffrey</a>. He shows a small python algorithm that solves the travelling salesman problem.</p>
+
+<p>Intrigued, I started to read papers on it. It turns out there are a lot of publications on PSO, not always of great quality. Fortunately Google Scholar is my friend and pointed me to
+the most popular papers. Beside the <a href="https://www.cs.tufts.edu/comp/150GA/homeworks/hw3/_reading6%201995%20particle%20swarming.pdf">introductory paper</a> from Kennedy and Eberhart (cited more than 45000 times!), describing the link with the social behavior of a bird flock,
+the most practical one I could find is <a href="http://ieeexplore.ieee.org/document/4223164/">&ldquo;defining a standard for particle swarm optimization&rdquo;</a> by Bratton and Kennedy.</p>
+
+<p>Defining a simple standard is very much needed as there are a lot of variations around the initial PSO, and it is not clear which one a newcomer in the field should pay attention to.
+Unfortunatly, in the PSO field, authors seems to like to define their own standard, but not precisely enough so as leave room for many other new standards. For example, there are<br />
+three other <a href="http://clerc.maurice.free.fr/pso/SPSO_descriptions.pdf">standards</a> from Clerc, not always clear on the appropriate choice of topology, the initial velocity, the behavior when a particle goes beyond the boundaries, the stopping criteria, the choice of a maximum velocity.
+In Bratton &amp; Kennedy&rsquo;s standard, the initial velocity is left undefined and almost nothing is said about stopping the algorithm. Even the simple lbest topology (a ring) is not precisely defined: a particle is informed by its two neighbors, but is it informed by itself as well?
+Clerc seems to believe it has to, but it&rsquo;s never mentioned in Bratton &amp; Kennedy&rsquo;s paper.</p>
+
+<p>The book <a href="https://books.google.com/books/about/Swarm_Intelligence.html?id=vOx-QV3sRQsC">&ldquo;Swarm intellingence&rdquo;</a> by Eberhart, Shi &amp; Kennedy helps a lot in clarifying some of those issues,
+ as well as to some extent, the book <a href="http://www.wiley.com/WileyCDA/WileyTitle/productCd-1905209045.html">&ldquo;particle swarm optimization&rdquo;</a> from Clerc, but they don&rsquo;t give a standard.</p>
+
+<p>Then I started to search for some code, hoping to find some sort of reference code for PSO. While there is source code available
+for some of the &ldquo;standards&rdquo; PSO, for example the <a href="https://www.particleswarm.info/Standard_PSO_2006.c">&ldquo;standard&rdquo; 2006 PSO</a>, the <a href="https://www.particleswarm.info/standard_pso_2007.zip">&ldquo;standard&rdquo; 2007 PSO</a>
+  or the <a href="https://www.particleswarm.info/standard_pso_2011_c.zip">&ldquo;standard&rdquo; 2011 PSO</a>, those look quite dirty to me
+  and don&rsquo;t inspire much confidence at first sight. The 2006 version is the cleanest but it does not follow
+  the standard PSO 2007 paper: the topology is not lbest, it does not explicitely use the constricted formulation&hellip;</p>
+
+<p>The two pieces of code I found the cleanest were on github, a simple <a href="https://github.com/tisimst/pyswarm/blob/master/pyswarm/pso.py">python implementation with support for constraints</a>,
+and a <a href="https://github.com/kkentzo/pso/blob/master/pso.c">C implementation giving a choice between different topologies</a> and using position clamping.</p>
+
+<p>This is a great contrast with differential evolution, where <a href="http://jaguar.biologie.hu-berlin.de/~wolfram/pages/seminar_theoretische_biologie_2007/literatur/schaber/Storn1997JGlobOpt11.pdf">the paper from Price and Storn</a> contains a decent, precise C code.
+  And their book gives in depth analysis of the algorithm, with explicit, modular variations.</p>
+
+<p>All of this sounds negative, but I actually managed to make PSO work decently well on the problem of calibrating Heston. This will be the subject of another blog post.</p>
+
+<p>Beside becoming more familiar with PSO, I discovered an interesting fact: the normal distribution <a href="https://stats.stackexchange.com/questions/7977/how-to-generate-uniformly-distributed-points-on-the-surface-of-the-3-d-unit-sphe">&ldquo;corresponds&rdquo;</a> to a uniform
+distribution of points on a sphere.</p>
+
+                </section>
+            </article>
+
+            
+
+            
+
+            
+
+            <footer id="footer">
+    
+    <p class="small">
+    
+       © Copyright 2017 <i class="fa fa-heart" aria-hidden="true"></i> Quants R Us
+    
+    </p>
+</footer>
+<script type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+        </section>
+
+        <script src="https://quantsrus.github.io/js/jquery-2.2.4.min.js"></script>
+<script src="https://quantsrus.github.io/js/main.js"></script>
+<script src="https://quantsrus.github.io/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+
+
+
+    </body>
+</html>

@@ -6,10 +6,20 @@
     <description>Recent content in Posts on Quants R Us</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 21 Jun 2017 22:48:01 +0200</lastBuildDate>
+    <lastBuildDate>Fri, 30 Jun 2017 07:48:01 +0200</lastBuildDate>
     
 	<atom:link href="https://quantsrus.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Particle Swarm Optimization</title>
+      <link>https://quantsrus.github.io/post/particle_swarm_optimization/</link>
+      <pubDate>Fri, 30 Jun 2017 07:48:01 +0200</pubDate>
+      
+      <guid>https://quantsrus.github.io/post/particle_swarm_optimization/</guid>
+      <description>In my previous post, I looked at simulated annealing to calibrate Heston. A less well-known and more fancy global minimizer is the particle swarm optimization (PSO). I stumbled upon it by accident through a youtube presentation from James McCaffrey. He shows a small python algorithm that solves the travelling salesman problem.
+Intrigued, I started to read papers on it. It turns out there are a lot of publications on PSO, not always of great quality.</description>
+    </item>
     
     <item>
       <title>Differential evolution vs. Simulated annealing</title>
