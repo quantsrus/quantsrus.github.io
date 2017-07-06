@@ -6,10 +6,20 @@
     <description>Recent content on Quants R Us</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 30 Jun 2017 07:48:01 +0200</lastBuildDate>
+    <lastBuildDate>Thu, 06 Jul 2017 07:48:01 +0200</lastBuildDate>
     
 	<atom:link href="https://quantsrus.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Particle Swarm Optimization on Heston Small-Time Expansion</title>
+      <link>https://quantsrus.github.io/post/particle_swarm_optimization_heston_calibration/</link>
+      <pubDate>Thu, 06 Jul 2017 07:48:01 +0200</pubDate>
+      
+      <guid>https://quantsrus.github.io/post/particle_swarm_optimization_heston_calibration/</guid>
+      <description>This is a sequel to my previous post on Particle Swarm Optimization. Here, I look at the problem of &amp;ldquo;calibrating&amp;rdquo; a Heston small-time expansion, the one from Forde &amp;amp; Jacquier). This can be useful to find a good initial guess for the exact Heston calibration, computed with much costlier characteristic function Fourier numerical integration.
+Unfortunately, as we see below, with the contour plots of the objective function (the RMSE in volatilities against market quotes), the problem is much less well behaved with the small-time expansion than with the numerical integration.</description>
+    </item>
     
     <item>
       <title>Particle Swarm Optimization</title>

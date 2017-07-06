@@ -1,0 +1,432 @@
+    <!DOCTYPE html>
+<html lang="en-us">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="author" content="Quants R Us">
+		
+		<meta name="generator" content="Hugo 0.24.1" />
+		<title>Particle Swarm Optimization on Heston Small-Time Expansion &middot; Quants R Us</title>
+		<link rel="shortcut icon" href="https://quantsrus.github.io/images/favicon.ico">
+		<link rel="stylesheet" href="https://quantsrus.github.io/css/style.css">
+		<link rel="stylesheet" href="https://quantsrus.github.io/css/highlight.css">
+		
+
+		
+		<link rel="stylesheet" href="https://quantsrus.github.io/css/font-awesome.min.css">
+		
+
+		
+		<link href="https://quantsrus.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Quants R Us" />
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='https://quantsrus.github.io/'> <span class="arrow">←</span>Home</a>
+	
+	<a href='https://quantsrus.github.io/post'>Archive</a>
+	<a href='https://quantsrus.github.io/tags'>Tags</a>
+	<a href='https://quantsrus.github.io/about'>About</a>
+
+	
+
+	
+	<a class="cta" href="https://quantsrus.github.io/index.xml">Subscribe</a>
+	
+</nav>
+
+
+        <section id="wrapper">
+            <article class="post">
+                <header>
+                    <h1>
+                        Particle Swarm Optimization on Heston Small-Time Expansion
+                    </h1>
+                    <h2 class="headline">
+                    Jul 6, 2017 07:48
+                    · 1180 words
+                    · 6 minutes read
+                      <span class="tags">
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                <section id="post-body">
+                    <p>This is a sequel to my <a href="/post/particle_swarm_optimization/">previous post on Particle Swarm Optimization</a>. Here, I look at the problem of &ldquo;calibrating&rdquo;
+a Heston small-time expansion, the one from <a href="http://www2.imperial.ac.uk/~ajacquie/index_files/Forde,%20Jacquier%20-%20Small-time%20asymptotics%20for%20implied%20volatility%20under%20the%20Heston%20model.pdf">Forde &amp; Jacquier</a>). This can be useful to find a good initial guess for the exact
+Heston calibration, computed with much costlier characteristic function Fourier numerical integration.</p>
+
+<p>Unfortunately, as we see below, with the contour plots of the objective function
+(the RMSE in volatilities against market quotes), the problem is much less well behaved with the small-time expansion
+ than with the numerical integration.
+ 
+<figure >
+    
+        <img src="/post/forde_3d.png" />
+    
+    
+    <figcaption>
+        <h4>RMSE of the small-time Heston implied volatilities against SPX500 options volatilities in 1995 using v_0=0.009527, theta= 0.02318, sigma= 0.92745 and varying kappa and rho.</h4>
+        
+    </figcaption>
+    
+</figure>
+
+ 
+<figure >
+    
+        <img src="/post/forde_contour.png" />
+    
+    
+    <figcaption>
+        <h4>contour plot of the small-time RMSE</h4>
+        
+    </figcaption>
+    
+</figure>
+
+ 
+<figure >
+    
+        <img src="/post/flinn_3d.png" />
+    
+    
+    <figcaption>
+        <h4>RMSE of the Fourier-based Heston implied volatilities against SPX500 options volatilities in 1995 using v_0=0.009527, theta= 0.02318, sigma= 0.92745 and varying kappa and rho.</h4>
+        
+    </figcaption>
+    
+</figure>
+
+ 
+<figure >
+    
+        <img src="/post/flinn_contour.png" />
+    
+    
+    <figcaption>
+        <h4>contour plot of the Fourier-based (nearly exact) RMSE</h4>
+        
+    </figcaption>
+    
+</figure>
+</p>
+
+<p>In deed, with the small-time expansion, the Heston parameters have no particular meaning beyond the range where the small-time expansion is valid. Used outside
+it creates spurious interdependencies. Filtering out quotes helps but is not enough to strongly stabilize the problem, unless
+we calibrate against only two option maturities. The expansion from Forde has actually an analytical solution from 4 points
+on two maturities plus an initial variance estimate, and a global calibration of the small-time expansion on two
+expiries is thus not very useful.</p>
+
+<p>Still, it provides a good test of global minimizers, as the objective function has many local minima. By filtering out some quotes, we create
+slightly different calibration problems which can be more or less challenging that the unfiltered problem. In order to assess
+the flexibility of differential evolution (DE), simulated annealing (SA) and particle swarm optimization (PSO), we look at 12 different problems:
+* option quotes in 1995 and in 2010,
+* using a root mean square error (RMSE) measure in volatilities or an inverse vega weighted RMSE in prices,
+* with no filtering, or filtering out market quotes with a normalized price less than 1E-6, or filtering out market quotes corresponding to options of longer maturity than 1 year or larger log-moneyness than 20\%.</p>
+
+<p>Then we compute the number of calibration failures. A failure corresponds to a L2-distance of the Heston parameters
+from the true minimum larger than 0.1, ignoring the kappa. This is in general more representative than the
+distance in RMSE as two close RMSEs can stem from quite different parameters if those correspond to two different local minima.</p>
+
+<p>As all the global minimizers considered rely on random numbers, they will produce different results depending on the initial seed used for random number generation.
+It is then entirely possible that a specific minimizer will perform very well by luck,
+but with another choice of seed, it might not perform as well. In order to remove this bias, I run 50 minimizations
+with different seeds (I jump to a far away point 100 times instead of simply picking 100 different random seeds) and compute the mean and the standard error for each minimizer.</p>
+
+<p>I consider different settings for each minimizer. The table below shows the best contenders among many different settings tried.</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">Minimizer</th>
+<th align="right">Mean failures (Std error)</th>
+<th align="right">Min</th>
+<th align="right">Max</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td align="left">DE NP=30 F=0.8 CR=0.6  Rand1EitherOr</td>
+<td align="right">1.54 (0.10)</td>
+<td align="right">1</td>
+<td align="right">4</td>
+</tr>
+
+<tr>
+<td align="left">DE NP=30 F=0.7 CR=0.7  Rand1Bin</td>
+<td align="right">2.84 (0.10)</td>
+<td align="right">2</td>
+<td align="right">5</td>
+</tr>
+
+<tr>
+<td align="left">DE NP=30 F=0.8 CR=0.7 Best1Bin</td>
+<td align="right">3.74 (0.15)</td>
+<td align="right">1</td>
+<td align="right">6</td>
+</tr>
+
+<tr>
+<td align="left">SA T=1 RT=0.8 NS=4 NT=20</td>
+<td align="right">2.02 (0.13)</td>
+<td align="right">0</td>
+<td align="right">5</td>
+</tr>
+
+<tr>
+<td align="left">PSO S=100 von Neumann c1=c2=2.02 PhiEnd=2*2.2</td>
+<td align="right">2.72 (0.13)</td>
+<td align="right">1</td>
+<td align="right">5</td>
+</tr>
+
+<tr>
+<td align="left">PSO S=81 von Neumann c1=c2=2.02  PhiEnd=2*2.2</td>
+<td align="right">3.00 (0.16)</td>
+<td align="right">1</td>
+<td align="right">5</td>
+</tr>
+
+<tr>
+<td align="left">PSO S=49 von Neumann c1=c2=2.02  PhiEnd=2*2.2</td>
+<td align="right">3.84 (0.16)</td>
+<td align="right">2</td>
+<td align="right">6</td>
+</tr>
+</tbody>
+</table>
+
+<p>In the PSO, the particle can go beyond the boundaries, what to do then?
+* stick the particle at the boundary if it goes beyond and set the velocity to zero (Nearest-Z). This is recommended in Clerc&rsquo;s book but led to the highest failure rate on average.
+* ignore the particles that move beyond the boundary in the calculation of the best positions (Infinity). This is the choice of the standard PSO 2007. It produced a much smaller failure rate on average.
+* reflect the particle at the boundary and set its velocity to zero (Reflect-Z). This led to the smallest failure rate on average, which confirms the findings of
+ the paper <a href="http://www.aifb.kit.edu/images/f/f7/FL.pdf">&ldquo;Analyzing the Effects of Bound Handling in Particle Swarm Optimization&rdquo;</a>.</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">Minimizer</th>
+<th align="right">Mean failures (Std error)</th>
+<th align="right">Min</th>
+<th align="right">Max</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td align="left">Reflect-Z with S=100</td>
+<td align="right">2.46 (0.12)</td>
+<td align="right">1</td>
+<td align="right">4</td>
+</tr>
+
+<tr>
+<td align="left">Reflect-Z with S=81</td>
+<td align="right">2.54 (0.13)</td>
+<td align="right">1</td>
+<td align="right">5</td>
+</tr>
+
+<tr>
+<td align="left">Infinity  with S=100</td>
+<td align="right">2.72 (0.13)</td>
+<td align="right">1</td>
+<td align="right">5</td>
+</tr>
+
+<tr>
+<td align="left">Infinity with S=81</td>
+<td align="right">3.00 (0.16)</td>
+<td align="right">1</td>
+<td align="right">5</td>
+</tr>
+
+<tr>
+<td align="left">Nearest-Z with S=100</td>
+<td align="right">3.04 (0.15)</td>
+<td align="right">1</td>
+<td align="right">6</td>
+</tr>
+
+<tr>
+<td align="left">Nearest-Z with S=81</td>
+<td align="right">3.42 (0.17)</td>
+<td align="right">1</td>
+<td align="right">6</td>
+</tr>
+</tbody>
+</table>
+
+<p>PSO is not only less robust in general, it is also slower with the settings chosen (a smaller swarm size would increases the failures even more).
+Here is a table with the time needed to calibrate the minimizers with the best settings above against all the quotes in 1995:</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">Minimizer</th>
+<th align="right">Time(ms)</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td align="left">DE Best1Bin</td>
+<td align="right">156</td>
+</tr>
+
+<tr>
+<td align="left">DE Rand1EitherOr</td>
+<td align="right">267</td>
+</tr>
+
+<tr>
+<td align="left">DE Rand1Bin</td>
+<td align="right">314</td>
+</tr>
+
+<tr>
+<td align="left">SA</td>
+<td align="right">427</td>
+</tr>
+
+<tr>
+<td align="left">PSO S=100</td>
+<td align="right">581</td>
+</tr>
+
+<tr>
+<td align="left">PSO S=81</td>
+<td align="right">790</td>
+</tr>
+
+<tr>
+<td align="left">PSO S=49</td>
+<td align="right">378</td>
+</tr>
+</tbody>
+</table>
+
+<p>The time is however only indicative since it will be highly dependent on the stopping criteria, and each method use a different stopping criteria.</p>
+
+<p>Matt Lorig et al. provide <a href="https://arxiv.org/pdf/1306.5447">two different small-time Heston expansions</a> of order 2 and 3. Interestingly, they behave quite well on our example as evidenced by the 3d graph and the contour plot of
+the RMSE below.
+
+<figure >
+    
+        <img src="/post/lpp2_3d.png" />
+    
+    
+    <figcaption>
+        <h4>RMSE of the small-time Heston implied volatilities against SPX500 options volatilities in 1995 using v_0=0.009527, theta= 0.02318, sigma= 0.92745 and varying kappa and rho.</h4>
+        
+    </figcaption>
+    
+</figure>
+
+ 
+<figure >
+    
+        <img src="/post/lpp2_contour.png" />
+    
+    
+    <figcaption>
+        <h4>contour plot of the small-time RMSE</h4>
+        
+    </figcaption>
+    
+</figure>
+</p>
+
+<p>The global minimizers can then use more agressive settings, that is ones that will converge faster (with the risk of being stuck in a local minimum more frequently).</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">Minimizer</th>
+<th align="right">Mean failures (Std error)</th>
+<th align="right">Min</th>
+<th align="right">Max</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td align="left">DE  NP=15 F=0.9 CR=0.5 Best1Bin</td>
+<td align="right">0.24 (0.07)</td>
+<td align="right">0</td>
+<td align="right">2</td>
+</tr>
+
+<tr>
+<td align="left">SA  T=1 RT=0.9 NS=3 NT=15</td>
+<td align="right">0.28 (0.06)</td>
+<td align="right">0</td>
+<td align="right">1</td>
+</tr>
+
+<tr>
+<td align="left">PSO  S=49 von Neumann  c1=c2=2.02 PhiEnd=4.4</td>
+<td align="right">0.08 (0.04)</td>
+<td align="right">0</td>
+<td align="right">1</td>
+</tr>
+</tbody>
+</table>
+
+<p>To conclude, PSO can work to calibrate Heston even if it tends to struggle on more complex problems.
+I however found differential evolution and to some extent simulated annealing
+more intuitive, more easily tweaked, and better performing.</p>
+
+<p>The life science that James Kennedy (a psychologist) introduced with the PSO is extremely fashionable these days. Anyone seems to create
+their own algorithm based on some dubious life science analogy. Papers on this get published and you end up with crap
+algorithms like the <strong>firefly</strong> algorithm with more than <a href="https://scholar.google.fr/scholar?cites=13200728788317574678&amp;as_sdt=2005&amp;sciodt=0,5&amp;hl=fr">800 citations</a>! Among those you can find:
+the <strong>grey wolf</strong> optimization, the <strong>flower pollination</strong> algorithm, the <strong>cuckoo</strong> search, the <strong>ant lion</strong> optimizer, the <strong>whale</strong> optimization algorithm, the <strong>bat</strong> algorithm, the <strong>elephant herding</strong> optimization&hellip;
+And I am not making those up!</p>
+
+<p>Don&rsquo;t waste your time on those. I could not obtain any decent result from the firefly algorithm (the basic algorithm with the constant random factor looks very suspicious anyway), not surprising
+that its inventor is linked to the <a href="https://en.wikipedia.org/wiki/Allais_effect">Allais effect</a>, which looks like a good scam, even if the <a href="https://en.wikipedia.org/wiki/Allais_paradox">Allais paradox</a> is interesting.</p>
+
+                </section>
+            </article>
+
+            
+
+            
+
+            
+
+            <footer id="footer">
+    
+    <p class="small">
+    
+       © Copyright 2017 <i class="fa fa-heart" aria-hidden="true"></i> Quants R Us
+    
+    </p>
+</footer>
+<script type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+        </section>
+
+        <script src="https://quantsrus.github.io/js/jquery-2.2.4.min.js"></script>
+<script src="https://quantsrus.github.io/js/main.js"></script>
+<script src="https://quantsrus.github.io/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+
+
+
+    </body>
+</html>
