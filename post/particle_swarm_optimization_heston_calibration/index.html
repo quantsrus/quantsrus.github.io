@@ -6,7 +6,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta name="author" content="Quants R Us">
 		
-		<meta name="generator" content="Hugo 0.24.1" />
+		<meta name="generator" content="Hugo 0.25.1" />
 		<title>Particle Swarm Optimization on Heston Small-Time Expansion &middot; Quants R Us</title>
 		<link rel="shortcut icon" href="https://quantsrus.github.io/images/favicon.ico">
 		<link rel="stylesheet" href="https://quantsrus.github.io/css/style.css">
@@ -48,7 +48,7 @@
                     </h1>
                     <h2 class="headline">
                     Jul 6, 2017 07:48
-                    · 1180 words
+                    · 1177 words
                     · 6 minutes read
                       <span class="tags">
                       
@@ -203,11 +203,14 @@ with different seeds (I jump to a far away point 100 times instead of simply pic
 </tbody>
 </table>
 
-<p>In the PSO, the particle can go beyond the boundaries, what to do then?
-* stick the particle at the boundary if it goes beyond and set the velocity to zero (Nearest-Z). This is recommended in Clerc&rsquo;s book but led to the highest failure rate on average.
-* ignore the particles that move beyond the boundary in the calculation of the best positions (Infinity). This is the choice of the standard PSO 2007. It produced a much smaller failure rate on average.
-* reflect the particle at the boundary and set its velocity to zero (Reflect-Z). This led to the smallest failure rate on average, which confirms the findings of
- the paper <a href="http://www.aifb.kit.edu/images/f/f7/FL.pdf">&ldquo;Analyzing the Effects of Bound Handling in Particle Swarm Optimization&rdquo;</a>.</p>
+<p>In the PSO, the particle can go beyond the boundaries, what to do then?</p>
+
+<ul>
+<li>stick the particle at the boundary if it goes beyond and set the velocity to zero (Nearest-Z). This is recommended in Clerc&rsquo;s book but led to the highest failure rate on average.</li>
+<li>ignore the particles that move beyond the boundary in the calculation of the best positions (Infinity). This is the choice of the standard PSO 2007. It produced a much smaller failure rate on average.</li>
+<li>reflect the particle at the boundary and set its velocity to zero (Reflect-Z). This led to the smallest failure rate on average, which confirms the findings of
+the paper <a href="http://www.aifb.kit.edu/images/f/f7/FL.pdf">&ldquo;Analyzing the Effects of Bound Handling in Particle Swarm Optimization&rdquo;</a>.</li>
+</ul>
 
 <table>
 <thead>
