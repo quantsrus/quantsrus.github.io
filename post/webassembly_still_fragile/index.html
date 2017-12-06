@@ -1,0 +1,115 @@
+    <!DOCTYPE html>
+<html lang="en-us">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="author" content="Quants R Us">
+		
+		<meta name="generator" content="Hugo 0.31.1" />
+		<title>Webassembly still fragile &middot; Quants R Us</title>
+		<link rel="shortcut icon" href="https://quantsrus.github.io/images/favicon.ico">
+		<link rel="stylesheet" href="https://quantsrus.github.io/css/style.css">
+		<link rel="stylesheet" href="https://quantsrus.github.io/css/highlight.css">
+		
+
+		
+		<link rel="stylesheet" href="https://quantsrus.github.io/css/font-awesome.min.css">
+		
+
+		
+		<link href="https://quantsrus.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Quants R Us" />
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='https://quantsrus.github.io/'> <span class="arrow">←</span>Home</a>
+	
+	<a href='https://quantsrus.github.io/posts'>Archive</a>
+	<a href='https://quantsrus.github.io/tags'>Tags</a>
+	<a href='https://quantsrus.github.io/about'>About</a>
+
+	
+
+	
+	<a class="cta" href="https://quantsrus.github.io/index.xml">Subscribe</a>
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        Webassembly still fragile
+                    </h1>
+                    <h2 class="headline">
+                    Dec 5, 2017 22:48
+                    · 303 words
+                    · 2 minutes read
+                      <span class="tags">
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                
+                <section id="post-body">
+                    <p>As I am preparing the website for my upcoming book on equity derivatives models, I played around with <a href="http://webassembly.org/">webassembly</a> to run some C++ code from your web browser. In order to do that, I rely on <a href="http://kripken.github.io/emscripten-site/">emscripten</a>, which seems to be the most advanced toolkit to generate webassembly code.</p>
+
+<p>I did not expect the webassembly toolchain to be so fragile. At first I had trouble using some specific C code (not so complicated) from javascript through emscripten: there are multiple ways to do it. Many approaches failed and I did not manage to go very far to find out the root cause for the failure. One approach worked, the one described in the <a href="https://codelabs.developers.google.com/codelabs/web-assembly-intro/index.html">Google tutorial for Webassembly</a>.</p>
+
+<p>I still have some strange issues I could not fully resolve: if I compile with the flag -O3 then the generated wasm and javascript do not work, and without the flag, I have no issues. Here is the kind of error stack I get from the browser with -O3 (or -O2):</p>
+
+<p><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-txt" data-lang="txt">RuntimeError: integer result unrepresentable
+    at wasm-function[42]:46
+    at wasm-function[43]:251
+    at wasm-function[44]:215
+    at wasm-function[45]:38
+    at wasm-function[138]:23
+    at dynCall_iiiiiddd_1 (eval at makeDynCaller (http://localhost:9000/fractal.js:1:42548),</code></pre></div>
+And looking at the line 42548 of the generated javascript file is not very helpful. It is actually quite amazing that emscripten generates so many lines of javascript (this is partly because I rely on the C++ standard library I suppose). I managed to find a workaround thanks to a google search. I have to add the option <code>-s &ldquo;BINARYEN_TRAP_MODE=&lsquo;clamp&rsquo;&rdquo;</code> to em++. I wonder what the root cause exactly is, maybe the <a href="http://ab-initio.mit.edu/wiki/index.php/Faddeeva_Package">faddeeva library</a> tries to convert infinity or NaN to an int? I could not find it.</p>
+
+<p>In any case, when it works, it works well and it is definitely possible to call some C++ libraries from javascript, which is still something quite amazing.</p>
+
+                </section>
+            </article>
+
+            
+
+            
+
+            
+
+            <footer id="footer">
+    
+    <p class="small">
+    
+       © Copyright 2017 <i class="fa fa-heart" aria-hidden="true"></i> Quants R Us
+    
+    </p>
+</footer>
+<script type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+        </section>
+
+        <script src="https://quantsrus.github.io/js/jquery-2.2.4.min.js"></script>
+<script src="https://quantsrus.github.io/js/main.js"></script>
+<script src="https://quantsrus.github.io/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+
+
+
+    </body>
+</html>

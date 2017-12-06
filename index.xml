@@ -6,10 +6,20 @@
     <description>Recent content on Quants R Us</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 06 Jul 2017 07:48:01 +0200</lastBuildDate>
+    <lastBuildDate>Tue, 05 Dec 2017 22:48:01 +0200</lastBuildDate>
     
 	<atom:link href="https://quantsrus.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Webassembly still fragile</title>
+      <link>https://quantsrus.github.io/post/webassembly_still_fragile/</link>
+      <pubDate>Tue, 05 Dec 2017 22:48:01 +0200</pubDate>
+      
+      <guid>https://quantsrus.github.io/post/webassembly_still_fragile/</guid>
+      <description>As I am preparing the website for my upcoming book on equity derivatives models, I played around with webassembly to run some C++ code from your web browser. In order to do that, I rely on emscripten, which seems to be the most advanced toolkit to generate webassembly code.
+I did not expect the webassembly toolchain to be so fragile. At first I had trouble using some specific C code (not so complicated) from javascript through emscripten: there are multiple ways to do it.</description>
+    </item>
     
     <item>
       <title>Particle Swarm Optimization on Heston Small-Time Expansion</title>
