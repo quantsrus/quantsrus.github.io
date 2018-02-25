@@ -6,7 +6,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta name="author" content="Quants R Us">
 		
-		<meta name="generator" content="Hugo 0.31.1" />
+		<meta name="generator" content="Hugo 0.36.1" />
 		<title>Webassembly still fragile &middot; Quants R Us</title>
 		<link rel="shortcut icon" href="https://quantsrus.github.io/images/favicon.ico">
 		<link rel="stylesheet" href="https://quantsrus.github.io/css/style.css">
@@ -30,6 +30,7 @@
 	
 	<a href='https://quantsrus.github.io/posts'>Archive</a>
 	<a href='https://quantsrus.github.io/tags'>Tags</a>
+	<a href='http://jherekhealy.github.io/'>Book</a>
 	<a href='https://quantsrus.github.io/about'>About</a>
 
 	
@@ -65,13 +66,13 @@
 
 <p>I still have some strange issues I could not fully resolve: if I compile with the flag -O3 then the generated wasm and javascript do not work, and without the flag, I have no issues. Here is the kind of error stack I get from the browser with -O3 (or -O2):</p>
 
-<p><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-txt" data-lang="txt">RuntimeError: integer result unrepresentable
-    at wasm-function[42]:46
-    at wasm-function[43]:251
-    at wasm-function[44]:215
-    at wasm-function[45]:38
-    at wasm-function[138]:23
-    at dynCall_iiiiiddd_1 (eval at makeDynCaller (http://localhost:9000/fractal.js:1:42548),</code></pre></div>
+<p><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-txt" data-lang="txt">RuntimeError<span style="color:#f92672">:</span> integer result unrepresentable
+    at wasm-function<span style="color:#e6db74">[</span><span style="color:#ae81ff">42</span><span style="color:#e6db74">]</span><span style="color:#f92672">:</span><span style="color:#ae81ff">46</span>
+    at wasm-function<span style="color:#e6db74">[</span><span style="color:#ae81ff">43</span><span style="color:#e6db74">]</span><span style="color:#f92672">:</span><span style="color:#ae81ff">251</span>
+    at wasm-function<span style="color:#e6db74">[</span><span style="color:#ae81ff">44</span><span style="color:#e6db74">]</span><span style="color:#f92672">:</span><span style="color:#ae81ff">215</span>
+    at wasm-function<span style="color:#e6db74">[</span><span style="color:#ae81ff">45</span><span style="color:#e6db74">]</span><span style="color:#f92672">:</span><span style="color:#ae81ff">38</span>
+    at wasm-function<span style="color:#e6db74">[</span><span style="color:#ae81ff">138</span><span style="color:#e6db74">]</span><span style="color:#f92672">:</span><span style="color:#ae81ff">23</span>
+    at dynCall_iiiiiddd_1 <span style="color:#e6db74">(</span>eval at makeDynCaller <span style="color:#e6db74">(</span>http<span style="color:#f92672">:</span><span style="color:#75715e">//localhost:9000/fractal.js:1:42548),</span></code></pre></div>
 And looking at the line 42548 of the generated javascript file is not very helpful. It is actually quite amazing that emscripten generates so many lines of javascript (this is partly because I rely on the C++ standard library I suppose). I managed to find a workaround thanks to a google search. I have to add the option <code>-s &ldquo;BINARYEN_TRAP_MODE=&lsquo;clamp&rsquo;&rdquo;</code> to em++. I wonder what the root cause exactly is, maybe the <a href="http://ab-initio.mit.edu/wiki/index.php/Faddeeva_Package">faddeeva library</a> tries to convert infinity or NaN to an int? I could not find it.</p>
 
 <p>In any case, when it works, it works well and it is definitely possible to call some C++ libraries from javascript, which is still something quite amazing.</p>
@@ -89,7 +90,7 @@ And looking at the line 42548 of the generated javascript file is not very helpf
     
     <p class="small">
     
-       © Copyright 2017 <i class="fa fa-heart" aria-hidden="true"></i> Quants R Us
+       © Copyright 2018 <i class="fa fa-heart" aria-hidden="true"></i> Quants R Us
     
     </p>
 </footer>

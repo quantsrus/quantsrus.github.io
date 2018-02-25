@@ -6,10 +6,19 @@
     <description>Recent content on Quants R Us</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 05 Dec 2017 22:48:01 +0200</lastBuildDate>
+    <lastBuildDate>Sun, 17 Dec 2017 10:05:07 +0100</lastBuildDate>
     
 	<atom:link href="https://quantsrus.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>About</title>
+      <link>https://quantsrus.github.io/about/</link>
+      <pubDate>Sun, 17 Dec 2017 10:05:07 +0100</pubDate>
+      
+      <guid>https://quantsrus.github.io/about/</guid>
+      <description>Hello, my name is Jherek Healy and I write here about random quantitative finance matters. You can find my book Applied Quantitative Finance for Equity Derivatives on Amazon (US, UK, France, Germany).</description>
+    </item>
     
     <item>
       <title>Webassembly still fragile</title>
@@ -59,15 +68,6 @@ An older technique, much more popular in physics is simulated annealing (SA). Th
       <guid>https://quantsrus.github.io/post/andreasen_huge_spline/</guid>
       <description>I recently stumbled upon a blog which suggested to not stay flat with Andreasen-Huge arbitrage free volatility interpolation method. The paper from Andreasen and Huge specifies a piecewise constant (single-step) local volatility where the number of constants matches the number of market option prices.
 The blog post shows eventual unstability with the piecewise constant approach, not visible with a linear interpolation. I wondered then if we should not go to the next level: use a spline on N values where N is the number of market options prices.</description>
-    </item>
-    
-    <item>
-      <title>About</title>
-      <link>https://quantsrus.github.io/about/</link>
-      <pubDate>Sat, 17 Dec 2016 10:05:07 +0100</pubDate>
-      
-      <guid>https://quantsrus.github.io/about/</guid>
-      <description>Hello, my name is Jherek Healy and I write here about random quantitative finance matters.</description>
     </item>
     
   </channel>
