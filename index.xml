@@ -6,10 +6,20 @@
     <description>Recent content on Quants R Us</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 17 Dec 2017 10:05:07 +0100</lastBuildDate>
+    <lastBuildDate>Wed, 28 Feb 2018 20:56:42 +0100</lastBuildDate>
     
 	<atom:link href="https://quantsrus.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>On the Quality of Research Publications</title>
+      <link>https://quantsrus.github.io/post/on-the-quality-of-research-publications/</link>
+      <pubDate>Wed, 28 Feb 2018 20:56:42 +0100</pubDate>
+      
+      <guid>https://quantsrus.github.io/post/on-the-quality-of-research-publications/</guid>
+      <description>I spent the last week-end to review a paper for the journal Expert Systems with Applications. It was a paper on a variant of Spider Monkey Optimization, which is in the same spirit as differential evolution or particle swarm optimization. Yes, it could be added to the list of esoteric optimizers at the end of this Quants R Us post.
+While the manuscript was relatively interesting in itself, and there was definitely some non-trivial amount of work behind it, it was riddled with errors: in the equations, in the algorithms, in the text, in the examples.</description>
+    </item>
     
     <item>
       <title>About</title>

@@ -1,0 +1,124 @@
+    <!DOCTYPE html>
+<html lang="en-us">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="author" content="Quants R Us">
+		
+		<meta name="generator" content="Hugo 0.36.1" />
+		<title>On the Quality of Research Publications &middot; Quants R Us</title>
+		<link rel="shortcut icon" href="https://quantsrus.github.io/images/favicon.ico">
+		<link rel="stylesheet" href="https://quantsrus.github.io/css/style.css">
+		<link rel="stylesheet" href="https://quantsrus.github.io/css/highlight.css">
+		
+
+		
+		<link rel="stylesheet" href="https://quantsrus.github.io/css/font-awesome.min.css">
+		
+
+		
+		<link href="https://quantsrus.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Quants R Us" />
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='https://quantsrus.github.io/'> <span class="arrow">←</span>Home</a>
+	
+	<a href='https://quantsrus.github.io/posts'>Archive</a>
+	<a href='https://quantsrus.github.io/tags'>Tags</a>
+	<a href='http://jherekhealy.github.io/'>Book</a>
+	<a href='https://quantsrus.github.io/about'>About</a>
+
+	
+
+	
+	<a class="cta" href="https://quantsrus.github.io/index.xml">Subscribe</a>
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        On the Quality of Research Publications
+                    </h1>
+                    <h2 class="headline">
+                    Feb 28, 2018 20:56
+                    · 671 words
+                    · 4 minutes read
+                      <span class="tags">
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                
+                <section id="post-body">
+                    <p>I spent the last week-end to review a paper for the journal <a href="https://www.journals.elsevier.com/expert-systems-with-applications">Expert Systems with Applications</a>. It was a paper on a variant of Spider Monkey Optimization, which is in the same spirit as differential evolution or particle swarm optimization. Yes, it could be added to the list of esoteric optimizers at the end of this <a href="/particle_swarm_optimization_heston_calibration/">Quants R Us post</a>.</p>
+
+<p>While the manuscript was relatively interesting in itself, and there was definitely some non-trivial amount of work behind it, it was riddled with errors: in the equations, in the algorithms, in the text, in the examples. Some were easy to spot, others not so much. One of the examples is the &ldquo;Design of Coil Springs&rdquo; originally presented in J. Arora book <a href="https://www.amazon.com/Introduction-Optimum-Design-Fourth-Jasbir/dp/0128008067/ref=sr_1_fkmr1_1?s=books&amp;ie=UTF8&amp;qid=1519982488&amp;sr=1-1-fkmr1&amp;keywords=introduction+to+optimum+design+aurora">Introduction to Optimum Design</a> (nice book, which can also have applications in finance: optimum design and optimum collateral allocation are not very different). In various papers (<a href="https://www.google.fr/url?sa=t&amp;rct=j&amp;q=&amp;esrc=s&amp;source=web&amp;cd=2&amp;cad=rja&amp;uact=8&amp;ved=0ahUKEwiy7u_sqc3ZAhUBPBQKHUHBAogQFgg2MAE&amp;url=http%3A%2F%2Fciteseerx.ist.psu.edu%2Fviewdoc%2Fdownload%3Fdoi%3D10.1.1.324.3199%26rep%3Drep1%26type%3Dpdf&amp;usg=AOvVaw2zY-0YnxhRwvHtQUcxAfME">Mezura-Montes &amp; Coello</a>, <a href="https://www.google.fr/url?sa=t&amp;rct=j&amp;q=&amp;esrc=s&amp;source=web&amp;cd=2&amp;cad=rja&amp;uact=8&amp;ved=0ahUKEwiqgum9qM3ZAhUBnxQKHdwRB0sQFgg2MAE&amp;url=https%3A%2F%2Fwww.cs.cinvestav.mx%2F~constraint%2Fpapers%2Fcagnina08a.pdf&amp;usg=AOvVaw280HGdnm4_OpF-aDb19AY2">Cagnina</a>, <a href="https://dl.acm.org/citation.cfm?id=1660493">Liu et al.</a>) the problem is referred as &ldquo;Minimization of the Weight of a Tension/Compression String&rdquo;. I did not know it was some some sort of standard example, used in many papers on optimization. The equations are relatively simple. The problem is to minimize
+$$ f(x_1,x_2,x_3) = (x_3+2)x_2 x_1^2 $$
+subject to
+$$ g_1(x_1,x_2,x_3) = 1 - \frac{x_2^3 x_3}{71785 x_1^4} \leq 0 $$
+$$ g_2(x_1,x_2,x_3) = \frac{4 x_2^2 - x_1 x_2}{12566 (x_2 x_1^3 - x_1^4)}+\frac{1}{5108 x_1^2} -1 \leq 0 $$
+$$ g_3(x_1,x_2,x_3) = 1 - \frac{140.45 x_1}{x_2^2 x_3} \leq 0 $$
+$$ g_4(x_1,x_2,x_3) = \frac{x_1+x_2}{1.5}-1 \leq 0$$
+with \( 0.05 \leq x_1 \leq 2, 0.25 \leq x_2 \leq 1.3, 2 \leq x_3 \leq 15 \)</p>
+
+<p>One of the errors was to use the constant 7178 instead of 71785 in \( g_1 \). Another error is that they don&rsquo;t have the factor 12566 in front of \(x_1^4\) in \(g_2\). More worryingly, the same errors are actually present in Cagnina&rsquo;s paper. It is not clear then which problem they solve: did those papers implement a different objective function than the standard problem from other papers or not? If they do, their solutions can obviously not be compared.</p>
+
+<p>The manuscript mentions the solution of at least 10 other papers (each a different optimization) to this problem, and make it look that their solution is best (they removed the better solutions from Cagnina or Liu from their table). Worse, a very simple differential evolution optimizer I coded led to the optimal solution (very close to Cagnina&rsquo;s solution - it can not be a coincidence, he must have used the correct problem in the code and translated it wrong on paper).</p>
+
+<p>f=1.26652328e-02 at (0.051689, 0.356718, 11.288961).</p>
+
+<p>If I use the problem as stated in their manuscript or Cagnina, the solution I find is then much better. So it suggests, that, in reality, the person who wrote the problem in the paper copied all the mistakes from Cagnina&rsquo;s paper, but not the person who actually coded the algorithm, which is a bit strange. Also while it is good that they find the correct minimum, the authors don&rsquo;t specify the number of iterations used, so it is very difficult to assess the efficiency of the proposed algorithm.</p>
+
+<p>On another very similar problem coming from the same book, the &ldquo;Pressure Vessel Problem&rdquo;, Cagnina is the only one to provide the correct bounds \(0.0625 \leq x_1\) but mispecifies \(g_3\) compared to the other paper (an additional square in \(x_4\)). Other papers provide bounds such as \(1 \leq x_1 \), while their optimal solution lies below 1. The confusion in the bounds stems from the use of the unit (inches) which is not understood correctly by many papers - still it does not seem to shock anybody that their optimal solution is not in the quoted solution space.</p>
+
+<p>I thought quantitative finance was not always strict on quality, but it looks much stricter than the various journals on optimization.</p>
+
+<p>I have to do a bit of mea culpa here: there are also typo errors in <a href="https://www.amazon.com/Applied-Quantitative-Finance-Equity-Derivatives/dp/1977557872/ref=sr_1_1?ie=UTF8&amp;qid=1512726313&amp;sr=8-1&amp;keywords=jherek+healy">my book</a>. I recently added an <a href="https://jherekhealy.github.io/erratum/">erratum page</a> on the website, thanks to Liam Henry.</p>
+
+                </section>
+            </article>
+
+            
+
+            
+
+            
+
+            <footer id="footer">
+    
+    <p class="small">
+    
+       © Copyright 2018 <i class="fa fa-heart" aria-hidden="true"></i> Quants R Us
+    
+    </p>
+</footer>
+<script type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+        </section>
+
+        <script src="https://quantsrus.github.io/js/jquery-2.2.4.min.js"></script>
+<script src="https://quantsrus.github.io/js/main.js"></script>
+<script src="https://quantsrus.github.io/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+
+
+
+    </body>
+</html>

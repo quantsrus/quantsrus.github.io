@@ -10,5 +10,14 @@
 	<atom:link href="https://quantsrus.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
     
     
+    <item>
+      <title>Quant</title>
+      <link>https://quantsrus.github.io/categories/quant/</link>
+      <pubDate>Wed, 28 Feb 2018 20:56:42 +0100</pubDate>
+      
+      <guid>https://quantsrus.github.io/categories/quant/</guid>
+      <description></description>
+    </item>
+    
   </channel>
 </rss>
