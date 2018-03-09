@@ -6,10 +6,21 @@
     <description>Recent content on Quants R Us</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 28 Feb 2018 20:56:42 +0100</lastBuildDate>
+    <lastBuildDate>Thu, 08 Mar 2018 22:48:01 +0200</lastBuildDate>
     
 	<atom:link href="https://quantsrus.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Staying arbitrage-free with Andreasen-Huge one-step interpolation</title>
+      <link>https://quantsrus.github.io/post/staying-arbitrage-free-with-andreasen-huge-volatility-interpolation/</link>
+      <pubDate>Thu, 08 Mar 2018 22:48:01 +0200</pubDate>
+      
+      <guid>https://quantsrus.github.io/post/staying-arbitrage-free-with-andreasen-huge-volatility-interpolation/</guid>
+      <description>Not long ago, I wrote a post about Andreasen-Huge arbitrage-free volatility interpolation method, showing that using a spline for the one-step local volatility instead of a piecewise-constant (or better, a piecewise-linear) function was not necessarily a great idea.
+What we get out of Andreasen-Huge method, is a list of discrete option prices. What about option prices for strikes not on the grid?
+In this case we still need some kind of interpolation.</description>
+    </item>
     
     <item>
       <title>On the Quality of Research Publications</title>

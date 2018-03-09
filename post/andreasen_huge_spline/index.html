@@ -6,7 +6,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta name="author" content="Quants R Us">
 		
-		<meta name="generator" content="Hugo 0.36.1" />
+		<meta name="generator" content="Hugo 0.37" />
 		<title>A spline to fill the gaps with Andreasen-Huge one-step method &middot; Quants R Us</title>
 		<link rel="shortcut icon" href="https://quantsrus.github.io/images/favicon.ico">
 		<link rel="stylesheet" href="https://quantsrus.github.io/css/style.css">
@@ -66,7 +66,7 @@
 
 <p>I tried this idea on SPX500 options of maturity 1 year and stumbled upon erratic behavior depending on the number of nodes used in the grid. In reality, this was due to using the wrong monotone interpolation. I had used Hyman-Dougherty monotone interpolation by habit. But the data is far from being monotone, and the Hyman interpolation does not necessarily behave well on non-monotone data: by design, it can still wiggle over or under the nodes. This is what happens on the figure below, which zooms problematic region of the local variance: it becomes negative with Hyman interpolation.
 
-<figure >
+<figure>
     
         <img src="/post/andreasen_huge_hyman.png" />
     
@@ -83,7 +83,7 @@
 
 <p>It works well with a properly monotone spline, but how does the one-step local volatility looks like?
 
-<figure >
+<figure>
     
         <img src="/post/andreasen_huge_spline_good.png" />
     

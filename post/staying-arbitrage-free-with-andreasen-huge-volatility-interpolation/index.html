@@ -1,0 +1,157 @@
+    <!DOCTYPE html>
+<html lang="en-us">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="author" content="Quants R Us">
+		
+		<meta name="generator" content="Hugo 0.37" />
+		<title>Staying arbitrage-free with Andreasen-Huge one-step interpolation &middot; Quants R Us</title>
+		<link rel="shortcut icon" href="https://quantsrus.github.io/images/favicon.ico">
+		<link rel="stylesheet" href="https://quantsrus.github.io/css/style.css">
+		<link rel="stylesheet" href="https://quantsrus.github.io/css/highlight.css">
+		
+
+		
+		<link rel="stylesheet" href="https://quantsrus.github.io/css/font-awesome.min.css">
+		
+
+		
+		<link href="https://quantsrus.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Quants R Us" />
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='https://quantsrus.github.io/'> <span class="arrow">←</span>Home</a>
+	
+	<a href='https://quantsrus.github.io/posts'>Archive</a>
+	<a href='https://quantsrus.github.io/tags'>Tags</a>
+	<a href='http://jherekhealy.github.io/'>Book</a>
+	<a href='https://quantsrus.github.io/about'>About</a>
+
+	
+
+	
+	<a class="cta" href="https://quantsrus.github.io/index.xml">Subscribe</a>
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        Staying arbitrage-free with Andreasen-Huge one-step interpolation
+                    </h1>
+                    <h2 class="headline">
+                    Mar 8, 2018 22:48
+                    · 452 words
+                    · 3 minutes read
+                      <span class="tags">
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                
+                <section id="post-body">
+                    <p>Not long ago, I wrote a <a href="/post/andreasen_huge_spline">post about Andreasen-Huge</a> arbitrage-free volatility interpolation method, showing that using a spline for the one-step local volatility instead of a piecewise-constant (or better, a piecewise-linear) function was not necessarily a great idea.</p>
+
+<p>What we get out of Andreasen-Huge method, is a list of discrete option prices. What about option prices for strikes not on the grid?</p>
+
+<p>In this case we still need some kind of interpolation. If we work directly with option prices, as described in their paper, the simplest seems to try a cubic spline on those option prices. In reality, a C2 cubic spline is likely to introduce arbitrages as it does not preserve convexity. How bad is it?</p>
+
+<p>It can be really bad. Below is an example based on the market mid prices of 1m SPX options as of February 5, 2018. It is an example where calibration is not perfect (likely because there is a small arbitrage in the quotes, within the bid-ask spread).</p>
+
+
+<figure>
+    
+        <img src="/post/ah_cubic_quintic.png" />
+    
+    
+    <figcaption>
+        <h4>Probability density obtained using a C2 Cubic vs a C2 Quintic interpolation on Andreasen-Huge prices.</h4>
+        
+    </figcaption>
+    
+</figure>
+
+
+<p>Indeed, a C2 cubic spline is not going to respect the second derivative values at the interpolating nodes. A C2 quintic Hermite spline can do so. In the above plot, we estimate the first and second derivatives by a parabola on three nodes. While it looks better, it can still lead to negative density in between nodes, as, again, it is not convexity preserving. Interestingly, while there exists some algorithms to attempt to preserve convexity, such as the one of <a href="https://www.jstor.org/stable/2008477">Hyman</a>, it can be proved that polynomial splines <a href="https://www.sciencedirect.com/science/article/pii/0377042794901848">can not preserve convexity</a> in the general case (the link is on a paper on quadratic splines, but the general result is mentioned, I could not find a link to the original result &ldquo;On the existence of shape preserving interpolation operators&rdquo;).</p>
+
+<p>A better solution is to compute the density via the Fokker-Planck one-step implicit Euler method, and integrate it to obtain vanilla options prices at, or in between nodes as shown in <a href="https://www.amazon.com/Applied-Quantitative-Finance-Equity-Derivatives/dp/1977557872/ref=sr_1_1?ie=UTF8&amp;qid=1512726313&amp;sr=8-1&amp;keywords=jherek+healy">my book</a>, similarly to what is done in the <a href="http://onlinelibrary.wiley.com/doi/10.1002/wilm.10290/abstract">arbitrage-free SABR method of Hagan et al.</a>. In this case, by construction, we can guarantee the arbitrage-free property.</p>
+
+
+<figure>
+    
+        <img src="/post/ah_quintic_fokker.png" />
+    
+    
+    <figcaption>
+        <h4>Probability density obtained using a C2 Quintic interpolation on Andreasen-Huge prices vs. the integration of the Fokker-Planck one-step density.</h4>
+        
+    </figcaption>
+    
+</figure>
+
+
+<p>There are still a lot of spikes (positive), would a piecewise-linear discrete local volatility be better?</p>
+
+
+<figure>
+    
+        <img src="/post/ah_fokker_l.png" />
+    
+    
+    <figcaption>
+        <h4>Probability density obtained by numerically differentiating the integration of the Fokker-Planck one-step density.</h4>
+        
+    </figcaption>
+    
+</figure>
+
+
+<p>The answer is no. The Andreasen-Huge method has in general the tendency of producing such very spiky density. One way to mitigate this would be to use (much) less local volatility constants than the number of market strikes.</p>
+
+                </section>
+            </article>
+
+            
+
+            
+
+            
+
+            <footer id="footer">
+    
+    <p class="small">
+    
+       © Copyright 2018 <i class="fa fa-heart" aria-hidden="true"></i> Quants R Us
+    
+    </p>
+</footer>
+<script type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+        </section>
+
+        <script src="https://quantsrus.github.io/js/jquery-2.2.4.min.js"></script>
+<script src="https://quantsrus.github.io/js/main.js"></script>
+<script src="https://quantsrus.github.io/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+
+
+
+    </body>
+</html>
