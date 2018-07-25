@@ -1,0 +1,226 @@
+    <!DOCTYPE html>
+<html lang="en-us">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="author" content="Quants R Us">
+		
+		<meta name="generator" content="Hugo 0.40.1" />
+		<title>The state of open-source quadratic programming convex optimizers &middot; Quants R Us</title>
+		<link rel="shortcut icon" href="https://quantsrus.github.io/images/favicon.ico">
+		<link rel="stylesheet" href="https://quantsrus.github.io/css/style.css">
+		<link rel="stylesheet" href="https://quantsrus.github.io/css/highlight.css">
+		
+
+		
+		<link rel="stylesheet" href="https://quantsrus.github.io/css/font-awesome.min.css">
+		
+
+		
+		<link href="https://quantsrus.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Quants R Us" />
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='https://quantsrus.github.io/'> <span class="arrow">←</span>Home</a>
+	
+	<a href='https://quantsrus.github.io/posts'>Archive</a>
+	<a href='https://quantsrus.github.io/tags'>Tags</a>
+	<a href='http://jherekhealy.github.io/'>Book</a>
+	<a href='https://quantsrus.github.io/about'>About</a>
+
+	
+
+	
+	<a class="cta" href="https://quantsrus.github.io/index.xml">Subscribe</a>
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        The state of open-source quadratic programming convex optimizers
+                    </h1>
+                    <h2 class="headline">
+                    Jul 24, 2018 22:48
+                    · 457 words
+                    · 3 minutes read
+                      <span class="tags">
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                    <div id="toc">
+                      <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#java">Java</a></li>
+<li><a href="#python">Python</a></li>
+<li><a href="#summary">Summary</a></li>
+</ul></li>
+</ul>
+</nav>
+                    </div>
+                  
+                
+                <section id="post-body">
+                    
+
+<p>I explore here a few open-source optimizers on a relatively simple problem of finding a good convex subset, but with many constraints:
+ 30104 constraints for essentially 174 variables. My particular problem can be easily expressed in the form of a <a href="https://en.wikipedia.org/wiki/Quadratic_programming">quadratic programming problem</a>.</p>
+
+<h2 id="java">Java</h2>
+
+<ol>
+<li>Ojalgo: very difficult to setup properly in the absence of documentation for convex minimization. I suspect it does not work well, as it has a tendency to never finish. Don&rsquo;t waste your time on this.</li>
+<li>JOptimizer: much better documentation, but the algorithms seem very primitive, and can&rsquo;t solve my problem with a relatively large number of variables as it keeps complaining on KKT solution failed. It worked when I truncated the problem to 4 variables.</li>
+</ol>
+
+<p>I could not find much else. It is quite surprising that the state of optimizers is so poor in Java, given that it is one of the most used languages in the enterprise.</p>
+
+<h2 id="python">Python</h2>
+
+<ol>
+<li><a href="https://cvxopt.org/">CVXOPT</a>: very good documentation, and seems robust. It took 4s to solve my problem.</li>
+<li><a href="https://osqp.org/">OSQP</a>: it works, but it is somewhat slow: 25s to find a solution, while CVXOPT takes 4s for a better result.</li>
+<li><a href="http://www.cvxpy.org">CVXPY</a>: it is front-end towards existing solvers. It has a very neat documentation. The results
+depend a lot on the underlying solver, and the approach used.
+
+<ul>
+<li>The default solver (which I think is OSQP) finds a solution
+that does not obeys the constraints. If I override the settings the same way as in my direct OSQP test, then it solves correctly
+but is slower. The CVXPY abstraction layer can significantly slow down the optimization.</li>
+<li>When I create a large array
+of individual constraints, which is the simplest to code, the performance is not great.
+The use of a numpy sparse matrix representation to describe all constraints together improves the performance by a factor 50 with the ECOS solver.
+But it does not impact much the SCS or CVXOPT solvers.</li>
+<li>The default settings for each solver are different. The performance is not strictly comparable and the default settings for OSQP
+might not be appropriate on my problem</li>
+</ul></li>
+</ol>
+
+<p>A while ago, I also tried <a href="https://projects.coin-or.org/Ipopt">IPOPT</a>, which is a more general convex non-linear solver as it appeared here and there in forums and Google. Unfortunately, I found it
+a pain to setup on Linux, and after all my efforts, it did not lead to particularly good results.</p>
+
+<h2 id="summary">Summary</h2>
+
+<table>
+<thead>
+<tr>
+<th>Solver</th>
+<th align="right">Time(s)</th>
+<th align="right">Objective</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>CVXOPT-sparse</td>
+<td align="right">4</td>
+<td align="right">5.5E-5</td>
+</tr>
+
+<tr>
+<td>OSQP-sparse</td>
+<td align="right">25</td>
+<td align="right">6.8E-5</td>
+</tr>
+
+<tr>
+<td>CVXPY-default</td>
+<td align="right">55</td>
+<td align="right">not within constraints</td>
+</tr>
+
+<tr>
+<td>CVXPY-OSQP*</td>
+<td align="right">70</td>
+<td align="right">1.5E-4</td>
+</tr>
+
+<tr>
+<td>CVXPY-OSQP*-sparse</td>
+<td align="right">8</td>
+<td align="right">1.5E-4</td>
+</tr>
+
+<tr>
+<td>CVXPY-ECOS</td>
+<td align="right">50</td>
+<td align="right">4.5E-5</td>
+</tr>
+
+<tr>
+<td>CVXPY-ECOS-sparse</td>
+<td align="right">0.9</td>
+<td align="right">4.5E-5</td>
+</tr>
+
+<tr>
+<td>CVXPY-SCS</td>
+<td align="right">200</td>
+<td align="right">4.4E-5</td>
+</tr>
+
+<tr>
+<td>CVXPY-SCS-sparse</td>
+<td align="right">175</td>
+<td align="right">4.4E-5</td>
+</tr>
+
+<tr>
+<td>CVXPY-CVXOPT-sparse</td>
+<td align="right">breaks</td>
+<td align="right">N/A</td>
+</tr>
+</tbody>
+</table>
+
+<p>From Python, the optimizers are of much higher quality. It is not too surprising since they are often written in close collaboration with universities and researchers in the field.</p>
+
+                </section>
+            </article>
+
+            
+
+            
+
+            
+
+            <footer id="footer">
+    
+    <p class="small">
+    
+       © Copyright 2018 <i class="fa fa-heart" aria-hidden="true"></i> Quants R Us
+    
+    </p>
+</footer>
+<script type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+        </section>
+
+        <script src="https://quantsrus.github.io/js/jquery-2.2.4.min.js"></script>
+<script src="https://quantsrus.github.io/js/main.js"></script>
+<script src="https://quantsrus.github.io/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+
+
+
+    </body>
+</html>

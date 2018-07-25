@@ -6,10 +6,20 @@
     <description>Recent content in Posts on Quants R Us</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 08 Mar 2018 22:48:01 +0200</lastBuildDate>
+    <lastBuildDate>Tue, 24 Jul 2018 22:48:01 +0200</lastBuildDate>
     
 	<atom:link href="https://quantsrus.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>The state of open-source quadratic programming convex optimizers</title>
+      <link>https://quantsrus.github.io/post/state_of_convex_quadratic_programming_solvers/</link>
+      <pubDate>Tue, 24 Jul 2018 22:48:01 +0200</pubDate>
+      
+      <guid>https://quantsrus.github.io/post/state_of_convex_quadratic_programming_solvers/</guid>
+      <description>I explore here a few open-source optimizers on a relatively simple problem of finding a good convex subset, but with many constraints: 30104 constraints for essentially 174 variables. My particular problem can be easily expressed in the form of a quadratic programming problem.
+Java  Ojalgo: very difficult to setup properly in the absence of documentation for convex minimization. I suspect it does not work well, as it has a tendency to never finish.</description>
+    </item>
     
     <item>
       <title>Staying arbitrage-free with Andreasen-Huge one-step interpolation</title>
