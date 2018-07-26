@@ -49,7 +49,7 @@
                     </h1>
                     <h2 class="headline">
                     Jul 24, 2018 22:48
-                    · 642 words
+                    · 689 words
                     · 4 minutes read
                       <span class="tags">
                       
@@ -115,8 +115,9 @@ a pain to setup on Linux, and after all my efforts, it did not lead to particula
 <h2 id="octave-scilab">Octave, Scilab</h2>
 
 <p><a href="https://www.scilab.org/">Scilab</a> solveqp can be used only if the quadratic matrix is positive definite. On my example the matrix is diagonal,
-and some diagonal elements are 0, it is thus only positive semi-definite. I had to set a small epsilon value on the diagonal to be able to solve with Scilab. It also only works with non sparse matrices. The error reporting is quite bad, it is not obvious at all that solveqp does not work with sparse matrices.
-A very similar function, solve_qp, can however work with a sparse matrix do describe the constraints, and it becomes the fastest of all solvers. Note that the scilab documentation is wrong, the format for the input is really the same as the <a href="https://github.com/cran/quadprog/blob/master/src/solve.QP.compact.f">code from Berwin Turlach</a>. The documentation says it computes
+and some diagonal elements are 0, it is thus only positive semi-definite. I had to set a small epsilon value on the diagonal to be able to solve with Scilab. It also only works with non sparse matrices. The error reporting is quite bad, it is not obvious at all that solveqp does not work with sparse matrices.</p>
+
+<p>A very similar function, solve_qp, can however work with a sparse matrix to describe the constraints, and it becomes the fastest of all solvers. Note that the scilab documentation is wrong, the format for the input is really the same as the <a href="https://github.com/cran/quadprog/blob/master/src/solve.QP.compact.f">code from Berwin Turlach</a>. The documentation says it computes
 $$ \min \frac{1}{2} x^t Q x + p^t x\,. $$
 while the function actually computes
 $$ \min \frac{1}{2} x^t Q x - p^t x\,. $$</p>
@@ -212,6 +213,8 @@ $$ \min \frac{1}{2} x^t Q x - p^t x\,. $$</p>
 </table>
 
 <p>From Python, the optimizers are of much higher quality. It is not too surprising since they are often written in close collaboration with universities and researchers in the field.</p>
+
+<p>Scilab looks really from another century (a slow Java GUI), and the project is really redundant with Octave. I wish they would both work on the same code base and produce something of higher quality. Clearly, they have lost ground against Python, especially with the IPython/Jupiter notebooks.</p>
 
                 </section>
             </article>
