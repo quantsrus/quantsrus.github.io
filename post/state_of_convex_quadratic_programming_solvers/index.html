@@ -49,8 +49,8 @@
                     </h1>
                     <h2 class="headline">
                     Jul 24, 2018 22:48
-                    · 457 words
-                    · 3 minutes read
+                    · 642 words
+                    · 4 minutes read
                       <span class="tags">
                       
                       </span>
@@ -65,6 +65,7 @@
 <ul>
 <li><a href="#java">Java</a></li>
 <li><a href="#python">Python</a></li>
+<li><a href="#octave-scilab">Octave, Scilab</a></li>
 <li><a href="#summary">Summary</a></li>
 </ul></li>
 </ul>
@@ -111,7 +112,20 @@ might not be appropriate on my problem</li>
 <p>A while ago, I also tried <a href="https://projects.coin-or.org/Ipopt">IPOPT</a>, which is a more general convex non-linear solver as it appeared here and there in forums and Google. Unfortunately, I found it
 a pain to setup on Linux, and after all my efforts, it did not lead to particularly good results.</p>
 
+<h2 id="octave-scilab">Octave, Scilab</h2>
+
+<p><a href="https://www.scilab.org/">Scilab</a> solveqp can be used only if the quadratic matrix is positive definite. On my example the matrix is diagonal,
+and some diagonal elements are 0, it is thus only positive semi-definite. I had to set a small epsilon value on the diagonal to be able to solve with Scilab. It also only works with non sparse matrices. The error reporting is quite bad, it is not obvious at all that solveqp does not work with sparse matrices.
+A very similar function, solve_qp, can however work with a sparse matrix do describe the constraints, and it becomes the fastest of all solvers. Note that the scilab documentation is wrong, the format for the input is really the same as the <a href="https://github.com/cran/quadprog/blob/master/src/solve.QP.compact.f">code from Berwin Turlach</a>. The documentation says it computes
+$$ \min \frac{1}{2} x^t Q x + p^t x\,. $$
+while the function actually computes
+$$ \min \frac{1}{2} x^t Q x - p^t x\,. $$</p>
+
+<p>I could not get a solution out of Octave qp or quadprog routines.</p>
+
 <h2 id="summary">Summary</h2>
+
+<p>Here are the results sorted in ascending solving time:</p>
 
 <table>
 <thead>
@@ -124,15 +138,45 @@ a pain to setup on Linux, and after all my efforts, it did not lead to particula
 
 <tbody>
 <tr>
+<td>Scilab-solve_qp sparse</td>
+<td align="right">0.2</td>
+<td align="right">4.5E-5</td>
+</tr>
+
+<tr>
+<td>CVXPY-ECOS-sparse</td>
+<td align="right">0.9</td>
+<td align="right">4.5E-5</td>
+</tr>
+
+<tr>
 <td>CVXOPT-sparse</td>
 <td align="right">4</td>
 <td align="right">5.5E-5</td>
 </tr>
 
 <tr>
+<td>Scilab-solveqp</td>
+<td align="right">5</td>
+<td align="right">4.5E-5</td>
+</tr>
+
+<tr>
+<td>CVXPY-OSQP*-sparse</td>
+<td align="right">8</td>
+<td align="right">1.5E-4</td>
+</tr>
+
+<tr>
 <td>OSQP-sparse</td>
 <td align="right">25</td>
 <td align="right">6.8E-5</td>
+</tr>
+
+<tr>
+<td>CVXPY-ECOS</td>
+<td align="right">50</td>
+<td align="right">4.5E-5</td>
 </tr>
 
 <tr>
@@ -148,32 +192,14 @@ a pain to setup on Linux, and after all my efforts, it did not lead to particula
 </tr>
 
 <tr>
-<td>CVXPY-OSQP*-sparse</td>
-<td align="right">8</td>
-<td align="right">1.5E-4</td>
-</tr>
-
-<tr>
-<td>CVXPY-ECOS</td>
-<td align="right">50</td>
-<td align="right">4.5E-5</td>
-</tr>
-
-<tr>
-<td>CVXPY-ECOS-sparse</td>
-<td align="right">0.9</td>
-<td align="right">4.5E-5</td>
+<td>CVXPY-SCS-sparse</td>
+<td align="right">175</td>
+<td align="right">4.4E-5</td>
 </tr>
 
 <tr>
 <td>CVXPY-SCS</td>
 <td align="right">200</td>
-<td align="right">4.4E-5</td>
-</tr>
-
-<tr>
-<td>CVXPY-SCS-sparse</td>
-<td align="right">175</td>
 <td align="right">4.4E-5</td>
 </tr>
 
