@@ -3,6 +3,11 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://quantsrus.github.io/post/constraints-in-levenberg-marquardt-least-squares-optimization/</loc>
+    <lastmod>2018-10-08T22:48:01+02:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://quantsrus.github.io/post/state_of_convex_quadratic_programming_solvers/</loc>
     <lastmod>2018-07-24T22:48:01+02:00</lastmod>
   </url>
@@ -54,7 +59,7 @@
   
   <url>
     <loc>https://quantsrus.github.io/post/</loc>
-    <lastmod>2018-07-24T22:48:01+02:00</lastmod>
+    <lastmod>2018-10-08T22:48:01+02:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -66,7 +71,7 @@
   
   <url>
     <loc>https://quantsrus.github.io/</loc>
-    <lastmod>2018-07-24T22:48:01+02:00</lastmod>
+    <lastmod>2018-10-08T22:48:01+02:00</lastmod>
     <priority>0</priority>
   </url>
   

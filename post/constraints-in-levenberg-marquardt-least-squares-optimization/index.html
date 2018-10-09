@@ -1,0 +1,110 @@
+    <!DOCTYPE html>
+<html lang="en-us">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="author" content="Quants R Us">
+		
+		<meta name="generator" content="Hugo 0.40.1" />
+		<title>Constraints in the Levenberg-Marquardt least-squares optimization &middot; Quants R Us</title>
+		<link rel="shortcut icon" href="https://quantsrus.github.io/images/favicon.ico">
+		<link rel="stylesheet" href="https://quantsrus.github.io/css/style.css">
+		<link rel="stylesheet" href="https://quantsrus.github.io/css/highlight.css">
+		
+
+		
+		<link rel="stylesheet" href="https://quantsrus.github.io/css/font-awesome.min.css">
+		
+
+		
+		<link href="https://quantsrus.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Quants R Us" />
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='https://quantsrus.github.io/'> <span class="arrow">←</span>Home</a>
+	
+	<a href='https://quantsrus.github.io/posts'>Archive</a>
+	<a href='https://quantsrus.github.io/tags'>Tags</a>
+	<a href='http://jherekhealy.github.io/'>Book</a>
+	<a href='https://quantsrus.github.io/about'>About</a>
+
+	
+
+	
+	<a class="cta" href="https://quantsrus.github.io/index.xml">Subscribe</a>
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        Constraints in the Levenberg-Marquardt least-squares optimization
+                    </h1>
+                    <h2 class="headline">
+                    Oct 8, 2018 22:48
+                    · 268 words
+                    · 2 minutes read
+                      <span class="tags">
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                
+                <section id="post-body">
+                    <p>The standard Levenberg-Marquardt optimizer does not support box constraints. This is, for example the case for good MINPACK lmdif/lmder implementations that many optimization libraries use underneath. But in practice, it is often useful to limit the range of the variables, often because the objective might not be defined everywhere.</p>
+
+<p>The <a href="https://www.google.com/url?sa=t&amp;rct=j&amp;q=&amp;esrc=s&amp;source=web&amp;cd=1&amp;ved=2ahUKEwjjre3W8PfdAhUKzIUKHYSQDzgQFjAAegQIChAC&amp;url=https%3A%2F%2Fcran.r-project.org%2Fweb%2Fpackages%2Fminpack.lm%2Fminpack.lm.pdf&amp;usg=AOvVaw2GJL44QiM_VH1mbFXgHJDb">R minpack.lm CRAN package</a> allows the user to specify box constraints. How do they do it?</p>
+
+<p>They choose a very straightforward projection approach to enforce the constraints: if the guess is outside the box, they place it at the closest boundary (see <a href="https://github.com/cran/minpack.lm/blob/master/src/fcn_lmder.c">the source code</a>).
+I believe this corresponds to the algorithm described in section 3 of the paper <a href="https://www.google.com/url?sa=t&amp;rct=j&amp;q=&amp;esrc=s&amp;source=web&amp;cd=1&amp;cad=rja&amp;uact=8&amp;ved=2ahUKEwjTod32x_ndAhVEUxoKHd5FBQYQFjAAegQICRAC&amp;url=https%3A%2F%2Fwww.mathematik.uni-wuerzburg.de%2F~kanzow%2Fpaper%2FCNSLMP.pdf&amp;usg=AOvVaw1Nx218K-rN8sf4veL3S1AH">Levenberg-Marquardt methods for constrained nonlinear equations with strong local convergence properties</a>.</p>
+
+<p>Now this is very aggressive, especially if the gradient is computed numerically (lmdif): typically what happens is that the solution is then stuck at this boundary. For example, if the coordinate is \(x_k=-1\), and our box is the positive subspace, the projection will set \(x_k=0\) and then this coordinate is not going to be able to move as the gradient becomes 0. It behaves a bit better if the gradient is analytical at the boundary, or if we are careful to use forward/backward finite difference estimate depending for the lower/upper bound.</p>
+
+<p>It is a much better idea to rely on a smooth and invertible transformation from the real line to a target interval, for example a sine transformation for a closed interval, or a square/square-root transformation for a semi-infinite interval as is suggested on <a href="https://lmfit.github.io/lmfit-py/bounds.html">this page</a>. Of course, the transformation should also be included in the analytical gradient.</p>
+
+                </section>
+            </article>
+
+            
+
+            
+
+            
+
+            <footer id="footer">
+    
+    <p class="small">
+    
+       © Copyright 2018 <i class="fa fa-heart" aria-hidden="true"></i> Quants R Us
+    
+    </p>
+</footer>
+<script type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+        </section>
+
+        <script src="https://quantsrus.github.io/js/jquery-2.2.4.min.js"></script>
+<script src="https://quantsrus.github.io/js/main.js"></script>
+<script src="https://quantsrus.github.io/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+
+
+
+    </body>
+</html>
