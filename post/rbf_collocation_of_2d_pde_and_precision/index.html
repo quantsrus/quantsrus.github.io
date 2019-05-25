@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en-us">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		
+		
+		
+		<meta name="generator" content="Hugo 0.53" />
+		<title>Julia and Python for the RBF collocation of a 2D PDE with multiple precision arithmetic &middot; Quants R Us</title>
+		<link rel="shortcut icon" href="https://quantsrus.github.ioimages/favicon.ico">
+		<link rel="stylesheet" href="https://quantsrus.github.iocss/style.css">
+		<link rel="stylesheet" href="https://quantsrus.github.iocss/highlight.css">
+
+		
+		<link rel="stylesheet" href="https://quantsrus.github.iocss/font-awesome.min.css">
+		
+
+		
+		<link href="https://quantsrus.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Quants R Us" />
+		
+
+		
+		<link rel="stylesheet" href="https://quantsrus.github.iosyntax.css">
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='https://quantsrus.github.io'> <span class="arrow">←</span>Home</a>
+	
+	<a href='https://quantsrus.github.ioposts'>Archive</a>
+	<a href='https://quantsrus.github.iotags'>Tags</a>
+	<a href='http://jherekhealy.github.io/'>Book</a>
+	<a href='https://quantsrus.github.ioabout'>About</a>
+
+	
+
+	
+	<a class="cta" href="https://quantsrus.github.io/index.xml">Subscribe</a>
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        Julia and Python for the RBF collocation of a 2D PDE with multiple precision arithmetic
+                    </h1>
+                    <h2 class="headline">
+                    May 24, 2019 15:50
+                    · 1284 words
+                    · 7 minute read
+                      <span class="tags">
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                    <div id="toc">
+                      <nav id="TableOfContents">
+<ul>
+<li><a href="#julia-vs-python">Julia vs. Python</a>
+<ul>
+<li><a href="#good">good</a></li>
+<li><a href="#not-great">not great</a></li>
+<li><a href="#multiple-precision-performance">multiple precision performance</a></li>
+</ul></li>
+</ul>
+</nav>
+                    </div>
+                  
+                
+                <section id="post-body">
+                    
+
+<p>I was curious about using <a href="http://julialang.org">Julia</a>, mainly to use the <a href="http://arblib.org">Arb library</a> for arbitrary precision linear algebra. It is written by the author of Python <a href="http://mpmath.org/">mpmath</a> library, but its principle is quite different, and from the <a href="http://fredrikj.net/blog/2018/07/high-precision-linear-algebra-in-julia-bigfloat-vs-arb/">author&rsquo;s blog</a>, it is supposed to be much faster. Then, I also found python + numpy + scipy not so great at building large sparse matrices. It seemed relatively slow to me, numba does not work with scipy sparse matrices. Numba is in general not so nice to use, except to inline some very simple function. So I had previously thought of moving some of my code to Julia. Those remarks should be taken with a grain of salt, because I am no expert in numpy, scipy or numba.</p>
+
+<p>The problem I solved is closely linked to the solution of the <a href="https://en.wikipedia.org/wiki/Heston_model">Heston</a> 2D-PDE. I was sort of curious to see if <a href="https://en.wikipedia.org/wiki/Kansa_method">RBF collocation</a> was any good, and what was its performance in practice. Compared to a classic finite difference discretization, the RBF collocation implies the solution of dense matrices instead of sparse (usually tridiagonal) matrices. One may need however much less discretization points to achieve a reasonable accuracy with the collocation approach.</p>
+
+<p>The RBF collocation function is
+$$ f(x) = \sum_{i=1}^{n} a_j \sqrt{c^2 + \Vert x - x_i \Vert^2} $$</p>
+
+<p>where c is called the shape parameter. The points x are in the two dimensional space and correspond to the spot and variance (S,v) of the Heston model. I used a simple rectangular grid.</p>
+
+<p>One notable issue of RBF interpolation (with a multiquadric function or some other infinite support function) is that the resulting linear system may be ill-conditioned when c is too large (the multiquadric function behaves then almost like an affine function), due to the limits of the double number representation (64-bits). But how small is too small? What is a good choice for c?
+Those are difficult questions.</p>
+
+<p>A recent paper from Kansa, titled <a href="https://www.researchgate.net/publication/314224938_On_the_ill-conditioned_nature_of_C_RBF_strong_collocation">On the ill-conditioned nature of RBF strong collocation</a>, suggests that a large c is often optimal (note that the RBF is sometimes expressed with \( \epsilon=\frac{1}{c} \), also called shape parameter, and this paper is very ambiguous about the notation), as long as we use multiple precision arithmetic, for example floats on 256 bits. This is why I thought of trying, at first the mpmath library, until I stumbled upon the Arb library.
+I found out that the multiple precision was not only important for the linear system solving part, but also for the matrix construction. Now here is a plot of the error in price against the shape parameter, scaled by the grid size L to the power 1.2 (meaning that, on this problem, the optimal shape parameter follows a relation like \( c = \frac{c_0}{L^{1.2}} \).</p>
+
+<figure>
+    <img src="/post/rbf_heston_shape.png"/> <figcaption>
+            <h4>Error in price against the scaled shape parameter, for different grid sizes L, and 64 bits or 256 bits floats.</h4>
+        </figcaption>
+</figure>
+
+
+<p>Here, the optimal shape parameter is around \( c = \frac{60}{L{1.2}} \), corresponding to the flatter region, and the error actually seems to increase if the shape parameter is chosen too high with 256 bits floats. With 64-bits, it is not as clear since the system explodes.</p>
+
+<p>Unfortunately, after all the hard work, from the results I got, I am not convinced that using a higher precision really helps that much my case. So I thought it would be interesting to give at least a feedback on&hellip;</p>
+
+<h1 id="julia-vs-python">Julia vs. Python</h1>
+
+<p>This is not going to be a comparison between Julia and Python in general. I am sure there exists already many great articles on Julia vs. XYZ language available on the internet. The below is more a &ldquo;hands on Julia&rdquo; from a numerical scientist point of view.</p>
+
+<h2 id="good">good</h2>
+
+<p>By default, no punctuation is required at the end of each sentence. If the sentence is executed directly in the REPL, the output is displayed. If it is embedded inside a function, the output is not displayed. This allows to quickly test some parts, by copy pasting pieces of a function in the REPL, and once it is ready, all the internal state is immediately hidden. I found this quite convenient, possibly better than Matlab, where an explicit semicolumn is required to remove the output.</p>
+
+<p>Fast. Of course, it all depends on the point of reference, but compared to numpy, a simple RBF PDE solver port from numpy to julia ended up being 30% faster without even looking at optimization (for relatively small systems).</p>
+
+<h2 id="not-great">not great</h2>
+
+<p>Default linux packages from your distribution provider (Fedora 30 in my case) are broken. Even the special COPR repo version is broken. It is important to download the binary from julia.org website instead. How is it broken? It kept complaining it could not compile Arpack in my case, when I tried to use the package LinearAlgebra.</p>
+
+<p>Not always clear which libraries to use. Python numpy or scipy are much bigger libraries and you can do a lot just with those. In Julia, you have packages for polynomial roots, statistical functions, linear algebra&hellip; This does not make it always clear which one to use.</p>
+
+<p>Syntax is not as immediatly obvious as Python: to apply the max function elementwise on a vector minus a constant, you write something like &ldquo;max.(S .- K, 0.0)&rdquo;. If you write 0 instead of 0.0, it complains. If you forget a &ldquo;.&rdquo;, it complains with some not-so-obvious error message for the uninitiated. Thanksfully, there is stackoverflow and google to help.
+  This may be very minor, since once you understand the right way, it becomes quite powerful. For example, in numpy, I had to use sometimes explicitely the .divide function to work on matrices elementwise. The &ldquo;.&rdquo; notation of Julia takes care more naturally of this.</p>
+
+<p>The doc is not as polished as the one from numpy or scipy.</p>
+
+<p>The &ldquo;global&rdquo; keyword is sometimes required when evaluating some loop in the REPL, but not if the loop is embedded inside a function. A minor annoyance, but this seems a bit awkward to me.</p>
+
+<h2 id="multiple-precision-performance">multiple precision performance</h2>
+
+<p>Now regarding the multiple precision arithmetic performance: the RBF solver is around 10x-60x slower with 256-bits floats (arb library than with 64-bits floats (Julia Float64), depending on the size of the system to solve. On a specific setup, Julia BigFloat took 1400s while Arb took 16.7s on my problem. And Julia BigFloat is supposedly faster than python mpmath&hellip;</p>
+
+<p>So clearly, the use of multiple precision makes RBF collocation not really practical. Now, one can achieve a reasonable accuracy on relatively small grids, for example a 50x50 grid. It becomes however quite challenging to increase the accuracy, as the computational cost evolves in \( O(L^6) \) for an LxL grid of points. Furthermore, I believe that some of the loss of accuracy is directly related to the non-smooth initial conditions that I use on my specific problem. This makes the RBF collocation not so competitive when compared to classic second order finite difference methods (on my problem), which allow for much denser discretization grids for a given computational cost.</p>
+
+<p>I had to recode quite a bit around the Arb library, as it does not support many of Julia linear algebra concepts. For the curious, I also implemented the approx lu solver in Julia, based on the code of the Julia Nemo library, which interfaces with the C Arb library, but lacks the approx lu solver.
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="k">function</span> <span class="n">approx_lu!</span><span class="p">(</span><span class="n">P</span><span class="o">::</span><span class="n">Generic</span><span class="o">.</span><span class="n">perm</span><span class="p">,</span> <span class="n">luMat</span><span class="o">::</span><span class="n">arb_mat</span><span class="p">,</span> <span class="n">x</span><span class="o">::</span><span class="n">arb_mat</span><span class="p">)</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="k">ccall</span><span class="p">((</span><span class="o">:</span><span class="n">arb_mat_approx_lu</span><span class="p">,</span> <span class="o">:</span><span class="n">libarb</span><span class="p">),</span> <span class="kt">Cint</span><span class="p">,</span>
+    <span class="p">(</span><span class="kt">Ptr</span><span class="p">{</span><span class="kt">Int</span><span class="p">},</span> <span class="kt">Ref</span><span class="p">{</span><span class="n">arb_mat</span><span class="p">},</span>  <span class="kt">Ref</span><span class="p">{</span><span class="n">arb_mat</span><span class="p">},</span> <span class="kt">Int</span><span class="p">),</span>
+    <span class="n">P</span><span class="o">.</span><span class="n">d</span><span class="p">,</span> <span class="n">luMat</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">prec</span><span class="p">(</span><span class="n">base_ring</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span>
+    <span class="n">r</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">error</span><span class="p">(</span><span class="s">&#34;Could not find </span><span class="si">$</span><span class="p">(</span><span class="n">nrows</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="s"> invertible pivot elements&#34;</span><span class="p">)</span>
+    <span class="n">P</span><span class="o">.</span><span class="n">d</span> <span class="o">.+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">nrows</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="k">end</span>
+
+<span class="k">function</span> <span class="n">approx_solve_lu_precomp!</span><span class="p">(</span><span class="n">z</span><span class="o">::</span><span class="n">arb_mat</span><span class="p">,</span> <span class="n">P</span><span class="o">::</span><span class="n">Generic</span><span class="o">.</span><span class="n">perm</span><span class="p">,</span> <span class="n">luMat</span><span class="o">::</span><span class="n">arb_mat</span><span class="p">,</span> <span class="n">y</span><span class="o">::</span><span class="n">arb_mat</span><span class="p">)</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="k">ccall</span><span class="p">((</span><span class="o">:</span><span class="n">arb_mat_approx_solve_lu_precomp</span><span class="p">,</span> <span class="o">:</span><span class="n">libarb</span><span class="p">),</span> <span class="n">Nothing</span><span class="p">,</span>
+    <span class="p">(</span><span class="kt">Ref</span><span class="p">{</span><span class="n">arb_mat</span><span class="p">},</span> <span class="kt">Ptr</span><span class="p">{</span><span class="kt">Int</span><span class="p">},</span> <span class="kt">Ref</span><span class="p">{</span><span class="n">arb_mat</span><span class="p">},</span>  <span class="kt">Ref</span><span class="p">{</span><span class="n">arb_mat</span><span class="p">},</span> <span class="kt">Int</span><span class="p">),</span>
+    <span class="n">z</span><span class="p">,</span> <span class="n">P</span><span class="o">.</span><span class="n">d</span> <span class="o">.-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">luMat</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">prec</span><span class="p">(</span><span class="n">base_ring</span><span class="p">(</span><span class="n">y</span><span class="p">)))</span>
+    <span class="nb">nothing</span>
+<span class="k">end</span></code></pre></div></p>
+
+                </section>
+            </article>
+
+            
+
+            
+
+            
+
+            <footer id="footer">
+    
+    <p class="small">
+    
+       © Copyright 2019 <i class="fa fa-heart" aria-hidden="true"></i> Quants R Us
+    
+    </p>
+</footer>
+<script type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+        </section>
+
+        <script src="https://quantsrus.github.iojs/jquery-3.3.1.min.js"></script>
+<script src="https://quantsrus.github.iojs/main.js"></script>
+
+
+
+
+
+
+
+
+    </body>
+</html>
