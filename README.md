@@ -1,1 +1,0 @@
-# quantsrus.github.io
