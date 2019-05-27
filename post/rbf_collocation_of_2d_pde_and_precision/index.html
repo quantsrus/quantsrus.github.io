@@ -1,85 +1,93 @@
 <!DOCTYPE html>
 <html lang="en-us">
 	<head>
-		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		
-		
-		
-		<meta name="generator" content="Hugo 0.53" />
-		<title>Julia and Python for the RBF collocation of a 2D PDE with multiple precision arithmetic &middot; Quants R Us</title>
-		<link rel="shortcut icon" href="https://quantsrus.github.io/images/favicon.ico">
-		<link rel="stylesheet" href="https://quantsrus.github.io/css/style.css">
-		<link rel="stylesheet" href="https://quantsrus.github.io/css/highlight.css">
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="author" content="Quants R Us">
+<meta name="description" content="A blog on quantitative finance">
+<meta name="generator" content="Hugo 0.53" />
+<title>Julia and Python for the RBF collocation of a 2D PDE with multiple precision arithmetic</title>
+<link rel="shortcut icon" href="https://quantsrus.github.io/images/favicon.ico">
+<link rel="stylesheet" href="https://quantsrus.github.io/css/style.css">
+<link rel="stylesheet" href="https://quantsrus.github.io/css/highlight.css">
 
-		
-		<link rel="stylesheet" href="https://quantsrus.github.io/css/font-awesome.min.css">
-		
+<link rel="stylesheet" href="https://quantsrus.github.io/override.css">
 
-		
-		<link href="https://quantsrus.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Quants R Us" />
-		
+<link rel="stylesheet" href="https://quantsrus.github.io/syntax.css">
 
-		
-		<link rel="stylesheet" href="https://quantsrus.github.io/syntax.css">
-		
-	</head>
 
-    <body>
-       <nav class="main-nav">
-	
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
+
+
+
+<link href="https://quantsrus.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Quants R Us" />
+
+
+<meta property="og:title" content="Julia and Python for the RBF collocation of a 2D PDE with multiple precision arithmetic" />
+<meta property="og:description" content="This is not going to be a comparison between Julia and Python in general. I am sure there exists already many great articles on Julia vs. XYZ language available on the internet. The below is more a hands on Julia from a numerical scientist point of view, when applied to the RBF collocation of a 2D PDE." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://quantsrus.github.io/post/rbf_collocation_of_2d_pde_and_precision/" /><meta property="article:published_time" content="2019-05-24T15:50:22&#43;02:00"/>
+<meta property="article:modified_time" content="2019-05-24T15:50:22&#43;02:00"/>
+
+
+
+<meta itemprop="name" content="Julia and Python for the RBF collocation of a 2D PDE with multiple precision arithmetic">
+<meta itemprop="description" content="This is not going to be a comparison between Julia and Python in general. I am sure there exists already many great articles on Julia vs. XYZ language available on the internet. The below is more a hands on Julia from a numerical scientist point of view, when applied to the RBF collocation of a 2D PDE.">
+
+
+<meta itemprop="datePublished" content="2019-05-24T15:50:22&#43;02:00" />
+<meta itemprop="dateModified" content="2019-05-24T15:50:22&#43;02:00" />
+<meta itemprop="wordCount" content="1289">
+
+
+
+<meta itemprop="keywords" content="" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Julia and Python for the RBF collocation of a 2D PDE with multiple precision arithmetic"/>
+<meta name="twitter:description" content="This is not going to be a comparison between Julia and Python in general. I am sure there exists already many great articles on Julia vs. XYZ language available on the internet. The below is more a hands on Julia from a numerical scientist point of view, when applied to the RBF collocation of a 2D PDE."/>
+<meta name="twitter:site" content="@https://twitter.com/JherekHealy"/>
+
+
+    </head>
+<body>
+    <nav class="main-nav">
 	
 		<a href='https://quantsrus.github.io/'> <span class="arrow">←</span>Home</a>
 	
-	<a href='https://quantsrus.github.io/posts'>Archive</a>
-	<a href='https://quantsrus.github.io/tags'>Tags</a>
-	<a href='http://jherekhealy.github.io/'>Book</a>
-	<a href='https://quantsrus.github.io/about'>About</a>
 
 	
+ 		<a href='http://jherekhealy.github.io/'>My book</a>
+  	
+ 		<a href='/about/'>About</a>
+  	
+ 		<a href='/archive/'>Archive</a>
+  	
 
 	
-	<a class="cta" href="https://quantsrus.github.io/index.xml">Subscribe</a>
+		<a class="cta" href="https://quantsrus.github.io/index.xml">Subscribe</a>
 	
 </nav>
 
+    <section id="wrapper">
+        
+        
+<article class="post">
+    <header>
+        <h1>Julia and Python for the RBF collocation of a 2D PDE with multiple precision arithmetic</h1>
+        <h2 class="subtitle">This is not going to be a comparison between Julia and Python in general. I am sure there exists already many great articles on Julia vs. XYZ language available on the internet. The below is more a hands on Julia from a numerical scientist point of view, when applied to the RBF collocation of a 2D PDE.</h2>
+        <h2 class="headline">
+        May 24, 2019
+        <br>
+        
+        </h2>
+    </header>
+    <section id="post-body">
+        
 
-        <section id="wrapper" class="post">
-            <article>
-                <header>
-                    <h1>
-                        Julia and Python for the RBF collocation of a 2D PDE with multiple precision arithmetic
-                    </h1>
-                    <h2 class="headline">
-                    May 24, 2019 15:50
-                    · 1284 words
-                    · 7 minute read
-                      <span class="tags">
-                      
-                      </span>
-                    </h2>
-                </header>
-                
-                  
-                    <div id="toc">
-                      <nav id="TableOfContents">
-<ul>
-<li><a href="#julia-vs-python">Julia vs. Python</a>
-<ul>
-<li><a href="#good">good</a></li>
-<li><a href="#not-great">not great</a></li>
-<li><a href="#multiple-precision-performance">multiple precision performance</a></li>
-</ul></li>
-</ul>
-</nav>
-                    </div>
-                  
-                
-                <section id="post-body">
-                    
-
-<p>I was curious about using <a href="http://julialang.org">Julia</a>, mainly to use the <a href="http://arblib.org">Arb library</a> for arbitrary precision linear algebra. It is written by the author of Python <a href="http://mpmath.org/">mpmath</a> library, but its principle is quite different, and from the <a href="http://fredrikj.net/blog/2018/07/high-precision-linear-algebra-in-julia-bigfloat-vs-arb/">author&rsquo;s blog</a>, it is supposed to be much faster. Then, I also found python + numpy + scipy not so great at building large sparse matrices. It seemed relatively slow to me, numba does not work with scipy sparse matrices. Numba is in general not so nice to use, except to inline some very simple function. So I had previously thought of moving some of my code to Julia. Those remarks should be taken with a grain of salt, because I am no expert in numpy, scipy or numba.</p>
+<p>I was curious about using <a href="http://julialang.org">Julia</a>, mainly to access the <a href="http://arblib.org">Arb library</a> for arbitrary precision linear algebra. It is written by the author of Python <a href="http://mpmath.org/">mpmath</a> library, but its principle is quite different, and from the <a href="http://fredrikj.net/blog/2018/07/high-precision-linear-algebra-in-julia-bigfloat-vs-arb/">author&rsquo;s blog</a>, it is supposed to be much faster. Then, I also found python + numpy + scipy not so great at building large sparse matrices. It seemed relatively slow to me, numba does not work with scipy sparse matrices. Numba is in general not so nice to use, except to inline some very simple function. So I had previously thought of moving some of my code to Julia. Those remarks should be taken with a grain of salt, because I am no expert in numpy, scipy or numba.</p>
 
 <p>The problem I solved is closely linked to the solution of the <a href="https://en.wikipedia.org/wiki/Heston_model">Heston</a> 2D-PDE. I was sort of curious to see if <a href="https://en.wikipedia.org/wiki/Kansa_method">RBF collocation</a> was any good, and what was its performance in practice. Compared to a classic finite difference discretization, the RBF collocation implies the solution of dense matrices instead of sparse (usually tridiagonal) matrices. One may need however much less discretization points to achieve a reasonable accuracy with the collocation approach.</p>
 
@@ -88,7 +96,7 @@ $$ f(x) = \sum_{i=1}^{n} a_j \sqrt{c^2 + \Vert x - x_i \Vert^2} $$</p>
 
 <p>where c is called the shape parameter. The points x are in the two dimensional space and correspond to the spot and variance (S,v) of the Heston model. I used a simple rectangular grid.</p>
 
-<p>One notable issue of RBF interpolation (with a multiquadric function or some other infinite support function) is that the resulting linear system may be ill-conditioned when c is too large (the multiquadric function behaves then almost like an affine function), due to the limits of the double number representation (64-bits). But how small is too small? What is a good choice for c?
+<p>One notable issue of RBF interpolation (with a multiquadric function or some other infinite support function) is that the resulting linear system may be ill-conditioned when c is too large (the multiquadric function behaves then almost like an affine function), due to the limits of the double number representation (64-bits). But how large is too large? What is a good choice for c?
 Those are difficult questions.</p>
 
 <p>A recent paper from Kansa, titled <a href="https://www.researchgate.net/publication/314224938_On_the_ill-conditioned_nature_of_C_RBF_strong_collocation">On the ill-conditioned nature of RBF strong collocation</a>, suggests that a large c is often optimal (note that the RBF is sometimes expressed with \( \epsilon=\frac{1}{c} \), also called shape parameter, and this paper is very ambiguous about the notation), as long as we use multiple precision arithmetic, for example floats on 256 bits. This is why I thought of trying, at first the mpmath library, until I stumbled upon the Arb library.
@@ -130,12 +138,12 @@ I found out that the multiple precision was not only important for the linear sy
 
 <h2 id="multiple-precision-performance">multiple precision performance</h2>
 
-<p>Now regarding the multiple precision arithmetic performance: the RBF solver is around 10x-60x slower with 256-bits floats (arb library than with 64-bits floats (Julia Float64), depending on the size of the system to solve. On a specific setup, Julia BigFloat took 1400s while Arb took 16.7s on my problem. And Julia BigFloat is supposedly faster than python mpmath&hellip;</p>
+<p>Now regarding the multiple precision arithmetic performance: the RBF solver is around 10x-60x slower with 256-bits floats (Arb library <code>ArbField(256)</code>) than with 64-bits floats (Julia <code>Float64</code>), depending on the size of the system to solve. On a specific setup, Julia BigFloat took 1400s while Arb took 16.7s on my problem. And Julia BigFloat is supposedly faster than python mpmath&hellip;</p>
 
-<p>So clearly, the use of multiple precision makes RBF collocation not really practical. Now, one can achieve a reasonable accuracy on relatively small grids, for example a 50x50 grid. It becomes however quite challenging to increase the accuracy, as the computational cost evolves in \( O(L^6) \) for an LxL grid of points. Furthermore, I believe that some of the loss of accuracy is directly related to the non-smooth initial conditions that I use on my specific problem. This makes the RBF collocation not so competitive when compared to classic second order finite difference methods (on my problem), which allow for much denser discretization grids for a given computational cost.</p>
+<p>So clearly, the use of multiple precision makes RBF collocation not really practical. Now, without multiple precision, one can still achieve a reasonable accuracy on relatively small grids, for example a 50x50 grid. It becomes however quite challenging to increase the accuracy, as the computational cost evolves in \( O(L^6) \) for an LxL grid of points. Furthermore, I believe that some of the loss of accuracy is directly related to the non-smooth initial conditions that I use on my specific problem. This makes the RBF collocation not so competitive when compared to classic second order finite difference methods (on my problem), which allow for much denser discretization grids for a given computational cost.</p>
 
 <p>I had to recode quite a bit around the Arb library, as it does not support many of Julia linear algebra concepts. For the curious, I also implemented the approx lu solver in Julia, based on the code of the Julia Nemo library, which interfaces with the C Arb library, but lacks the approx lu solver.
-<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="k">function</span> <span class="n">approx_lu!</span><span class="p">(</span><span class="n">P</span><span class="o">::</span><span class="n">Generic</span><span class="o">.</span><span class="n">perm</span><span class="p">,</span> <span class="n">luMat</span><span class="o">::</span><span class="n">arb_mat</span><span class="p">,</span> <span class="n">x</span><span class="o">::</span><span class="n">arb_mat</span><span class="p">)</span>
+<div class="highlight"><pre class="chroma"><code class="language-jl" data-lang="jl"><span class="k">function</span> <span class="n">approx_lu!</span><span class="p">(</span><span class="n">P</span><span class="o">::</span><span class="n">Generic</span><span class="o">.</span><span class="n">perm</span><span class="p">,</span> <span class="n">luMat</span><span class="o">::</span><span class="n">arb_mat</span><span class="p">,</span> <span class="n">x</span><span class="o">::</span><span class="n">arb_mat</span><span class="p">)</span>
     <span class="n">r</span> <span class="o">=</span> <span class="k">ccall</span><span class="p">((</span><span class="o">:</span><span class="n">arb_mat_approx_lu</span><span class="p">,</span> <span class="o">:</span><span class="n">libarb</span><span class="p">),</span> <span class="kt">Cint</span><span class="p">,</span>
     <span class="p">(</span><span class="kt">Ptr</span><span class="p">{</span><span class="kt">Int</span><span class="p">},</span> <span class="kt">Ref</span><span class="p">{</span><span class="n">arb_mat</span><span class="p">},</span>  <span class="kt">Ref</span><span class="p">{</span><span class="n">arb_mat</span><span class="p">},</span> <span class="kt">Int</span><span class="p">),</span>
     <span class="n">P</span><span class="o">.</span><span class="n">d</span><span class="p">,</span> <span class="n">luMat</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">prec</span><span class="p">(</span><span class="n">base_ring</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span>
@@ -151,16 +159,93 @@ I found out that the multiple precision was not only important for the linear sy
     <span class="nb">nothing</span>
 <span class="k">end</span></code></pre></div></p>
 
-                </section>
-            </article>
+    </section>
+</article>
 
-            
+<footer id="post-meta" class="clearfix">
+    <a href="https://twitter.com/JherekHealy">
+    <img class="avatar" src="https://quantsrus.github.io/images/avatar.png">
+    <div>
+        <span class="dark">Quants R Us</span>
+        <span>I am Jherek Healy.</span>
+    </div>
+    </a>
+    <section id="sharing">
+        <a class="twitter" href="https://twitter.com/intent/tweet?text=https%3a%2f%2fquantsrus.github.io%2fpost%2frbf_collocation_of_2d_pde_and_precision%2f - Julia%20and%20Python%20for%20the%20RBF%20collocation%20of%20a%202D%20PDE%20with%20multiple%20precision%20arithmetic by @JherekHealy"><span class="icon-twitter"> tweet</span></a>
 
-            
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
 
-            
+    </section>
+</footer>
 
-            <footer id="footer">
+
+
+<ul id="post-list" class="archive readmore">
+    <h3>Read more</h3>
+
+    
+    
+    
+        <li>
+            <a href="/post/constraints-in-levenberg-marquardt-least-squares-optimization/">Constraints in the Levenberg-Marquardt least-squares optimization<aside class="dates">Oct 8 2018</aside></a>
+        </li>
+    
+        <li>
+            <a href="/post/state_of_convex_quadratic_programming_solvers/">The state of open-source quadratic programming convex optimizers<aside class="dates">Jul 24 2018</aside></a>
+        </li>
+    
+        <li>
+            <a href="/post/staying-arbitrage-free-with-andreasen-huge-volatility-interpolation/">Staying arbitrage-free with Andreasen-Huge one-step interpolation<aside class="dates">Mar 8 2018</aside></a>
+        </li>
+    
+        <li>
+            <a href="/post/on-the-quality-of-research-publications/">On the Quality of Research Publications<aside class="dates">Feb 28 2018</aside></a>
+        </li>
+    
+        <li>
+            <a href="/post/webassembly_still_fragile/">Webassembly still fragile<aside class="dates">Dec 5 2017</aside></a>
+        </li>
+    
+        <li>
+            <a href="/post/particle_swarm_optimization_heston_calibration/">Particle Swarm Optimization on Heston Small-Time Expansion<aside class="dates">Jul 6 2017</aside></a>
+        </li>
+    
+        <li>
+            <a href="/post/particle_swarm_optimization/">Particle Swarm Optimization<aside class="dates">Jun 30 2017</aside></a>
+        </li>
+    
+        <li>
+            <a href="/post/differential_evolution_vs_simulated_annealing/">Differential evolution vs. Simulated annealing<aside class="dates">Jun 21 2017</aside></a>
+        </li>
+    
+        <li>
+            <a href="/post/andreasen_huge_spline/">A spline to fill the gaps with Andreasen-Huge one-step method<aside class="dates">May 11 2017</aside></a>
+        </li>
+    
+</ul>
+
+
+
+        <footer id="footer">
+    
+        <div id="social">
+
+	
+	
+    <a class="symbol" href="https://twitter.com/JherekHealy">
+        <i class="fa fa-twitter"></i>
+    </a>
+    
+
+
+</div>
+
     
     <p class="small">
     
@@ -173,9 +258,8 @@ I found out that the multiple precision was not only important for the linear sy
 </script>
 
 
-        </section>
-
-        <script src="https://quantsrus.github.io/js/jquery-3.3.1.min.js"></script>
+    </section>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <script src="https://quantsrus.github.io/js/main.js"></script>
 
 
@@ -183,7 +267,5 @@ I found out that the multiple precision was not only important for the linear sy
 
 
 
-
-
-    </body>
+</body>
 </html>

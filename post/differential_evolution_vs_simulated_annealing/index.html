@@ -1,70 +1,91 @@
 <!DOCTYPE html>
 <html lang="en-us">
 	<head>
-		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		
-		
-		
-		<meta name="generator" content="Hugo 0.53" />
-		<title>Differential evolution vs. Simulated annealing &middot; Quants R Us</title>
-		<link rel="shortcut icon" href="https://quantsrus.github.io/images/favicon.ico">
-		<link rel="stylesheet" href="https://quantsrus.github.io/css/style.css">
-		<link rel="stylesheet" href="https://quantsrus.github.io/css/highlight.css">
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="author" content="Quants R Us">
+<meta name="description" content="A blog on quantitative finance">
+<meta name="generator" content="Hugo 0.53" />
+<title>Differential evolution vs. Simulated annealing</title>
+<link rel="shortcut icon" href="https://quantsrus.github.io/images/favicon.ico">
+<link rel="stylesheet" href="https://quantsrus.github.io/css/style.css">
+<link rel="stylesheet" href="https://quantsrus.github.io/css/highlight.css">
 
-		
-		<link rel="stylesheet" href="https://quantsrus.github.io/css/font-awesome.min.css">
-		
+<link rel="stylesheet" href="https://quantsrus.github.io/override.css">
 
-		
-		<link href="https://quantsrus.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Quants R Us" />
-		
+<link rel="stylesheet" href="https://quantsrus.github.io/syntax.css">
 
-		
-		<link rel="stylesheet" href="https://quantsrus.github.io/syntax.css">
-		
-	</head>
 
-    <body>
-       <nav class="main-nav">
-	
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
+
+
+
+<link href="https://quantsrus.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Quants R Us" />
+
+
+<meta property="og:title" content="Differential evolution vs. Simulated annealing" />
+<meta property="og:description" content="The differential evolution (DE) algorithm is somewhat popular in quantitative finance, for example to calibrate stochastic volatility models such as Heston. An older technique, much more popular in physics is simulated annealing (SA). There are few papers on its use for stochastic volatility calibration, most don&#39;t find the technique competitive or even usable." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://quantsrus.github.io/post/differential_evolution_vs_simulated_annealing/" /><meta property="article:published_time" content="2017-06-21T22:48:01&#43;02:00"/>
+<meta property="article:modified_time" content="2017-06-21T22:48:01&#43;02:00"/>
+
+
+
+<meta itemprop="name" content="Differential evolution vs. Simulated annealing">
+<meta itemprop="description" content="The differential evolution (DE) algorithm is somewhat popular in quantitative finance, for example to calibrate stochastic volatility models such as Heston. An older technique, much more popular in physics is simulated annealing (SA). There are few papers on its use for stochastic volatility calibration, most don&#39;t find the technique competitive or even usable.">
+
+
+<meta itemprop="datePublished" content="2017-06-21T22:48:01&#43;02:00" />
+<meta itemprop="dateModified" content="2017-06-21T22:48:01&#43;02:00" />
+<meta itemprop="wordCount" content="655">
+
+
+
+<meta itemprop="keywords" content="" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Differential evolution vs. Simulated annealing"/>
+<meta name="twitter:description" content="The differential evolution (DE) algorithm is somewhat popular in quantitative finance, for example to calibrate stochastic volatility models such as Heston. An older technique, much more popular in physics is simulated annealing (SA). There are few papers on its use for stochastic volatility calibration, most don&#39;t find the technique competitive or even usable."/>
+<meta name="twitter:site" content="@https://twitter.com/JherekHealy"/>
+
+
+    </head>
+<body>
+    <nav class="main-nav">
 	
 		<a href='https://quantsrus.github.io/'> <span class="arrow">←</span>Home</a>
 	
-	<a href='https://quantsrus.github.io/posts'>Archive</a>
-	<a href='https://quantsrus.github.io/tags'>Tags</a>
-	<a href='http://jherekhealy.github.io/'>Book</a>
-	<a href='https://quantsrus.github.io/about'>About</a>
 
 	
+ 		<a href='http://jherekhealy.github.io/'>My book</a>
+  	
+ 		<a href='/about/'>About</a>
+  	
+ 		<a href='/archive/'>Archive</a>
+  	
 
 	
-	<a class="cta" href="https://quantsrus.github.io/index.xml">Subscribe</a>
+		<a class="cta" href="https://quantsrus.github.io/index.xml">Subscribe</a>
 	
 </nav>
 
-
-        <section id="wrapper" class="post">
-            <article>
-                <header>
-                    <h1>
-                        Differential evolution vs. Simulated annealing
-                    </h1>
-                    <h2 class="headline">
-                    Jun 21, 2017 22:48
-                    · 655 words
-                    · 4 minute read
-                      <span class="tags">
-                      
-                      </span>
-                    </h2>
-                </header>
-                
-                  
-                
-                <section id="post-body">
-                    <p>The differential evolution (DE) algorithm is somewhat popular in quantitative finance, for example to calibrate stochastic volatility models such as Heston.
+    <section id="wrapper">
+        
+        
+<article class="post">
+    <header>
+        <h1>Differential evolution vs. Simulated annealing</h1>
+        <h2 class="subtitle">The differential evolution (DE) algorithm is somewhat popular in quantitative finance, for example to calibrate stochastic volatility models such as Heston. An older technique, much more popular in physics is simulated annealing (SA). There are few papers on its use for stochastic volatility calibration, most don&rsquo;t find the technique competitive or even usable.</h2>
+        <h2 class="headline">
+        June 21, 2017
+        <br>
+        
+        </h2>
+    </header>
+    <section id="post-body">
+        <p>The differential evolution (DE) algorithm is somewhat popular in quantitative finance, for example to calibrate stochastic volatility models such as Heston.
 There are a few parameters to setup properly but in general, it is not too difficult to find those, and the algorithm works well on many different problems.</p>
 
 <p>An older technique, much more popular in physics is simulated annealing (SA). There are few papers on its use for stochastic volatility calibration, most don&rsquo;t find
@@ -141,16 +162,93 @@ the DE or SA parameters a bit better). The settings have a drastic impact, and t
 
 <p>In reality, the Heston calibration is most of the time well behaved if one is careful with the accuracy of the numerical option prices. For this example, I used on purpose a somewhat bad basic Simpson quadrature with 100 points, which is going to add noise for out-of-the-money options.</p>
 
-                </section>
-            </article>
+    </section>
+</article>
 
-            
+<footer id="post-meta" class="clearfix">
+    <a href="https://twitter.com/JherekHealy">
+    <img class="avatar" src="https://quantsrus.github.io/images/avatar.png">
+    <div>
+        <span class="dark">Quants R Us</span>
+        <span>I am Jherek Healy.</span>
+    </div>
+    </a>
+    <section id="sharing">
+        <a class="twitter" href="https://twitter.com/intent/tweet?text=https%3a%2f%2fquantsrus.github.io%2fpost%2fdifferential_evolution_vs_simulated_annealing%2f - Differential%20evolution%20vs.%20Simulated%20annealing by @JherekHealy"><span class="icon-twitter"> tweet</span></a>
 
-            
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
 
-            
+    </section>
+</footer>
 
-            <footer id="footer">
+
+
+<ul id="post-list" class="archive readmore">
+    <h3>Read more</h3>
+
+    
+    
+    
+        <li>
+            <a href="/post/rbf_collocation_of_2d_pde_and_precision/">Julia and Python for the RBF collocation of a 2D PDE with multiple precision arithmetic<aside class="dates">May 24 2019</aside></a>
+        </li>
+    
+        <li>
+            <a href="/post/constraints-in-levenberg-marquardt-least-squares-optimization/">Constraints in the Levenberg-Marquardt least-squares optimization<aside class="dates">Oct 8 2018</aside></a>
+        </li>
+    
+        <li>
+            <a href="/post/state_of_convex_quadratic_programming_solvers/">The state of open-source quadratic programming convex optimizers<aside class="dates">Jul 24 2018</aside></a>
+        </li>
+    
+        <li>
+            <a href="/post/staying-arbitrage-free-with-andreasen-huge-volatility-interpolation/">Staying arbitrage-free with Andreasen-Huge one-step interpolation<aside class="dates">Mar 8 2018</aside></a>
+        </li>
+    
+        <li>
+            <a href="/post/on-the-quality-of-research-publications/">On the Quality of Research Publications<aside class="dates">Feb 28 2018</aside></a>
+        </li>
+    
+        <li>
+            <a href="/post/webassembly_still_fragile/">Webassembly still fragile<aside class="dates">Dec 5 2017</aside></a>
+        </li>
+    
+        <li>
+            <a href="/post/particle_swarm_optimization_heston_calibration/">Particle Swarm Optimization on Heston Small-Time Expansion<aside class="dates">Jul 6 2017</aside></a>
+        </li>
+    
+        <li>
+            <a href="/post/particle_swarm_optimization/">Particle Swarm Optimization<aside class="dates">Jun 30 2017</aside></a>
+        </li>
+    
+        <li>
+            <a href="/post/andreasen_huge_spline/">A spline to fill the gaps with Andreasen-Huge one-step method<aside class="dates">May 11 2017</aside></a>
+        </li>
+    
+</ul>
+
+
+
+        <footer id="footer">
+    
+        <div id="social">
+
+	
+	
+    <a class="symbol" href="https://twitter.com/JherekHealy">
+        <i class="fa fa-twitter"></i>
+    </a>
+    
+
+
+</div>
+
     
     <p class="small">
     
@@ -163,9 +261,8 @@ the DE or SA parameters a bit better). The settings have a drastic impact, and t
 </script>
 
 
-        </section>
-
-        <script src="https://quantsrus.github.io/js/jquery-3.3.1.min.js"></script>
+    </section>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <script src="https://quantsrus.github.io/js/main.js"></script>
 
 
@@ -173,7 +270,5 @@ the DE or SA parameters a bit better). The settings have a drastic impact, and t
 
 
 
-
-
-    </body>
+</body>
 </html>

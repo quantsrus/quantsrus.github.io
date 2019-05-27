@@ -1,70 +1,91 @@
 <!DOCTYPE html>
 <html lang="en-us">
 	<head>
-		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		
-		
-		
-		<meta name="generator" content="Hugo 0.53" />
-		<title>Constraints in the Levenberg-Marquardt least-squares optimization &middot; Quants R Us</title>
-		<link rel="shortcut icon" href="https://quantsrus.github.io/images/favicon.ico">
-		<link rel="stylesheet" href="https://quantsrus.github.io/css/style.css">
-		<link rel="stylesheet" href="https://quantsrus.github.io/css/highlight.css">
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="author" content="Quants R Us">
+<meta name="description" content="A blog on quantitative finance">
+<meta name="generator" content="Hugo 0.53" />
+<title>Constraints in the Levenberg-Marquardt least-squares optimization</title>
+<link rel="shortcut icon" href="https://quantsrus.github.io/images/favicon.ico">
+<link rel="stylesheet" href="https://quantsrus.github.io/css/style.css">
+<link rel="stylesheet" href="https://quantsrus.github.io/css/highlight.css">
 
-		
-		<link rel="stylesheet" href="https://quantsrus.github.io/css/font-awesome.min.css">
-		
+<link rel="stylesheet" href="https://quantsrus.github.io/override.css">
 
-		
-		<link href="https://quantsrus.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Quants R Us" />
-		
+<link rel="stylesheet" href="https://quantsrus.github.io/syntax.css">
 
-		
-		<link rel="stylesheet" href="https://quantsrus.github.io/syntax.css">
-		
-	</head>
 
-    <body>
-       <nav class="main-nav">
-	
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
+
+
+
+<link href="https://quantsrus.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Quants R Us" />
+
+
+<meta property="og:title" content="Constraints in the Levenberg-Marquardt least-squares optimization" />
+<meta property="og:description" content="The standard Levenberg-Marquardt (LM) optimizer does not support box constraints. We explore here two different approaches to add box constraints for a given unconstrained LM algorithm." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://quantsrus.github.io/post/constraints-in-levenberg-marquardt-least-squares-optimization/" /><meta property="article:published_time" content="2018-10-08T22:48:01&#43;02:00"/>
+<meta property="article:modified_time" content="2018-10-08T22:48:01&#43;02:00"/>
+
+
+
+<meta itemprop="name" content="Constraints in the Levenberg-Marquardt least-squares optimization">
+<meta itemprop="description" content="The standard Levenberg-Marquardt (LM) optimizer does not support box constraints. We explore here two different approaches to add box constraints for a given unconstrained LM algorithm.">
+
+
+<meta itemprop="datePublished" content="2018-10-08T22:48:01&#43;02:00" />
+<meta itemprop="dateModified" content="2018-10-08T22:48:01&#43;02:00" />
+<meta itemprop="wordCount" content="268">
+
+
+
+<meta itemprop="keywords" content="" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Constraints in the Levenberg-Marquardt least-squares optimization"/>
+<meta name="twitter:description" content="The standard Levenberg-Marquardt (LM) optimizer does not support box constraints. We explore here two different approaches to add box constraints for a given unconstrained LM algorithm."/>
+<meta name="twitter:site" content="@https://twitter.com/JherekHealy"/>
+
+
+    </head>
+<body>
+    <nav class="main-nav">
 	
 		<a href='https://quantsrus.github.io/'> <span class="arrow">←</span>Home</a>
 	
-	<a href='https://quantsrus.github.io/posts'>Archive</a>
-	<a href='https://quantsrus.github.io/tags'>Tags</a>
-	<a href='http://jherekhealy.github.io/'>Book</a>
-	<a href='https://quantsrus.github.io/about'>About</a>
 
 	
+ 		<a href='http://jherekhealy.github.io/'>My book</a>
+  	
+ 		<a href='/about/'>About</a>
+  	
+ 		<a href='/archive/'>Archive</a>
+  	
 
 	
-	<a class="cta" href="https://quantsrus.github.io/index.xml">Subscribe</a>
+		<a class="cta" href="https://quantsrus.github.io/index.xml">Subscribe</a>
 	
 </nav>
 
-
-        <section id="wrapper" class="post">
-            <article>
-                <header>
-                    <h1>
-                        Constraints in the Levenberg-Marquardt least-squares optimization
-                    </h1>
-                    <h2 class="headline">
-                    Oct 8, 2018 22:48
-                    · 268 words
-                    · 2 minute read
-                      <span class="tags">
-                      
-                      </span>
-                    </h2>
-                </header>
-                
-                  
-                
-                <section id="post-body">
-                    <p>The standard Levenberg-Marquardt optimizer does not support box constraints. This is, for example the case for good MINPACK lmdif/lmder implementations that many optimization libraries use underneath. But in practice, it is often useful to limit the range of the variables, often because the objective might not be defined everywhere.</p>
+    <section id="wrapper">
+        
+        
+<article class="post">
+    <header>
+        <h1>Constraints in the Levenberg-Marquardt least-squares optimization</h1>
+        <h2 class="subtitle">The standard Levenberg-Marquardt (LM) optimizer does not support box constraints. We explore here two different approaches to add box constraints for a given unconstrained LM algorithm.</h2>
+        <h2 class="headline">
+        October 8, 2018
+        <br>
+        
+        </h2>
+    </header>
+    <section id="post-body">
+        <p>The standard Levenberg-Marquardt optimizer does not support box constraints. This is, for example the case for good MINPACK lmdif/lmder implementations that many optimization libraries use underneath. But in practice, it is often useful to limit the range of the variables, often because the objective might not be defined everywhere.</p>
 
 <p>The <a href="https://www.google.com/url?sa=t&amp;rct=j&amp;q=&amp;esrc=s&amp;source=web&amp;cd=1&amp;ved=2ahUKEwjjre3W8PfdAhUKzIUKHYSQDzgQFjAAegQIChAC&amp;url=https%3A%2F%2Fcran.r-project.org%2Fweb%2Fpackages%2Fminpack.lm%2Fminpack.lm.pdf&amp;usg=AOvVaw2GJL44QiM_VH1mbFXgHJDb">R minpack.lm CRAN package</a> allows the user to specify box constraints. How do they do it?</p>
 
@@ -75,16 +96,93 @@ I believe this corresponds to the algorithm described in section 3 of the paper 
 
 <p>It is a much better idea to rely on a smooth and invertible transformation from the real line to a target interval, for example a sine transformation for a closed interval, or a square/square-root transformation for a semi-infinite interval as is suggested on <a href="https://lmfit.github.io/lmfit-py/bounds.html">this page</a>. Of course, the transformation should also be included in the analytical gradient.</p>
 
-                </section>
-            </article>
+    </section>
+</article>
 
-            
+<footer id="post-meta" class="clearfix">
+    <a href="https://twitter.com/JherekHealy">
+    <img class="avatar" src="https://quantsrus.github.io/images/avatar.png">
+    <div>
+        <span class="dark">Quants R Us</span>
+        <span>I am Jherek Healy.</span>
+    </div>
+    </a>
+    <section id="sharing">
+        <a class="twitter" href="https://twitter.com/intent/tweet?text=https%3a%2f%2fquantsrus.github.io%2fpost%2fconstraints-in-levenberg-marquardt-least-squares-optimization%2f - Constraints%20in%20the%20Levenberg-Marquardt%20least-squares%20optimization by @JherekHealy"><span class="icon-twitter"> tweet</span></a>
 
-            
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
 
-            
+    </section>
+</footer>
 
-            <footer id="footer">
+
+
+<ul id="post-list" class="archive readmore">
+    <h3>Read more</h3>
+
+    
+    
+    
+        <li>
+            <a href="/post/rbf_collocation_of_2d_pde_and_precision/">Julia and Python for the RBF collocation of a 2D PDE with multiple precision arithmetic<aside class="dates">May 24 2019</aside></a>
+        </li>
+    
+        <li>
+            <a href="/post/state_of_convex_quadratic_programming_solvers/">The state of open-source quadratic programming convex optimizers<aside class="dates">Jul 24 2018</aside></a>
+        </li>
+    
+        <li>
+            <a href="/post/staying-arbitrage-free-with-andreasen-huge-volatility-interpolation/">Staying arbitrage-free with Andreasen-Huge one-step interpolation<aside class="dates">Mar 8 2018</aside></a>
+        </li>
+    
+        <li>
+            <a href="/post/on-the-quality-of-research-publications/">On the Quality of Research Publications<aside class="dates">Feb 28 2018</aside></a>
+        </li>
+    
+        <li>
+            <a href="/post/webassembly_still_fragile/">Webassembly still fragile<aside class="dates">Dec 5 2017</aside></a>
+        </li>
+    
+        <li>
+            <a href="/post/particle_swarm_optimization_heston_calibration/">Particle Swarm Optimization on Heston Small-Time Expansion<aside class="dates">Jul 6 2017</aside></a>
+        </li>
+    
+        <li>
+            <a href="/post/particle_swarm_optimization/">Particle Swarm Optimization<aside class="dates">Jun 30 2017</aside></a>
+        </li>
+    
+        <li>
+            <a href="/post/differential_evolution_vs_simulated_annealing/">Differential evolution vs. Simulated annealing<aside class="dates">Jun 21 2017</aside></a>
+        </li>
+    
+        <li>
+            <a href="/post/andreasen_huge_spline/">A spline to fill the gaps with Andreasen-Huge one-step method<aside class="dates">May 11 2017</aside></a>
+        </li>
+    
+</ul>
+
+
+
+        <footer id="footer">
+    
+        <div id="social">
+
+	
+	
+    <a class="symbol" href="https://twitter.com/JherekHealy">
+        <i class="fa fa-twitter"></i>
+    </a>
+    
+
+
+</div>
+
     
     <p class="small">
     
@@ -97,9 +195,8 @@ I believe this corresponds to the algorithm described in section 3 of the paper 
 </script>
 
 
-        </section>
-
-        <script src="https://quantsrus.github.io/js/jquery-3.3.1.min.js"></script>
+    </section>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <script src="https://quantsrus.github.io/js/main.js"></script>
 
 
@@ -107,7 +204,5 @@ I believe this corresponds to the algorithm described in section 3 of the paper 
 
 
 
-
-
-    </body>
+</body>
 </html>

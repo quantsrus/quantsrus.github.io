@@ -1,0 +1,9 @@
+pre {
+  background-color: #23241f;
+  color: unset;
+  font-family: 'Source Code Pro',Menlo,monospace;
+}
+code {
+  background-color: unset;
+  font-family: 'Source Code Pro',Menlo,monospace;
+}

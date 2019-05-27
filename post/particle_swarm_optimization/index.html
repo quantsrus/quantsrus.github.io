@@ -1,70 +1,91 @@
 <!DOCTYPE html>
 <html lang="en-us">
 	<head>
-		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		
-		
-		
-		<meta name="generator" content="Hugo 0.53" />
-		<title>Particle Swarm Optimization &middot; Quants R Us</title>
-		<link rel="shortcut icon" href="https://quantsrus.github.io/images/favicon.ico">
-		<link rel="stylesheet" href="https://quantsrus.github.io/css/style.css">
-		<link rel="stylesheet" href="https://quantsrus.github.io/css/highlight.css">
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="author" content="Quants R Us">
+<meta name="description" content="A blog on quantitative finance">
+<meta name="generator" content="Hugo 0.53" />
+<title>Particle Swarm Optimization</title>
+<link rel="shortcut icon" href="https://quantsrus.github.io/images/favicon.ico">
+<link rel="stylesheet" href="https://quantsrus.github.io/css/style.css">
+<link rel="stylesheet" href="https://quantsrus.github.io/css/highlight.css">
 
-		
-		<link rel="stylesheet" href="https://quantsrus.github.io/css/font-awesome.min.css">
-		
+<link rel="stylesheet" href="https://quantsrus.github.io/override.css">
 
-		
-		<link href="https://quantsrus.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Quants R Us" />
-		
+<link rel="stylesheet" href="https://quantsrus.github.io/syntax.css">
 
-		
-		<link rel="stylesheet" href="https://quantsrus.github.io/syntax.css">
-		
-	</head>
 
-    <body>
-       <nav class="main-nav">
-	
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
+
+
+
+<link href="https://quantsrus.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Quants R Us" />
+
+
+<meta property="og:title" content="Particle Swarm Optimization" />
+<meta property="og:description" content="Some of my findings: a lot of publications. 45000 citations for the most popular one! Which are the ones that matter? Many different standards, but not a single one clearly expressed. Some surprisingly ugly source code." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://quantsrus.github.io/post/particle_swarm_optimization/" /><meta property="article:published_time" content="2017-06-30T07:48:01&#43;02:00"/>
+<meta property="article:modified_time" content="2017-06-30T07:48:01&#43;02:00"/>
+
+
+
+<meta itemprop="name" content="Particle Swarm Optimization">
+<meta itemprop="description" content="Some of my findings: a lot of publications. 45000 citations for the most popular one! Which are the ones that matter? Many different standards, but not a single one clearly expressed. Some surprisingly ugly source code.">
+
+
+<meta itemprop="datePublished" content="2017-06-30T07:48:01&#43;02:00" />
+<meta itemprop="dateModified" content="2017-06-30T07:48:01&#43;02:00" />
+<meta itemprop="wordCount" content="544">
+
+
+
+<meta itemprop="keywords" content="" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Particle Swarm Optimization"/>
+<meta name="twitter:description" content="Some of my findings: a lot of publications. 45000 citations for the most popular one! Which are the ones that matter? Many different standards, but not a single one clearly expressed. Some surprisingly ugly source code."/>
+<meta name="twitter:site" content="@https://twitter.com/JherekHealy"/>
+
+
+    </head>
+<body>
+    <nav class="main-nav">
 	
 		<a href='https://quantsrus.github.io/'> <span class="arrow">←</span>Home</a>
 	
-	<a href='https://quantsrus.github.io/posts'>Archive</a>
-	<a href='https://quantsrus.github.io/tags'>Tags</a>
-	<a href='http://jherekhealy.github.io/'>Book</a>
-	<a href='https://quantsrus.github.io/about'>About</a>
 
 	
+ 		<a href='http://jherekhealy.github.io/'>My book</a>
+  	
+ 		<a href='/about/'>About</a>
+  	
+ 		<a href='/archive/'>Archive</a>
+  	
 
 	
-	<a class="cta" href="https://quantsrus.github.io/index.xml">Subscribe</a>
+		<a class="cta" href="https://quantsrus.github.io/index.xml">Subscribe</a>
 	
 </nav>
 
-
-        <section id="wrapper" class="post">
-            <article>
-                <header>
-                    <h1>
-                        Particle Swarm Optimization
-                    </h1>
-                    <h2 class="headline">
-                    Jun 30, 2017 07:48
-                    · 544 words
-                    · 3 minute read
-                      <span class="tags">
-                      
-                      </span>
-                    </h2>
-                </header>
-                
-                  
-                
-                <section id="post-body">
-                    <p>In my <a href="/post/differential_evolution_vs_simulated_annealing/">previous post</a>, I looked at simulated annealing to calibrate Heston.
+    <section id="wrapper">
+        
+        
+<article class="post">
+    <header>
+        <h1>Particle Swarm Optimization</h1>
+        <h2 class="subtitle">Some of my findings: a lot of publications. 45000 citations for the most popular one! Which are the ones that matter? Many different standards, but not a single one clearly expressed. Some surprisingly ugly source code.</h2>
+        <h2 class="headline">
+        June 30, 2017
+        <br>
+        
+        </h2>
+    </header>
+    <section id="post-body">
+        <p>In my <a href="/post/differential_evolution_vs_simulated_annealing/">previous post</a>, I looked at simulated annealing to calibrate Heston.
 A less well-known and more fancy global minimizer is the particle swarm optimization (PSO). I stumbled upon it
 by accident through a <a href="https://www.youtube.com/watch?v=bVDX_UwthZI">youtube presentation from James McCaffrey</a>. He shows a small python algorithm that solves the travelling salesman problem.</p>
 
@@ -97,16 +118,93 @@ and a <a href="https://github.com/kkentzo/pso/blob/master/pso.c">C implementatio
 <p>Beside becoming more familiar with PSO, I discovered an interesting fact: the normal distribution <a href="https://stats.stackexchange.com/questions/7977/how-to-generate-uniformly-distributed-points-on-the-surface-of-the-3-d-unit-sphe">&ldquo;corresponds&rdquo;</a> to a uniform
 distribution of points on a sphere.</p>
 
-                </section>
-            </article>
+    </section>
+</article>
 
-            
+<footer id="post-meta" class="clearfix">
+    <a href="https://twitter.com/JherekHealy">
+    <img class="avatar" src="https://quantsrus.github.io/images/avatar.png">
+    <div>
+        <span class="dark">Quants R Us</span>
+        <span>I am Jherek Healy.</span>
+    </div>
+    </a>
+    <section id="sharing">
+        <a class="twitter" href="https://twitter.com/intent/tweet?text=https%3a%2f%2fquantsrus.github.io%2fpost%2fparticle_swarm_optimization%2f - Particle%20Swarm%20Optimization by @JherekHealy"><span class="icon-twitter"> tweet</span></a>
 
-            
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
 
-            
+    </section>
+</footer>
 
-            <footer id="footer">
+
+
+<ul id="post-list" class="archive readmore">
+    <h3>Read more</h3>
+
+    
+    
+    
+        <li>
+            <a href="/post/rbf_collocation_of_2d_pde_and_precision/">Julia and Python for the RBF collocation of a 2D PDE with multiple precision arithmetic<aside class="dates">May 24 2019</aside></a>
+        </li>
+    
+        <li>
+            <a href="/post/constraints-in-levenberg-marquardt-least-squares-optimization/">Constraints in the Levenberg-Marquardt least-squares optimization<aside class="dates">Oct 8 2018</aside></a>
+        </li>
+    
+        <li>
+            <a href="/post/state_of_convex_quadratic_programming_solvers/">The state of open-source quadratic programming convex optimizers<aside class="dates">Jul 24 2018</aside></a>
+        </li>
+    
+        <li>
+            <a href="/post/staying-arbitrage-free-with-andreasen-huge-volatility-interpolation/">Staying arbitrage-free with Andreasen-Huge one-step interpolation<aside class="dates">Mar 8 2018</aside></a>
+        </li>
+    
+        <li>
+            <a href="/post/on-the-quality-of-research-publications/">On the Quality of Research Publications<aside class="dates">Feb 28 2018</aside></a>
+        </li>
+    
+        <li>
+            <a href="/post/webassembly_still_fragile/">Webassembly still fragile<aside class="dates">Dec 5 2017</aside></a>
+        </li>
+    
+        <li>
+            <a href="/post/particle_swarm_optimization_heston_calibration/">Particle Swarm Optimization on Heston Small-Time Expansion<aside class="dates">Jul 6 2017</aside></a>
+        </li>
+    
+        <li>
+            <a href="/post/differential_evolution_vs_simulated_annealing/">Differential evolution vs. Simulated annealing<aside class="dates">Jun 21 2017</aside></a>
+        </li>
+    
+        <li>
+            <a href="/post/andreasen_huge_spline/">A spline to fill the gaps with Andreasen-Huge one-step method<aside class="dates">May 11 2017</aside></a>
+        </li>
+    
+</ul>
+
+
+
+        <footer id="footer">
+    
+        <div id="social">
+
+	
+	
+    <a class="symbol" href="https://twitter.com/JherekHealy">
+        <i class="fa fa-twitter"></i>
+    </a>
+    
+
+
+</div>
+
     
     <p class="small">
     
@@ -119,9 +217,8 @@ distribution of points on a sphere.</p>
 </script>
 
 
-        </section>
-
-        <script src="https://quantsrus.github.io/js/jquery-3.3.1.min.js"></script>
+    </section>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <script src="https://quantsrus.github.io/js/main.js"></script>
 
 
@@ -129,7 +226,5 @@ distribution of points on a sphere.</p>
 
 
 
-
-
-    </body>
+</body>
 </html>

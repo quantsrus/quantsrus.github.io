@@ -17,7 +17,7 @@
       <pubDate>Fri, 24 May 2019 15:50:22 +0200</pubDate>
       
       <guid>https://quantsrus.github.io/post/rbf_collocation_of_2d_pde_and_precision/</guid>
-      <description>I was curious about using Julia, mainly to use the Arb library for arbitrary precision linear algebra. It is written by the author of Python mpmath library, but its principle is quite different, and from the author&amp;rsquo;s blog, it is supposed to be much faster. Then, I also found python + numpy + scipy not so great at building large sparse matrices. It seemed relatively slow to me, numba does not work with scipy sparse matrices.</description>
+      <description>I was curious about using Julia, mainly to access the Arb library for arbitrary precision linear algebra. It is written by the author of Python mpmath library, but its principle is quite different, and from the author&amp;rsquo;s blog, it is supposed to be much faster. Then, I also found python + numpy + scipy not so great at building large sparse matrices. It seemed relatively slow to me, numba does not work with scipy sparse matrices.</description>
     </item>
     
     <item>
@@ -68,7 +68,16 @@ While the manuscript was relatively interesting in itself, and there was definit
       <pubDate>Sun, 17 Dec 2017 10:05:07 +0100</pubDate>
       
       <guid>https://quantsrus.github.io/about/</guid>
-      <description>Hello, my name is Jherek Healy and I write here about random quantitative finance matters. You can find my book Applied Quantitative Finance for Equity Derivatives on Amazon (US, UK, France, Germany).</description>
+      <description>Hello, my name is Jherek Healy and I write here about random quantitative finance matters. You can find my book Applied Quantitative Finance for Equity Derivatives on Lulu. A paperback edition is also available on Amazon (US, UK, France, Germany).</description>
+    </item>
+    
+    <item>
+      <title>Archive</title>
+      <link>https://quantsrus.github.io/archive/</link>
+      <pubDate>Sun, 17 Dec 2017 10:05:07 +0100</pubDate>
+      
+      <guid>https://quantsrus.github.io/archive/</guid>
+      <description></description>
     </item>
     
     <item>

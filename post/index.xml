@@ -17,7 +17,7 @@
       <pubDate>Fri, 24 May 2019 15:50:22 +0200</pubDate>
       
       <guid>https://quantsrus.github.io/post/rbf_collocation_of_2d_pde_and_precision/</guid>
-      <description>I was curious about using Julia, mainly to use the Arb library for arbitrary precision linear algebra. It is written by the author of Python mpmath library, but its principle is quite different, and from the author&amp;rsquo;s blog, it is supposed to be much faster. Then, I also found python + numpy + scipy not so great at building large sparse matrices. It seemed relatively slow to me, numba does not work with scipy sparse matrices.</description>
+      <description>I was curious about using Julia, mainly to access the Arb library for arbitrary precision linear algebra. It is written by the author of Python mpmath library, but its principle is quite different, and from the author&amp;rsquo;s blog, it is supposed to be much faster. Then, I also found python + numpy + scipy not so great at building large sparse matrices. It seemed relatively slow to me, numba does not work with scipy sparse matrices.</description>
     </item>
     
     <item>
