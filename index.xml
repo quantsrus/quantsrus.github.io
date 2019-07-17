@@ -6,10 +6,21 @@
     <description>Recent content on Quants R Us</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 24 May 2019 15:50:22 +0200</lastBuildDate>
+    <lastBuildDate>Wed, 17 Jul 2019 15:50:22 +0200</lastBuildDate>
     
 	<atom:link href="https://quantsrus.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Why did I choose the Go language?</title>
+      <link>https://quantsrus.github.io/post/why_did_i_choose_the_go_language/</link>
+      <pubDate>Wed, 17 Jul 2019 15:50:22 +0200</pubDate>
+      
+      <guid>https://quantsrus.github.io/post/why_did_i_choose_the_go_language/</guid>
+      <description>Recently, a reader of my book asked me &amp;ldquo;why did you choose the Go language?&amp;ldquo;. I quickly mention it in the tools of the trade appendix. I will give a more elaborate answer to this question, and to the related question &amp;ldquo;would you still choose Go today?&amp;rdquo;.
+Some of my initial motivations to choose the Go language were:
+ Fast compilation time (almost instant). Fast run-time: at least on par with Java (it actually improved over the years).</description>
+    </item>
     
     <item>
       <title>Julia and Python for the RBF collocation of a 2D PDE with multiple precision arithmetic</title>
