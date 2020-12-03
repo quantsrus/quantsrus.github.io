@@ -37,7 +37,7 @@
 <meta itemprop="description" content="In the second edition of my book, I presented how to combine the good Black-Scholes implied volatility initial guess of Dan Stefanica and Rados Radoicic with a relatively simple solver.  Here, I present how to further enhance the performance, and compare as well implementations in the Go language vs. the Julia language.">
 <meta itemprop="datePublished" content="2020-12-02T21:50:22+02:00" />
 <meta itemprop="dateModified" content="2020-12-02T21:50:22+02:00" />
-<meta itemprop="wordCount" content="862">
+<meta itemprop="wordCount" content="898">
 
 
 
@@ -85,8 +85,8 @@
     <section id="post-body">
         <p>In my book, I took a close look at the <a href="https://chasethedevil.github.io/post/implied-volatility-from-black-scholes-price/">idea presented in the Chase the Devil blog</a> to combine the very good initial  Black-Scholes implied volatility guess of Dan Stefanica and Rados Radoicic with a relatively simple solver. The blogger recently criticized some new book, which clumsily tries to sell that idea as a novel algorithm, and presents fully inconsistent timing to assert that his new algorithm is much better.</p>
 <h3 id="the-first-important-question-is-why-would-we-care-about-a-fast-and-very-accurate-implied-volatility-solver">The first important question is: why would we care about a fast and very accurate implied volatility solver?</h3>
-<p>Indeed, the market quote prices which can not be too small. If the goal is to invert those, it would seem at first that high accurracy would only be necessary for prices not smaller than 1 cent (or more precisely, than 1 tick). Of course, this is absolute prices, and relative to the asset price, the accuracy should likely be around 0.0001.</p>
-<p>This view misses the main point. When a model is fitted against market prices, the model may produce arbitrarily small prices, typically in the wings. It is not uncommon to fit in terms of implied volatilities, perhaps because it is a more natural along expiries and strikes, perhaps because of traders bias towards looking at the market in terms of implied volatilities. Those very small prices will need to be inverted, if the error measure is in implied volatilities. Furthermore, even in the nicer at-the-money region, the calibration of the model will likely involve differentiation of  the outputs towards the inputs. If the implied volatility algorithm is unprecise, this will create a lot of numerical noise, and the calibration may easily be trapped in some local minima.</p>
+<p>Indeed, the market quotes prices which can not be too small. If the goal is to invert those, it would seem at first that the accuracy required would correspond to the smallest quoted price increment (1 cent or more precisely, 1 tick). Of course, this is absolute prices, and relative to the asset price, the accuracy should perhaps be around 0.0001.</p>
+<p>This view misses the main point. When a model is fitted against market prices, the model may produce arbitrarily small prices, typically in the wings. It is not uncommon to fit in terms of implied volatilities, perhaps because it is a more natural scale along expiries and strikes, perhaps because of traders bias towards looking at the market in terms of implied volatilities. Those very small prices will need to be inverted, if the error measure is in implied volatilities. Furthermore, even in the nicer at-the-money region, the calibration of the model will likely involve differentiation of  the outputs towards the inputs. If the implied volatility algorithm is unprecise, this will create a lot of numerical noise, and the calibration may easily be trapped in some local minima.</p>
 <h3 id="go-vs-julia">Go vs. Julia</h3>
 <p>Go feels like a low level programming language compared to Julia. When porting Peter Jaeckel algorithm for the implied volatility to Julia, there was the need to also port the related code: the cumulative normal distribution, erfcx from Cody and the inverse cumulative normal distribution from Wichura. It may be possible to find some of those in some Go open-source libraries, but perhaps not with the degree of accuracy or robustness desired.</p>
 <p>In Julia, I could just use the SpecialFunctions package, which is maintained by top academic experts. Out of curiosity, I also ported the exact same code as in my Go implementation. Here is the timing I measured on the example of a Call option price with forward price of 100.0, strike of 300.0, vol of 8% (using Julia BenchmarkTools and go benchmark):</p>
@@ -144,7 +144,8 @@
         </figcaption>
 </figure>
 
-<p>I am planning to put the associated Julia code <a href="https://github.com/jherekhealy/AQFED.jl">on github</a>, along with other illustrative examples from my book.</p>
+<p>As an extra bonus of working in Julia, the code can also make use of multiple or arbitrary precision arithmetic to reach any desired accuracy level, even if the use cases for this are very rare.</p>
+<p>I am planning to put the associated Julia <a href="https://github.com/jherekhealy/AQFED.jl">code on github</a>, along with other illustrative examples from my book.</p>
 
     </section>
 </article>
