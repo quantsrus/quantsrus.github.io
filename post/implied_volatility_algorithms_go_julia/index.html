@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en-us">
+	<head>
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="author" content="Quants R Us">
+<meta name="description" content="A blog on quantitative finance">
+<meta name="generator" content="Hugo 0.74.3" />
+<title>The Fastest Implied Volatility Algorithms, Go vs. Julia</title>
+<link rel="shortcut icon" href="https://quantsrus.github.io/images/favicon.ico">
+<link rel="stylesheet" href="https://quantsrus.github.io/css/style.css">
+<link rel="stylesheet" href="https://quantsrus.github.io/css/highlight.css">
+
+<link rel="stylesheet" href="https://quantsrus.github.io/override.css">
+
+<link rel="stylesheet" href="https://quantsrus.github.io/syntax.css">
+
+
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
+
+
+
+<link href="https://quantsrus.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Quants R Us" />
+
+
+<meta property="og:title" content="The Fastest Implied Volatility Algorithms, Go vs. Julia" />
+<meta property="og:description" content="In the second edition of my book, I presented how to combine the good Black-Scholes implied volatility initial guess of Dan Stefanica and Rados Radoicic with a relatively simple solver.  Here, I present how to further enhance the performance, and compare as well implementations in the Go language vs. the Julia language." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://quantsrus.github.io/post/implied_volatility_algorithms_go_julia/" />
+<meta property="article:published_time" content="2020-12-02T21:50:22+02:00" />
+<meta property="article:modified_time" content="2020-12-02T21:50:22+02:00" />
+
+
+<meta itemprop="name" content="The Fastest Implied Volatility Algorithms, Go vs. Julia">
+<meta itemprop="description" content="In the second edition of my book, I presented how to combine the good Black-Scholes implied volatility initial guess of Dan Stefanica and Rados Radoicic with a relatively simple solver.  Here, I present how to further enhance the performance, and compare as well implementations in the Go language vs. the Julia language.">
+<meta itemprop="datePublished" content="2020-12-02T21:50:22+02:00" />
+<meta itemprop="dateModified" content="2020-12-02T21:50:22+02:00" />
+<meta itemprop="wordCount" content="862">
+
+
+
+<meta itemprop="keywords" content="" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="The Fastest Implied Volatility Algorithms, Go vs. Julia"/>
+<meta name="twitter:description" content="In the second edition of my book, I presented how to combine the good Black-Scholes implied volatility initial guess of Dan Stefanica and Rados Radoicic with a relatively simple solver.  Here, I present how to further enhance the performance, and compare as well implementations in the Go language vs. the Julia language."/>
+<meta name="twitter:site" content="@https://twitter.com/JherekHealy"/>
+
+
+    </head>
+<body>
+    <nav class="main-nav">
+	
+		<a href='https://quantsrus.github.io/'> <span class="arrow">←</span>Home</a>
+	
+
+	
+ 		<a href='http://jherekhealy.github.io/'>My book</a>
+  	
+ 		<a href='/about/'>About</a>
+  	
+ 		<a href='/archive/'>Archive</a>
+  	
+
+	
+		<a class="cta" href="https://quantsrus.github.io/index.xml">Subscribe</a>
+	
+</nav>
+
+    <section id="wrapper">
+        
+        
+<article class="post">
+    <header>
+        <h1>The Fastest Implied Volatility Algorithms, Go vs. Julia</h1>
+        <h2 class="subtitle">In the second edition of my book, I presented how to combine the good Black-Scholes implied volatility initial guess of Dan Stefanica and Rados Radoicic with a relatively simple solver.  Here, I present how to further enhance the performance, and compare as well implementations in the Go language vs. the Julia language.</h2>
+        <h2 class="headline">
+        December 2, 2020
+        <br>
+        
+        </h2>
+    </header>
+    <section id="post-body">
+        <p>In my book, I took a close look at the <a href="https://chasethedevil.github.io/post/implied-volatility-from-black-scholes-price/">idea presented in the Chase the Devil blog</a> to combine the very good initial  Black-Scholes implied volatility guess of Dan Stefanica and Rados Radoicic with a relatively simple solver. The blogger recently criticized some new book, which clumsily tries to sell that idea as a novel algorithm, and presents fully inconsistent timing to assert that his new algorithm is much better.</p>
+<h3 id="the-first-important-question-is-why-would-we-care-about-a-fast-and-very-accurate-implied-volatility-solver">The first important question is: why would we care about a fast and very accurate implied volatility solver?</h3>
+<p>Indeed, the market quote prices which can not be too small. If the goal is to invert those, it would seem at first that high accurracy would only be necessary for prices not smaller than 1 cent (or more precisely, than 1 tick). Of course, this is absolute prices, and relative to the asset price, the accuracy should likely be around 0.0001.</p>
+<p>This view misses the main point. When a model is fitted against market prices, the model may produce arbitrarily small prices, typically in the wings. It is not uncommon to fit in terms of implied volatilities, perhaps because it is a more natural along expiries and strikes, perhaps because of traders bias towards looking at the market in terms of implied volatilities. Those very small prices will need to be inverted, if the error measure is in implied volatilities. Furthermore, even in the nicer at-the-money region, the calibration of the model will likely involve differentiation of  the outputs towards the inputs. If the implied volatility algorithm is unprecise, this will create a lot of numerical noise, and the calibration may easily be trapped in some local minima.</p>
+<h3 id="go-vs-julia">Go vs. Julia</h3>
+<p>Go feels like a low level programming language compared to Julia. When porting Peter Jaeckel algorithm for the implied volatility to Julia, there was the need to also port the related code: the cumulative normal distribution, erfcx from Cody and the inverse cumulative normal distribution from Wichura. It may be possible to find some of those in some Go open-source libraries, but perhaps not with the degree of accuracy or robustness desired.</p>
+<p>In Julia, I could just use the SpecialFunctions package, which is maintained by top academic experts. Out of curiosity, I also ported the exact same code as in my Go implementation. Here is the timing I measured on the example of a Call option price with forward price of 100.0, strike of 300.0, vol of 8% (using Julia BenchmarkTools and go benchmark):</p>
+<table>
+<thead>
+<tr>
+<th>Julia</th>
+<th>Julia (Cody)</th>
+<th>Go</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>827.813 ns</td>
+<td>874.890 ns</td>
+<td>919 ns</td>
+</tr>
+</tbody>
+</table>
+<p>The default Julia implementation is faster than the specialized algorithms of Cody and Wichura referenced by Jaeckel implementation.  On the same machine, Julia ends up thus around 10% faster than Go on this example.</p>
+<h3 id="alternative-algorithms">Alternative Algorithms</h3>
+<p>Next, I wondered how my Householder implementation on top of the good initial guess would fare with the Julia libraries. A key performance improvement is to not rely on the naive Black-Scholes implementation via the cumulative normal distribution, but to use Peter Jaeckel expression in terms of erfcx. This speeds up the algorithms by 30-40%.</p>
+<p>Another even more important trick is to apply the iteration on the logarithm of the option price. I noticed this, as I was experimenting with multiple precision support, and it turns out that for very low volatility, when the price is extremely small, Householder is very slow to converge. This can be seen in the plot below where it seems to take an exponentially longer time for very low volatilities.</p>
+<figure>
+    <img src="/post/iv_strike200_vols.png"/> <figcaption>
+            <h4>Time to imply the volatility from a 1y option of strike 200, forward 100, varying the reference vol.</h4>
+        </figcaption>
+</figure>
+
+<p>Taking the log makes a tremendous difference:</p>
+<figure>
+    <img src="/post/iv_strike200_vols_log.png"/> <figcaption>
+            <h4>Time to imply the volatility from a 1y option of strike 200, forward 100, varying the reference vol - using log price.</h4>
+        </figcaption>
+</figure>
+
+<p>The epsilon above denotes the limit at which the price is under machine epsilon. The timing, varying the strike, for a fixed vol is as good:</p>
+<figure>
+    <img src="/post/iv_strikes_vol10_log.png"/> <figcaption>
+            <h4>Time to imply the volatility from a 1y option of forward 100, vol=10%, varying the option strike - using log price.</h4>
+        </figcaption>
+</figure>
+
+<p>So far, Halley is almost as fast as Householder, this is not true anymore if we look at a fixed high vol (400%):</p>
+<figure>
+    <img src="/post/iv_strikes_vol400_log.png"/> <figcaption>
+            <h4>Time to imply the volatility from a 1y option of forward 100, vol=400%, varying the option strike - using log price.</h4>
+        </figcaption>
+</figure>
+
+<p>Peter Jaeckel algorithm is then always slower.  So it is not so difficult to write a much simpler, and faster algorithm. There is a place however where Peter Jaeckel really took a lot of care, it is to ensure a maximum accuracy, even in corner cases. My simple Householder algorithm &ldquo;only&rdquo; achieves an accuracy of around 1E-14 in implied volatility for a Call option of strike 200.0 and volatility 400%, while Peter Jaeckel algorithm pushes that up to 4E-15. In this case, Householder is within 2 machine epsilon accuracy in terms of price, while Jaeckel is within 1 machine epsilon accuracy.</p>
+<figure>
+    <img src="/post/iv_strike200_vols_error.png"/> <figcaption>
+            <h4>Error in the implied volatility from a 1y option of strike 200, forward 100, varying the reference vol.</h4>
+        </figcaption>
+</figure>
+
+<p>I am planning to put the associated Julia code <a href="https://github.com/jherekhealy/AQFED.jl">on github</a>, along with other illustrative examples from my book.</p>
+
+    </section>
+</article>
+
+<footer id="post-meta" class="clearfix">
+    <a href="https://twitter.com/JherekHealy">
+    <img class="avatar" src="https://quantsrus.github.io/images/avatar.png">
+    <div>
+        <span class="dark">Quants R Us</span>
+        <span>I am Jherek Healy.</span>
+    </div>
+    </a>
+    <section id="sharing">
+        <a class="twitter" href="https://twitter.com/intent/tweet?text=https%3a%2f%2fquantsrus.github.io%2fpost%2fimplied_volatility_algorithms_go_julia%2f - The%20Fastest%20Implied%20Volatility%20Algorithms%2c%20Go%20vs.%20Julia by @JherekHealy"><span class="icon-twitter"> tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+    </section>
+</footer>
+
+
+
+<ul id="post-list" class="archive readmore">
+    <h3>Read more</h3>
+
+    
+    
+    
+        <li>
+            <a href="/post/why_did_i_choose_the_go_language/">Why did I choose the Go language?<aside class="dates">Jul 17 2019</aside></a>
+        </li>
+    
+        <li>
+            <a href="/post/rbf_collocation_of_2d_pde_and_precision/">Julia and Python for the RBF collocation of a 2D PDE with multiple precision arithmetic<aside class="dates">May 24 2019</aside></a>
+        </li>
+    
+        <li>
+            <a href="/post/constraints-in-levenberg-marquardt-least-squares-optimization/">Constraints in the Levenberg-Marquardt least-squares optimization<aside class="dates">Oct 8 2018</aside></a>
+        </li>
+    
+        <li>
+            <a href="/post/state_of_convex_quadratic_programming_solvers/">The state of open-source quadratic programming convex optimizers<aside class="dates">Jul 24 2018</aside></a>
+        </li>
+    
+        <li>
+            <a href="/post/staying-arbitrage-free-with-andreasen-huge-volatility-interpolation/">Staying arbitrage-free with Andreasen-Huge one-step interpolation<aside class="dates">Mar 8 2018</aside></a>
+        </li>
+    
+        <li>
+            <a href="/post/on-the-quality-of-research-publications/">On the Quality of Research Publications<aside class="dates">Feb 28 2018</aside></a>
+        </li>
+    
+        <li>
+            <a href="/post/webassembly_still_fragile/">Webassembly still fragile<aside class="dates">Dec 5 2017</aside></a>
+        </li>
+    
+        <li>
+            <a href="/post/particle_swarm_optimization_heston_calibration/">Particle Swarm Optimization on Heston Small-Time Expansion<aside class="dates">Jul 6 2017</aside></a>
+        </li>
+    
+        <li>
+            <a href="/post/particle_swarm_optimization/">Particle Swarm Optimization<aside class="dates">Jun 30 2017</aside></a>
+        </li>
+    
+        <li>
+            <a href="/post/differential_evolution_vs_simulated_annealing/">Differential evolution vs. Simulated annealing<aside class="dates">Jun 21 2017</aside></a>
+        </li>
+    
+</ul>
+
+
+
+        <footer id="footer">
+    
+        <div id="social">
+
+	
+	
+    <a class="symbol" href="https://twitter.com/JherekHealy">
+        <i class="fa fa-twitter"></i>
+    </a>
+    
+
+
+</div>
+
+    
+    <p class="small">
+    
+       © Copyright 2020 <i class="fa fa-heart" aria-hidden="true"></i> Quants R Us
+    
+    </p>
+</footer>
+<script type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+    </section>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://quantsrus.github.io/js/main.js"></script>
+
+
+
+
+
+
+</body>
+</html>

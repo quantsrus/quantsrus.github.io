@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="author" content="Quants R Us">
 <meta name="description" content="A blog on quantitative finance">
-<meta name="generator" content="Hugo 0.53" />
+<meta name="generator" content="Hugo 0.74.3" />
 <title>Constraints in the Levenberg-Marquardt least-squares optimization</title>
 <link rel="shortcut icon" href="https://quantsrus.github.io/images/favicon.ico">
 <link rel="stylesheet" href="https://quantsrus.github.io/css/style.css">
@@ -28,17 +28,15 @@
 <meta property="og:title" content="Constraints in the Levenberg-Marquardt least-squares optimization" />
 <meta property="og:description" content="The standard Levenberg-Marquardt (LM) optimizer does not support box constraints. We explore here two different approaches to add box constraints for a given unconstrained LM algorithm." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://quantsrus.github.io/post/constraints-in-levenberg-marquardt-least-squares-optimization/" /><meta property="article:published_time" content="2018-10-08T22:48:01&#43;02:00"/>
-<meta property="article:modified_time" content="2018-10-08T22:48:01&#43;02:00"/>
-
+<meta property="og:url" content="https://quantsrus.github.io/post/constraints-in-levenberg-marquardt-least-squares-optimization/" />
+<meta property="article:published_time" content="2018-10-08T22:48:01+02:00" />
+<meta property="article:modified_time" content="2018-10-08T22:48:01+02:00" />
 
 
 <meta itemprop="name" content="Constraints in the Levenberg-Marquardt least-squares optimization">
 <meta itemprop="description" content="The standard Levenberg-Marquardt (LM) optimizer does not support box constraints. We explore here two different approaches to add box constraints for a given unconstrained LM algorithm.">
-
-
-<meta itemprop="datePublished" content="2018-10-08T22:48:01&#43;02:00" />
-<meta itemprop="dateModified" content="2018-10-08T22:48:01&#43;02:00" />
+<meta itemprop="datePublished" content="2018-10-08T22:48:01+02:00" />
+<meta itemprop="dateModified" content="2018-10-08T22:48:01+02:00" />
 <meta itemprop="wordCount" content="268">
 
 
@@ -86,14 +84,10 @@
     </header>
     <section id="post-body">
         <p>The standard Levenberg-Marquardt optimizer does not support box constraints. This is, for example the case for good MINPACK lmdif/lmder implementations that many optimization libraries use underneath. But in practice, it is often useful to limit the range of the variables, often because the objective might not be defined everywhere.</p>
-
 <p>The <a href="https://www.google.com/url?sa=t&amp;rct=j&amp;q=&amp;esrc=s&amp;source=web&amp;cd=1&amp;ved=2ahUKEwjjre3W8PfdAhUKzIUKHYSQDzgQFjAAegQIChAC&amp;url=https%3A%2F%2Fcran.r-project.org%2Fweb%2Fpackages%2Fminpack.lm%2Fminpack.lm.pdf&amp;usg=AOvVaw2GJL44QiM_VH1mbFXgHJDb">R minpack.lm CRAN package</a> allows the user to specify box constraints. How do they do it?</p>
-
 <p>They choose a very straightforward projection approach to enforce the constraints: if the guess is outside the box, they place it at the closest boundary (see <a href="https://github.com/cran/minpack.lm/blob/master/src/fcn_lmder.c">the source code</a>).
 I believe this corresponds to the algorithm described in section 3 of the paper <a href="https://www.google.com/url?sa=t&amp;rct=j&amp;q=&amp;esrc=s&amp;source=web&amp;cd=1&amp;cad=rja&amp;uact=8&amp;ved=2ahUKEwjTod32x_ndAhVEUxoKHd5FBQYQFjAAegQICRAC&amp;url=https%3A%2F%2Fwww.mathematik.uni-wuerzburg.de%2F~kanzow%2Fpaper%2FCNSLMP.pdf&amp;usg=AOvVaw1Nx218K-rN8sf4veL3S1AH">Levenberg-Marquardt methods for constrained nonlinear equations with strong local convergence properties</a>.</p>
-
 <p>Now this is very aggressive, especially if the gradient is computed numerically (lmdif): typically what happens is that the solution is then stuck at this boundary. For example, if the coordinate is \(x_k=-1\), and our box is the positive subspace, the projection will set \(x_k=0\) and then this coordinate is not going to be able to move as the gradient becomes 0. It behaves a bit better if the gradient is analytical at the boundary, or if we are careful to use forward/backward finite difference estimate depending for the lower/upper bound.</p>
-
 <p>It is a much better idea to rely on a smooth and invertible transformation from the real line to a target interval, for example a sine transformation for a closed interval, or a square/square-root transformation for a semi-infinite interval as is suggested on <a href="https://lmfit.github.io/lmfit-py/bounds.html">this page</a>. Of course, the transformation should also be included in the analytical gradient.</p>
 
     </section>
@@ -128,6 +122,10 @@ I believe this corresponds to the algorithm described in section 3 of the paper 
 
     
     
+    
+        <li>
+            <a href="/post/implied_volatility_algorithms_go_julia/">The Fastest Implied Volatility Algorithms, Go vs. Julia<aside class="dates">Dec 2 2020</aside></a>
+        </li>
     
         <li>
             <a href="/post/why_did_i_choose_the_go_language/">Why did I choose the Go language?<aside class="dates">Jul 17 2019</aside></a>
@@ -165,10 +163,6 @@ I believe this corresponds to the algorithm described in section 3 of the paper 
             <a href="/post/differential_evolution_vs_simulated_annealing/">Differential evolution vs. Simulated annealing<aside class="dates">Jun 21 2017</aside></a>
         </li>
     
-        <li>
-            <a href="/post/andreasen_huge_spline/">A spline to fill the gaps with Andreasen-Huge one-step method<aside class="dates">May 11 2017</aside></a>
-        </li>
-    
 </ul>
 
 
@@ -190,7 +184,7 @@ I believe this corresponds to the algorithm described in section 3 of the paper 
     
     <p class="small">
     
-       © Copyright 2019 <i class="fa fa-heart" aria-hidden="true"></i> Quants R Us
+       © Copyright 2020 <i class="fa fa-heart" aria-hidden="true"></i> Quants R Us
     
     </p>
 </footer>

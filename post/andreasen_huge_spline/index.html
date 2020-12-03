@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="author" content="Quants R Us">
 <meta name="description" content="A blog on quantitative finance">
-<meta name="generator" content="Hugo 0.53" />
+<meta name="generator" content="Hugo 0.74.3" />
 <title>A spline to fill the gaps with Andreasen-Huge one-step method</title>
 <link rel="shortcut icon" href="https://quantsrus.github.io/images/favicon.ico">
 <link rel="stylesheet" href="https://quantsrus.github.io/css/style.css">
@@ -28,17 +28,15 @@
 <meta property="og:title" content="A spline to fill the gaps with Andreasen-Huge one-step method" />
 <meta property="og:description" content="I recently stumbled upon a blog which suggested to not stay flat with Andreasen-Huge  arbitrage free volatility interpolation method. What about using a spline?" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://quantsrus.github.io/post/andreasen_huge_spline/" /><meta property="article:published_time" content="2017-05-11T22:48:01&#43;02:00"/>
-<meta property="article:modified_time" content="2017-05-11T22:48:01&#43;02:00"/>
-
+<meta property="og:url" content="https://quantsrus.github.io/post/andreasen_huge_spline/" />
+<meta property="article:published_time" content="2017-05-11T22:48:01+02:00" />
+<meta property="article:modified_time" content="2017-05-11T22:48:01+02:00" />
 
 
 <meta itemprop="name" content="A spline to fill the gaps with Andreasen-Huge one-step method">
 <meta itemprop="description" content="I recently stumbled upon a blog which suggested to not stay flat with Andreasen-Huge  arbitrage free volatility interpolation method. What about using a spline?">
-
-
-<meta itemprop="datePublished" content="2017-05-11T22:48:01&#43;02:00" />
-<meta itemprop="dateModified" content="2017-05-11T22:48:01&#43;02:00" />
+<meta itemprop="datePublished" content="2017-05-11T22:48:01+02:00" />
+<meta itemprop="dateModified" content="2017-05-11T22:48:01+02:00" />
 <meta itemprop="wordCount" content="345">
 
 
@@ -86,9 +84,7 @@
     </header>
     <section id="post-body">
         <p>I recently stumbled upon a blog which suggested to <a href="http://chasethedevil.github.io/post/dont-stay-flat-with-andreasen-huge-interpolation/">not stay flat with Andreasen-Huge</a> arbitrage free volatility interpolation method. The paper from Andreasen and Huge specifies a piecewise constant (single-step) local volatility where the number of constants matches the number of market option prices.</p>
-
 <p>The blog post shows eventual unstability with the piecewise constant approach, not visible with a linear interpolation. I wondered then if we should not go to the next level: use a spline on N values where N is the number of market options prices. Using a spline to represent the local volatility is a very common idea, for example it is in the large-step local volatility method of <a href="https://ssrn.com/abstract=2008215">Reghai-Boya-Vong</a>.</p>
-
 <p>I tried this idea on SPX500 options of maturity 1 year and stumbled upon erratic behavior depending on the number of nodes used in the grid. In reality, this was due to using the wrong monotone interpolation. I had used Hyman-Dougherty monotone interpolation by habit. But the data is far from being monotone, and the Hyman interpolation does not necessarily behave well on non-monotone data: by design, it can still wiggle over or under the nodes. This is what happens on the figure below, which zooms problematic region of the local variance: it becomes negative with Hyman interpolation.
 <figure>
     <img src="/post/andreasen_huge_hyman.png"/> <figcaption>
@@ -96,9 +92,7 @@
         </figcaption>
 </figure>
 </p>
-
 <p>A real monotone interpolation, without the problems of the discontinuity introduced by the Hyman approach as evidenced in the paper <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2175002">Stable Interpolation for the Yield Curve</a>, but not well-known, is the <a href="https://ntrs.nasa.gov/archive/nasa/casi.ntrs.nasa.gov/19910011517.pdf">rational limiter of Huynh</a>. It is also possible to simply use the non-negative interpolation of Hyman-Dougherty (denoted as Hyman-NG in the figure), but in theory, this will introduce a discontinuity, which could be problematic in the optimization routine.</p>
-
 <p>It works well with a properly monotone spline, but how does the one-step local volatility looks like?
 <figure>
     <img src="/post/andreasen_huge_spline_good.png"/> <figcaption>
@@ -106,7 +100,6 @@
         </figcaption>
 </figure>
 </p>
-
 <p>With so many wiggles in the local volatility, it is not obvious this is really preferable to a linear interpolation.</p>
 
     </section>
@@ -141,6 +134,10 @@
 
     
     
+    
+        <li>
+            <a href="/post/implied_volatility_algorithms_go_julia/">The Fastest Implied Volatility Algorithms, Go vs. Julia<aside class="dates">Dec 2 2020</aside></a>
+        </li>
     
         <li>
             <a href="/post/why_did_i_choose_the_go_language/">Why did I choose the Go language?<aside class="dates">Jul 17 2019</aside></a>
@@ -178,10 +175,6 @@
             <a href="/post/particle_swarm_optimization/">Particle Swarm Optimization<aside class="dates">Jun 30 2017</aside></a>
         </li>
     
-        <li>
-            <a href="/post/differential_evolution_vs_simulated_annealing/">Differential evolution vs. Simulated annealing<aside class="dates">Jun 21 2017</aside></a>
-        </li>
-    
 </ul>
 
 
@@ -203,7 +196,7 @@
     
     <p class="small">
     
-       © Copyright 2019 <i class="fa fa-heart" aria-hidden="true"></i> Quants R Us
+       © Copyright 2020 <i class="fa fa-heart" aria-hidden="true"></i> Quants R Us
     
     </p>
 </footer>

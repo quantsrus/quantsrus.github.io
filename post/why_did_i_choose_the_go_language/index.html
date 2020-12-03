@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="author" content="Quants R Us">
 <meta name="description" content="A blog on quantitative finance">
-<meta name="generator" content="Hugo 0.53" />
+<meta name="generator" content="Hugo 0.74.3" />
 <title>Why did I choose the Go language?</title>
 <link rel="shortcut icon" href="https://quantsrus.github.io/images/favicon.ico">
 <link rel="stylesheet" href="https://quantsrus.github.io/css/style.css">
@@ -28,17 +28,15 @@
 <meta property="og:title" content="Why did I choose the Go language?" />
 <meta property="og:description" content="Recently, a reader of my book asked me *why did you choose the Go language?*. Here is a more elaborate answer. And, would I still choose it now?" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://quantsrus.github.io/post/why_did_i_choose_the_go_language/" /><meta property="article:published_time" content="2019-07-17T15:50:22&#43;02:00"/>
-<meta property="article:modified_time" content="2019-07-17T15:50:22&#43;02:00"/>
-
+<meta property="og:url" content="https://quantsrus.github.io/post/why_did_i_choose_the_go_language/" />
+<meta property="article:published_time" content="2019-07-17T15:50:22+02:00" />
+<meta property="article:modified_time" content="2019-07-17T15:50:22+02:00" />
 
 
 <meta itemprop="name" content="Why did I choose the Go language?">
 <meta itemprop="description" content="Recently, a reader of my book asked me *why did you choose the Go language?*. Here is a more elaborate answer. And, would I still choose it now?">
-
-
-<meta itemprop="datePublished" content="2019-07-17T15:50:22&#43;02:00" />
-<meta itemprop="dateModified" content="2019-07-17T15:50:22&#43;02:00" />
+<meta itemprop="datePublished" content="2019-07-17T15:50:22+02:00" />
+<meta itemprop="dateModified" content="2019-07-17T15:50:22+02:00" />
 <meta itemprop="wordCount" content="420">
 
 
@@ -85,23 +83,17 @@
         </h2>
     </header>
     <section id="post-body">
-        <p>Recently, a reader of my book asked me &ldquo;why did you choose the <a href="https://golang.org/">Go language</a>?&ldquo;. I quickly mention it in the <em>tools of the trade</em> appendix. I will give a more elaborate answer to this question, and to the related question &ldquo;would you still choose Go today?&rdquo;.</p>
-
+        <p>Recently, a reader of my book asked me &ldquo;why did you choose the <a href="https://golang.org/">Go language</a>?&rdquo;. I quickly mention it in the <em>tools of the trade</em> appendix. I will give a more elaborate answer to this question, and to the related question &ldquo;would you still choose Go today?&rdquo;.</p>
 <p>Some of my initial motivations to choose the Go language were:</p>
-
 <ul>
 <li>Fast compilation time (almost instant).</li>
 <li>Fast run-time: at least on par with Java (it actually improved over the years).</li>
 <li>Simple abstractions: easy to pick-up the language.</li>
 <li>Try out a new language and see how good it is in practice.</li>
 </ul>
-
 <p>I hesitated with Rust and Scala at the time. In hindsight, while I enjoyed the Go language features, I don&rsquo;t think it was such a great choice. It was fast to pick up, but the language becomes a bit boring and sometimes, the lack of scientific libraries is an issue. I also find the error handling to be annoying, and the simplicity (lack of generics) a bit limitative.</p>
-
 <p>Overall, the Go code is easy to read (big positive aspect), but it leaves a feeling that it does not look great (I know it&rsquo;s very subjective). I am not so happy with the basic abstractions I used in my code. Furthermore, linear algebra is painful to read and write in Go (lack of operator overloading, partly).</p>
-
 <p>In the past, I did a bit of Scala, and was much happier with the outcome (although the tooling was not particularly great at the time). I discarded Rust because I wanted something quick to start, and not spend too much time on the language itself. I had tried on a small example before and saw that the borrow checker was particularly picky. I think this was a mistake, since I believe that relatively quickly, I would have known how to program with the borrow checker in mind. Now, syntaxically, I do find some other people Rust code a bit scary, reminiscent of C++ code.</p>
-
 <p>Today, I would pick <a href="https://www.julialang.org">Julia</a> without hesitation. It is so relaxing to write linear algebra in Julia, even compared to Python. Powerful abstractions are possible. Programs are fast, compilation feels almost instantaneous (although you may need to be careful about the types then). There are good scientific libraries for Julia. Although some basic stuff is sometimes missing, for example, the bicubic interpolations available don&rsquo;t implement analytic derivatives, it is already miles ahead of Java and Scala in this regard. And I expect it to catch up with Python quickly in the coming years.</p>
 
     </section>
@@ -136,6 +128,10 @@
 
     
     
+    
+        <li>
+            <a href="/post/implied_volatility_algorithms_go_julia/">The Fastest Implied Volatility Algorithms, Go vs. Julia<aside class="dates">Dec 2 2020</aside></a>
+        </li>
     
         <li>
             <a href="/post/rbf_collocation_of_2d_pde_and_precision/">Julia and Python for the RBF collocation of a 2D PDE with multiple precision arithmetic<aside class="dates">May 24 2019</aside></a>
@@ -173,10 +169,6 @@
             <a href="/post/differential_evolution_vs_simulated_annealing/">Differential evolution vs. Simulated annealing<aside class="dates">Jun 21 2017</aside></a>
         </li>
     
-        <li>
-            <a href="/post/andreasen_huge_spline/">A spline to fill the gaps with Andreasen-Huge one-step method<aside class="dates">May 11 2017</aside></a>
-        </li>
-    
 </ul>
 
 
@@ -198,7 +190,7 @@
     
     <p class="small">
     
-       © Copyright 2019 <i class="fa fa-heart" aria-hidden="true"></i> Quants R Us
+       © Copyright 2020 <i class="fa fa-heart" aria-hidden="true"></i> Quants R Us
     
     </p>
 </footer>

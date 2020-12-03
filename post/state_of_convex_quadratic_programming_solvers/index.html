@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="author" content="Quants R Us">
 <meta name="description" content="A blog on quantitative finance">
-<meta name="generator" content="Hugo 0.53" />
+<meta name="generator" content="Hugo 0.74.3" />
 <title>The state of open-source quadratic programming convex optimizers</title>
 <link rel="shortcut icon" href="https://quantsrus.github.io/images/favicon.ico">
 <link rel="stylesheet" href="https://quantsrus.github.io/css/style.css">
@@ -28,17 +28,15 @@
 <meta property="og:title" content="The state of open-source quadratic programming convex optimizers" />
 <meta property="og:description" content="I explore here a few open-source optimizers on a relatively simple problem of finding a good convex subset, but with many constraints: 30104 constraints for essentially 174 variables. My particular problem can be easily expressed in the form of a quadratic programming problem." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://quantsrus.github.io/post/state_of_convex_quadratic_programming_solvers/" /><meta property="article:published_time" content="2018-07-24T22:48:01&#43;02:00"/>
-<meta property="article:modified_time" content="2018-07-24T22:48:01&#43;02:00"/>
-
+<meta property="og:url" content="https://quantsrus.github.io/post/state_of_convex_quadratic_programming_solvers/" />
+<meta property="article:published_time" content="2018-07-24T22:48:01+02:00" />
+<meta property="article:modified_time" content="2018-07-24T22:48:01+02:00" />
 
 
 <meta itemprop="name" content="The state of open-source quadratic programming convex optimizers">
 <meta itemprop="description" content="I explore here a few open-source optimizers on a relatively simple problem of finding a good convex subset, but with many constraints: 30104 constraints for essentially 174 variables. My particular problem can be easily expressed in the form of a quadratic programming problem.">
-
-
-<meta itemprop="datePublished" content="2018-07-24T22:48:01&#43;02:00" />
-<meta itemprop="dateModified" content="2018-07-24T22:48:01&#43;02:00" />
+<meta itemprop="datePublished" content="2018-07-24T22:48:01+02:00" />
+<meta itemprop="dateModified" content="2018-07-24T22:48:01+02:00" />
 <meta itemprop="wordCount" content="689">
 
 
@@ -85,28 +83,21 @@
         </h2>
     </header>
     <section id="post-body">
-        
-
-<p>I explore here a few open-source optimizers on a relatively simple problem of finding a good convex subset, but with many constraints:
- 30104 constraints for essentially 174 variables. My particular problem can be easily expressed in the form of a <a href="https://en.wikipedia.org/wiki/Quadratic_programming">quadratic programming problem</a>.</p>
-
+        <p>I explore here a few open-source optimizers on a relatively simple problem of finding a good convex subset, but with many constraints:
+30104 constraints for essentially 174 variables. My particular problem can be easily expressed in the form of a <a href="https://en.wikipedia.org/wiki/Quadratic_programming">quadratic programming problem</a>.</p>
 <h2 id="java">Java</h2>
-
 <ol>
 <li>Ojalgo: very difficult to setup properly in the absence of documentation for convex minimization. I suspect it does not work well, as it has a tendency to never finish. Don&rsquo;t waste your time on this.</li>
 <li>JOptimizer: much better documentation, but the algorithms seem very primitive, and can&rsquo;t solve my problem with a relatively large number of variables as it keeps complaining on KKT solution failed. It worked when I truncated the problem to 4 variables.</li>
 </ol>
-
 <p>I could not find much else. It is quite surprising that the state of optimizers is so poor in Java, given that it is one of the most used languages in the enterprise.</p>
-
 <h2 id="python">Python</h2>
-
 <ol>
 <li><a href="https://cvxopt.org/">CVXOPT</a>: very good documentation, and seems robust. It took 4s to solve my problem.</li>
 <li><a href="https://osqp.org/">OSQP</a>: it works, but it is somewhat slow: 25s to find a solution, while CVXOPT takes 4s for a better result.</li>
 <li><a href="http://www.cvxpy.org">CVXPY</a>: it is front-end towards existing solvers. It has a very neat documentation. The results
-depend a lot on the underlying solver, and the approach used.
-
+depend a lot on the underlying solver, and the approach used.</li>
+</ol>
 <ul>
 <li>The default solver (which I think is OSQP) finds a solution
 that does not obeys the constraints. If I override the settings the same way as in my direct OSQP test, then it solves correctly
@@ -117,28 +108,19 @@ The use of a numpy sparse matrix representation to describe all constraints toge
 But it does not impact much the SCS or CVXOPT solvers.</li>
 <li>The default settings for each solver are different. The performance is not strictly comparable and the default settings for OSQP
 might not be appropriate on my problem</li>
-</ul></li>
-</ol>
-
+</ul>
 <p>A while ago, I also tried <a href="https://projects.coin-or.org/Ipopt">IPOPT</a>, which is a more general convex non-linear solver as it appeared here and there in forums and Google. Unfortunately, I found it
 a pain to setup on Linux, and after all my efforts, it did not lead to particularly good results.</p>
-
 <h2 id="octave-scilab">Octave, Scilab</h2>
-
 <p><a href="https://www.scilab.org/">Scilab</a> solveqp can be used only if the quadratic matrix is positive definite. On my example the matrix is diagonal,
 and some diagonal elements are 0, it is thus only positive semi-definite. I had to set a small epsilon value on the diagonal to be able to solve with Scilab. It also only works with non sparse matrices. The error reporting is quite bad, it is not obvious at all that solveqp does not work with sparse matrices.</p>
-
 <p>A very similar function, solve_qp, can however work with a sparse matrix to describe the constraints, and it becomes the fastest of all solvers. Note that the scilab documentation is wrong, the format for the input is really the same as the <a href="https://github.com/cran/quadprog/blob/master/src/solve.QP.compact.f">code from Berwin Turlach</a>. The documentation says it computes
-$$ \min \frac{1}{2} x^t Q x + p^t x\,. $$
+$$ \min \frac{1}{2} x^t Q x + p^t x,. $$
 while the function actually computes
-$$ \min \frac{1}{2} x^t Q x - p^t x\,. $$</p>
-
+$$ \min \frac{1}{2} x^t Q x - p^t x,. $$</p>
 <p>I could not get a solution out of Octave qp or quadprog routines.</p>
-
 <h2 id="summary">Summary</h2>
-
 <p>Here are the results sorted in ascending solving time:</p>
-
 <table>
 <thead>
 <tr>
@@ -147,74 +129,62 @@ $$ \min \frac{1}{2} x^t Q x - p^t x\,. $$</p>
 <th align="right">Objective</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td>Scilab-solve_qp sparse</td>
 <td align="right">0.2</td>
 <td align="right">4.5E-5</td>
 </tr>
-
 <tr>
 <td>CVXPY-ECOS-sparse</td>
 <td align="right">0.9</td>
 <td align="right">4.5E-5</td>
 </tr>
-
 <tr>
 <td>CVXOPT-sparse</td>
 <td align="right">4</td>
 <td align="right">5.5E-5</td>
 </tr>
-
 <tr>
 <td>Scilab-solveqp</td>
 <td align="right">5</td>
 <td align="right">4.5E-5</td>
 </tr>
-
 <tr>
 <td>CVXPY-OSQP*-sparse</td>
 <td align="right">8</td>
 <td align="right">1.5E-4</td>
 </tr>
-
 <tr>
 <td>OSQP-sparse</td>
 <td align="right">25</td>
 <td align="right">6.8E-5</td>
 </tr>
-
 <tr>
 <td>CVXPY-ECOS</td>
 <td align="right">50</td>
 <td align="right">4.5E-5</td>
 </tr>
-
 <tr>
 <td>CVXPY-default</td>
 <td align="right">55</td>
 <td align="right">not within constraints</td>
 </tr>
-
 <tr>
 <td>CVXPY-OSQP*</td>
 <td align="right">70</td>
 <td align="right">1.5E-4</td>
 </tr>
-
 <tr>
 <td>CVXPY-SCS-sparse</td>
 <td align="right">175</td>
 <td align="right">4.4E-5</td>
 </tr>
-
 <tr>
 <td>CVXPY-SCS</td>
 <td align="right">200</td>
 <td align="right">4.4E-5</td>
 </tr>
-
 <tr>
 <td>CVXPY-CVXOPT-sparse</td>
 <td align="right">breaks</td>
@@ -222,9 +192,7 @@ $$ \min \frac{1}{2} x^t Q x - p^t x\,. $$</p>
 </tr>
 </tbody>
 </table>
-
 <p>From Python, the optimizers are of much higher quality. It is not too surprising since they are often written in close collaboration with universities and researchers in the field.</p>
-
 <p>Scilab looks really from another century (a slow Java GUI), and the project is really redundant with Octave. I wish they would both work on the same code base and produce something of higher quality. Clearly, they have lost ground against Python, especially with the IPython/Jupiter notebooks.</p>
 
     </section>
@@ -259,6 +227,10 @@ $$ \min \frac{1}{2} x^t Q x - p^t x\,. $$</p>
 
     
     
+    
+        <li>
+            <a href="/post/implied_volatility_algorithms_go_julia/">The Fastest Implied Volatility Algorithms, Go vs. Julia<aside class="dates">Dec 2 2020</aside></a>
+        </li>
     
         <li>
             <a href="/post/why_did_i_choose_the_go_language/">Why did I choose the Go language?<aside class="dates">Jul 17 2019</aside></a>
@@ -296,10 +268,6 @@ $$ \min \frac{1}{2} x^t Q x - p^t x\,. $$</p>
             <a href="/post/differential_evolution_vs_simulated_annealing/">Differential evolution vs. Simulated annealing<aside class="dates">Jun 21 2017</aside></a>
         </li>
     
-        <li>
-            <a href="/post/andreasen_huge_spline/">A spline to fill the gaps with Andreasen-Huge one-step method<aside class="dates">May 11 2017</aside></a>
-        </li>
-    
 </ul>
 
 
@@ -321,7 +289,7 @@ $$ \min \frac{1}{2} x^t Q x - p^t x\,. $$</p>
     
     <p class="small">
     
-       © Copyright 2019 <i class="fa fa-heart" aria-hidden="true"></i> Quants R Us
+       © Copyright 2020 <i class="fa fa-heart" aria-hidden="true"></i> Quants R Us
     
     </p>
 </footer>
