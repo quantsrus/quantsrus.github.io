@@ -37,7 +37,7 @@
 <meta itemprop="description" content="As I am preparing the third edition of my book (which I plan to complete this month), I am also moving some of the algorithms I coded in the Go language to Julia and at the same time make those public. Among those is the Cos method.">
 <meta itemprop="datePublished" content="2021-01-18T21:50:22+02:00" />
 <meta itemprop="dateModified" content="2021-01-18T21:50:22+02:00" />
-<meta itemprop="wordCount" content="254">
+<meta itemprop="wordCount" content="256">
 
 
 
@@ -84,7 +84,7 @@
     </header>
     <section id="post-body">
         <p>As I am preparing the third edition of my book (which I plan to complete this month), I am also moving some of the algorithms I coded in the Go language to Julia and at the same time make those public.</p>
-<p>For the <a href="https://mpra.ub.uni-muenchen.de/9319/1/MPRA_paper_9319.pdf">Cos method</a> of Fang and Oosterlee, I actually had already <a href="https://github.com/jherekhealy/CharFuncPricing.jl">written some code</a> in Julia, to provide an implementation that supports arbitrary precision. Recently, I was reviewing some of the book content on vanilla option pricing under the Heston stochastic volatility model, to make it more up-to-date. I noticed that my Go implementation of the Cos method was much faster than the timing I had presented in the book (coming from yet another implementation, in another language), likely because of CPU improvements, but also because the Go language handles complex numbers relatively efficiently. Well, it turns out that Julia is even faster</p>
+<p>For the <a href="https://mpra.ub.uni-muenchen.de/9319/1/MPRA_paper_9319.pdf">Cos method</a> of Fang and Oosterlee, I actually had already <a href="https://github.com/jherekhealy/CharFuncPricing.jl">written some code</a> in Julia, to provide an implementation that supports arbitrary precision. Recently, I was reviewing some of the book content on vanilla option pricing under the Heston stochastic volatility model, to make it more up-to-date. I noticed that my Go implementation of the Cos method was much faster than the timing I had presented in the book (coming from yet another implementation, in another language), likely because of CPU improvements, but also because the Go language handles complex numbers relatively efficiently. Well, it turns out that Julia is of the same speed.</p>
 <p>To price 100 options under the same Heston parameters, using 200 points, I obtain the following timing</p>
 <table>
 <thead>
@@ -97,12 +97,12 @@
 <tbody>
 <tr>
 <td>3000 microsec.</td>
-<td>550 microsec.</td>
-<td>300 microsec.</td>
+<td>558 microsec.</td>
+<td>560 microsec.</td>
 </tr>
 </tbody>
 </table>
-<p>To price a single option, discarding the setup time, the Cos method takes only 1 microsecond. I thought that was quite impressive, even if this is a bit cheating since the expensive part is the characteristic function evaluation, which happens in the setup phase for the option maturity in question.</p>
+<p>To price a single option, discarding the setup time, the Cos method takes only 5 microseconds. I thought that was quite impressive, even if this is a bit cheating since the expensive part is the characteristic function evaluation, which happens in the setup phase for the option maturity in question.</p>
 <p>I also found a nice rough but simple rule to imply the number of points for a given accuracy. This, and the simplicity of the implementation make the Cos method quite attractive.</p>
 
     </section>
