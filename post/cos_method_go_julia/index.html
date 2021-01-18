@@ -7,7 +7,7 @@
 <meta name="author" content="Quants R Us">
 <meta name="description" content="A blog on quantitative finance">
 <meta name="generator" content="Hugo 0.75.1" />
-<title>About</title>
+<title>The Cos Method, Go and Julia</title>
 <link rel="shortcut icon" href="https://quantsrus.github.io/images/favicon.ico">
 <link rel="stylesheet" href="https://quantsrus.github.io/css/style.css">
 <link rel="stylesheet" href="https://quantsrus.github.io/css/highlight.css">
@@ -25,27 +25,27 @@
 <link href="https://quantsrus.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Quants R Us" />
 
 
-<meta property="og:title" content="About" />
-<meta property="og:description" content="Hello, my name is Jherek Healy and I write here about random quantitative finance matters. You can find my book Applied Quantitative Finance for Equity Derivatives on Lulu. A paperback edition is also available on Amazon (US, UK, France, Germany)." />
+<meta property="og:title" content="The Cos Method, Go and Julia" />
+<meta property="og:description" content="As I am preparing the third edition of my book (which I plan to complete this month), I am also moving some of the algorithms I coded in the Go language to Julia and at the same time make those public. Among those is the Cos method." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://quantsrus.github.io/about/" />
-<meta property="article:published_time" content="2017-12-17T10:05:07+01:00" />
-<meta property="article:modified_time" content="2017-12-17T10:05:07+01:00" />
+<meta property="og:url" content="https://quantsrus.github.io/post/cos_method_go_julia/" />
+<meta property="article:published_time" content="2021-01-18T21:50:22+02:00" />
+<meta property="article:modified_time" content="2021-01-18T21:50:22+02:00" />
 
 
-<meta itemprop="name" content="About">
-<meta itemprop="description" content="Hello, my name is Jherek Healy and I write here about random quantitative finance matters. You can find my book Applied Quantitative Finance for Equity Derivatives on Lulu. A paperback edition is also available on Amazon (US, UK, France, Germany).">
-<meta itemprop="datePublished" content="2017-12-17T10:05:07+01:00" />
-<meta itemprop="dateModified" content="2017-12-17T10:05:07+01:00" />
-<meta itemprop="wordCount" content="40">
+<meta itemprop="name" content="The Cos Method, Go and Julia">
+<meta itemprop="description" content="As I am preparing the third edition of my book (which I plan to complete this month), I am also moving some of the algorithms I coded in the Go language to Julia and at the same time make those public. Among those is the Cos method.">
+<meta itemprop="datePublished" content="2021-01-18T21:50:22+02:00" />
+<meta itemprop="dateModified" content="2021-01-18T21:50:22+02:00" />
+<meta itemprop="wordCount" content="254">
 
 
 
 <meta itemprop="keywords" content="" />
 
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="About"/>
-<meta name="twitter:description" content="Hello, my name is Jherek Healy and I write here about random quantitative finance matters. You can find my book Applied Quantitative Finance for Equity Derivatives on Lulu. A paperback edition is also available on Amazon (US, UK, France, Germany)."/>
+<meta name="twitter:title" content="The Cos Method, Go and Julia"/>
+<meta name="twitter:description" content="As I am preparing the third edition of my book (which I plan to complete this month), I am also moving some of the algorithms I coded in the Go language to Julia and at the same time make those public. Among those is the Cos method."/>
 <meta name="twitter:site" content="@https://twitter.com/JherekHealy"/>
 
 
@@ -74,16 +74,36 @@
         
 <article class="post">
     <header>
-        <h1>About</h1>
-        <h2 class="subtitle"></h2>
+        <h1>The Cos Method, Go and Julia</h1>
+        <h2 class="subtitle">As I am preparing the third edition of my book (which I plan to complete this month), I am also moving some of the algorithms I coded in the Go language to Julia and at the same time make those public. Among those is the Cos method.</h2>
         <h2 class="headline">
-        December 17, 2017
+        January 18, 2021
         <br>
         
         </h2>
     </header>
     <section id="post-body">
-        <p>Hello, my name is <a href="https://jherekhealy.github.io">Jherek Healy</a> and I write here about random quantitative finance matters. You can find my book <a href="http://www.lulu.com/shop/jherek-healy/applied-quantitative-finance-for-equity-derivatives-second-edition/hardcover/product-23926086.html">Applied Quantitative Finance for Equity Derivatives</a> on <a href="http://www.lulu.com/shop/jherek-healy/applied-quantitative-finance-for-equity-derivatives-second-edition/hardcover/product-23926086.html">Lulu</a>. A paperback edition is also available on Amazon (<a href="https://www.amazon.com/Applied-Quantitative-Finance-Equity-Derivatives/dp/1791546641/">US</a>, <a href="https://www.amazon.co.uk/Applied-Quantitative-Finance-Equity-Derivatives/dp/1791546641/">UK</a>, <a href="https://www.amazon.fr/Applied-Quantitative-Finance-Equity-Derivatives/dp/1791546641/">France</a>, <a href="https://www.amazon.de/Applied-Quantitative-Finance-Equity-Derivatives/dp/1791546641/">Germany</a>).</p>
+        <p>As I am preparing the third edition of my book (which I plan to complete this month), I am also moving some of the algorithms I coded in the Go language to Julia and at the same time make those public.</p>
+<p>For the <a href="https://mpra.ub.uni-muenchen.de/9319/1/MPRA_paper_9319.pdf">Cos method</a> of Fang and Oosterlee, I actually had already <a href="https://github.com/jherekhealy/CharFuncPricing.jl">written some code</a> in Julia, to provide an implementation that supports arbitrary precision. Recently, I was reviewing some of the book content on vanilla option pricing under the Heston stochastic volatility model, to make it more up-to-date. I noticed that my Go implementation of the Cos method was much faster than the timing I had presented in the book (coming from yet another implementation, in another language), likely because of CPU improvements, but also because the Go language handles complex numbers relatively efficiently. Well, it turns out that Julia is even faster</p>
+<p>To price 100 options under the same Heston parameters, using 200 points, I obtain the following timing</p>
+<table>
+<thead>
+<tr>
+<th>Old implementation</th>
+<th>Go</th>
+<th>Julia</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>3000 microsec.</td>
+<td>550 microsec.</td>
+<td>300 microsec.</td>
+</tr>
+</tbody>
+</table>
+<p>To price a single option, discarding the setup time, the Cos method takes only 1 microsecond. I thought this was quite impressive, even if this is a bit cheating since the expensive part is the characteristic function evaluation, which happens in the setup phase for the option maturity in question.</p>
+<p>I also found a nice rough but simple rule to imply the number of points for a given accuracy. This, and the simplicity of the implementation makes the Cos method quite attractive.</p>
 
     </section>
 </article>
@@ -97,7 +117,7 @@
     </div>
     </a>
     <section id="sharing">
-        <a class="twitter" href="https://twitter.com/intent/tweet?text=https%3a%2f%2fquantsrus.github.io%2fabout%2f - About by @JherekHealy"><span class="icon-twitter"> tweet</span></a>
+        <a class="twitter" href="https://twitter.com/intent/tweet?text=https%3a%2f%2fquantsrus.github.io%2fpost%2fcos_method_go_julia%2f - The%20Cos%20Method%2c%20Go%20and%20Julia by @JherekHealy"><span class="icon-twitter"> tweet</span></a>
 
 <a class="facebook" href="#" onclick="
     window.open(
@@ -117,10 +137,6 @@
 
     
     
-    
-        <li>
-            <a href="/post/cos_method_go_julia/">The Cos Method, Go and Julia<aside class="dates">Jan 18 2021</aside></a>
-        </li>
     
         <li>
             <a href="/post/implied_volatility_algorithms_go_julia/">The Fastest Implied Volatility Algorithms, Go vs. Julia<aside class="dates">Dec 2 2020</aside></a>
@@ -156,6 +172,10 @@
     
         <li>
             <a href="/post/particle_swarm_optimization_heston_calibration/">Particle Swarm Optimization on Heston Small-Time Expansion<aside class="dates">Jul 6 2017</aside></a>
+        </li>
+    
+        <li>
+            <a href="/post/particle_swarm_optimization/">Particle Swarm Optimization<aside class="dates">Jun 30 2017</aside></a>
         </li>
     
 </ul>

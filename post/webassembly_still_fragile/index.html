@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="author" content="Quants R Us">
 <meta name="description" content="A blog on quantitative finance">
-<meta name="generator" content="Hugo 0.74.3" />
+<meta name="generator" content="Hugo 0.75.1" />
 <title>Webassembly still fragile</title>
 <link rel="shortcut icon" href="https://quantsrus.github.io/images/favicon.ico">
 <link rel="stylesheet" href="https://quantsrus.github.io/css/style.css">
@@ -93,7 +93,7 @@
     at wasm-function[45]:38
     at wasm-function[138]:23
     at dynCall_iiiiiddd_1 (eval at makeDynCaller (http://localhost:9000/fractal.js:1:42548),</code></pre></div>
-And looking at the line 42548 of the generated javascript file is not very helpful. It is actually quite amazing that emscripten generates so many lines of javascript (this is partly because I rely on the C++ standard library I suppose). I managed to find a workaround thanks to a google search. I have to add the option <!-- raw HTML omitted -->-s &ldquo;BINARYEN_TRAP_MODE='clamp&rsquo;&ldquo;<!-- raw HTML omitted --> to em++. I wonder what the root cause exactly is, maybe the <a href="http://ab-initio.mit.edu/wiki/index.php/Faddeeva_Package">faddeeva library</a> tries to convert infinity or NaN to an int? I could not find it.</p>
+And looking at the line 42548 of the generated javascript file is not very helpful. It is actually quite amazing that emscripten generates so many lines of javascript (this is partly because I rely on the C++ standard library I suppose). I managed to find a workaround thanks to a google search. I have to add the option <!-- raw HTML omitted -->-s &ldquo;BINARYEN_TRAP_MODE=&lsquo;clamp&rsquo;&quot;<!-- raw HTML omitted --> to em++. I wonder what the root cause exactly is, maybe the <a href="http://ab-initio.mit.edu/wiki/index.php/Faddeeva_Package">faddeeva library</a> tries to convert infinity or NaN to an int? I could not find it.</p>
 <p>In any case, when it works, it works well and it is definitely possible to call some C++ libraries from javascript, which is still something quite amazing.</p>
 
     </section>
@@ -128,6 +128,10 @@ And looking at the line 42548 of the generated javascript file is not very helpf
 
     
     
+    
+        <li>
+            <a href="/post/cos_method_go_julia/">The Cos Method, Go and Julia<aside class="dates">Jan 18 2021</aside></a>
+        </li>
     
         <li>
             <a href="/post/implied_volatility_algorithms_go_julia/">The Fastest Implied Volatility Algorithms, Go vs. Julia<aside class="dates">Dec 2 2020</aside></a>
@@ -165,10 +169,6 @@ And looking at the line 42548 of the generated javascript file is not very helpf
             <a href="/post/particle_swarm_optimization/">Particle Swarm Optimization<aside class="dates">Jun 30 2017</aside></a>
         </li>
     
-        <li>
-            <a href="/post/differential_evolution_vs_simulated_annealing/">Differential evolution vs. Simulated annealing<aside class="dates">Jun 21 2017</aside></a>
-        </li>
-    
 </ul>
 
 
@@ -190,7 +190,7 @@ And looking at the line 42548 of the generated javascript file is not very helpf
     
     <p class="small">
     
-       © Copyright 2020 <i class="fa fa-heart" aria-hidden="true"></i> Quants R Us
+       © Copyright 2021 <i class="fa fa-heart" aria-hidden="true"></i> Quants R Us
     
     </p>
 </footer>

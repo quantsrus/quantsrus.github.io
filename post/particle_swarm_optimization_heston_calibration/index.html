@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="author" content="Quants R Us">
 <meta name="description" content="A blog on quantitative finance">
-<meta name="generator" content="Hugo 0.74.3" />
+<meta name="generator" content="Hugo 0.75.1" />
 <title>Particle Swarm Optimization on Heston Small-Time Expansion</title>
 <link rel="shortcut icon" href="https://quantsrus.github.io/images/favicon.ico">
 <link rel="stylesheet" href="https://quantsrus.github.io/css/style.css">
@@ -137,54 +137,54 @@ with different seeds (I jump to a far away point 100 times instead of simply pic
 <table>
 <thead>
 <tr>
-<th align="left">Minimizer</th>
-<th align="right">Mean failures (Std error)</th>
-<th align="right">Min</th>
-<th align="right">Max</th>
+<th style="text-align:left">Minimizer</th>
+<th style="text-align:right">Mean failures (Std error)</th>
+<th style="text-align:right">Min</th>
+<th style="text-align:right">Max</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td align="left">DE NP=30 F=0.8 CR=0.6  Rand1EitherOr</td>
-<td align="right">1.54 (0.10)</td>
-<td align="right">1</td>
-<td align="right">4</td>
+<td style="text-align:left">DE NP=30 F=0.8 CR=0.6  Rand1EitherOr</td>
+<td style="text-align:right">1.54 (0.10)</td>
+<td style="text-align:right">1</td>
+<td style="text-align:right">4</td>
 </tr>
 <tr>
-<td align="left">DE NP=30 F=0.7 CR=0.7  Rand1Bin</td>
-<td align="right">2.84 (0.10)</td>
-<td align="right">2</td>
-<td align="right">5</td>
+<td style="text-align:left">DE NP=30 F=0.7 CR=0.7  Rand1Bin</td>
+<td style="text-align:right">2.84 (0.10)</td>
+<td style="text-align:right">2</td>
+<td style="text-align:right">5</td>
 </tr>
 <tr>
-<td align="left">DE NP=30 F=0.8 CR=0.7 Best1Bin</td>
-<td align="right">3.74 (0.15)</td>
-<td align="right">1</td>
-<td align="right">6</td>
+<td style="text-align:left">DE NP=30 F=0.8 CR=0.7 Best1Bin</td>
+<td style="text-align:right">3.74 (0.15)</td>
+<td style="text-align:right">1</td>
+<td style="text-align:right">6</td>
 </tr>
 <tr>
-<td align="left">SA T=1 RT=0.8 NS=4 NT=20</td>
-<td align="right">2.02 (0.13)</td>
-<td align="right">0</td>
-<td align="right">5</td>
+<td style="text-align:left">SA T=1 RT=0.8 NS=4 NT=20</td>
+<td style="text-align:right">2.02 (0.13)</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">5</td>
 </tr>
 <tr>
-<td align="left">PSO S=100 von Neumann c1=c2=2.02 PhiEnd=2*2.2</td>
-<td align="right">2.72 (0.13)</td>
-<td align="right">1</td>
-<td align="right">5</td>
+<td style="text-align:left">PSO S=100 von Neumann c1=c2=2.02 PhiEnd=2*2.2</td>
+<td style="text-align:right">2.72 (0.13)</td>
+<td style="text-align:right">1</td>
+<td style="text-align:right">5</td>
 </tr>
 <tr>
-<td align="left">PSO S=81 von Neumann c1=c2=2.02  PhiEnd=2*2.2</td>
-<td align="right">3.00 (0.16)</td>
-<td align="right">1</td>
-<td align="right">5</td>
+<td style="text-align:left">PSO S=81 von Neumann c1=c2=2.02  PhiEnd=2*2.2</td>
+<td style="text-align:right">3.00 (0.16)</td>
+<td style="text-align:right">1</td>
+<td style="text-align:right">5</td>
 </tr>
 <tr>
-<td align="left">PSO S=49 von Neumann c1=c2=2.02  PhiEnd=2*2.2</td>
-<td align="right">3.84 (0.16)</td>
-<td align="right">2</td>
-<td align="right">6</td>
+<td style="text-align:left">PSO S=49 von Neumann c1=c2=2.02  PhiEnd=2*2.2</td>
+<td style="text-align:right">3.84 (0.16)</td>
+<td style="text-align:right">2</td>
+<td style="text-align:right">6</td>
 </tr>
 </tbody>
 </table>
@@ -198,48 +198,48 @@ the paper <a href="http://www.aifb.kit.edu/images/f/f7/FL.pdf">&ldquo;Analyzing 
 <table>
 <thead>
 <tr>
-<th align="left">Minimizer</th>
-<th align="right">Mean failures (Std error)</th>
-<th align="right">Min</th>
-<th align="right">Max</th>
+<th style="text-align:left">Minimizer</th>
+<th style="text-align:right">Mean failures (Std error)</th>
+<th style="text-align:right">Min</th>
+<th style="text-align:right">Max</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td align="left">Reflect-Z with S=100</td>
-<td align="right">2.46 (0.12)</td>
-<td align="right">1</td>
-<td align="right">4</td>
+<td style="text-align:left">Reflect-Z with S=100</td>
+<td style="text-align:right">2.46 (0.12)</td>
+<td style="text-align:right">1</td>
+<td style="text-align:right">4</td>
 </tr>
 <tr>
-<td align="left">Reflect-Z with S=81</td>
-<td align="right">2.54 (0.13)</td>
-<td align="right">1</td>
-<td align="right">5</td>
+<td style="text-align:left">Reflect-Z with S=81</td>
+<td style="text-align:right">2.54 (0.13)</td>
+<td style="text-align:right">1</td>
+<td style="text-align:right">5</td>
 </tr>
 <tr>
-<td align="left">Infinity  with S=100</td>
-<td align="right">2.72 (0.13)</td>
-<td align="right">1</td>
-<td align="right">5</td>
+<td style="text-align:left">Infinity  with S=100</td>
+<td style="text-align:right">2.72 (0.13)</td>
+<td style="text-align:right">1</td>
+<td style="text-align:right">5</td>
 </tr>
 <tr>
-<td align="left">Infinity with S=81</td>
-<td align="right">3.00 (0.16)</td>
-<td align="right">1</td>
-<td align="right">5</td>
+<td style="text-align:left">Infinity with S=81</td>
+<td style="text-align:right">3.00 (0.16)</td>
+<td style="text-align:right">1</td>
+<td style="text-align:right">5</td>
 </tr>
 <tr>
-<td align="left">Nearest-Z with S=100</td>
-<td align="right">3.04 (0.15)</td>
-<td align="right">1</td>
-<td align="right">6</td>
+<td style="text-align:left">Nearest-Z with S=100</td>
+<td style="text-align:right">3.04 (0.15)</td>
+<td style="text-align:right">1</td>
+<td style="text-align:right">6</td>
 </tr>
 <tr>
-<td align="left">Nearest-Z with S=81</td>
-<td align="right">3.42 (0.17)</td>
-<td align="right">1</td>
-<td align="right">6</td>
+<td style="text-align:left">Nearest-Z with S=81</td>
+<td style="text-align:right">3.42 (0.17)</td>
+<td style="text-align:right">1</td>
+<td style="text-align:right">6</td>
 </tr>
 </tbody>
 </table>
@@ -248,38 +248,38 @@ Here is a table with the time needed to calibrate the minimizers with the best s
 <table>
 <thead>
 <tr>
-<th align="left">Minimizer</th>
-<th align="right">Time(ms)</th>
+<th style="text-align:left">Minimizer</th>
+<th style="text-align:right">Time(ms)</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td align="left">DE Best1Bin</td>
-<td align="right">156</td>
+<td style="text-align:left">DE Best1Bin</td>
+<td style="text-align:right">156</td>
 </tr>
 <tr>
-<td align="left">DE Rand1EitherOr</td>
-<td align="right">267</td>
+<td style="text-align:left">DE Rand1EitherOr</td>
+<td style="text-align:right">267</td>
 </tr>
 <tr>
-<td align="left">DE Rand1Bin</td>
-<td align="right">314</td>
+<td style="text-align:left">DE Rand1Bin</td>
+<td style="text-align:right">314</td>
 </tr>
 <tr>
-<td align="left">SA</td>
-<td align="right">427</td>
+<td style="text-align:left">SA</td>
+<td style="text-align:right">427</td>
 </tr>
 <tr>
-<td align="left">PSO S=100</td>
-<td align="right">581</td>
+<td style="text-align:left">PSO S=100</td>
+<td style="text-align:right">581</td>
 </tr>
 <tr>
-<td align="left">PSO S=81</td>
-<td align="right">790</td>
+<td style="text-align:left">PSO S=81</td>
+<td style="text-align:right">790</td>
 </tr>
 <tr>
-<td align="left">PSO S=49</td>
-<td align="right">378</td>
+<td style="text-align:left">PSO S=49</td>
+<td style="text-align:right">378</td>
 </tr>
 </tbody>
 </table>
@@ -302,30 +302,30 @@ the RMSE below.
 <table>
 <thead>
 <tr>
-<th align="left">Minimizer</th>
-<th align="right">Mean failures (Std error)</th>
-<th align="right">Min</th>
-<th align="right">Max</th>
+<th style="text-align:left">Minimizer</th>
+<th style="text-align:right">Mean failures (Std error)</th>
+<th style="text-align:right">Min</th>
+<th style="text-align:right">Max</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td align="left">DE  NP=15 F=0.9 CR=0.5 Best1Bin</td>
-<td align="right">0.24 (0.07)</td>
-<td align="right">0</td>
-<td align="right">2</td>
+<td style="text-align:left">DE  NP=15 F=0.9 CR=0.5 Best1Bin</td>
+<td style="text-align:right">0.24 (0.07)</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">2</td>
 </tr>
 <tr>
-<td align="left">SA  T=1 RT=0.9 NS=3 NT=15</td>
-<td align="right">0.28 (0.06)</td>
-<td align="right">0</td>
-<td align="right">1</td>
+<td style="text-align:left">SA  T=1 RT=0.9 NS=3 NT=15</td>
+<td style="text-align:right">0.28 (0.06)</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">1</td>
 </tr>
 <tr>
-<td align="left">PSO  S=49 von Neumann  c1=c2=2.02 PhiEnd=4.4</td>
-<td align="right">0.08 (0.04)</td>
-<td align="right">0</td>
-<td align="right">1</td>
+<td style="text-align:left">PSO  S=49 von Neumann  c1=c2=2.02 PhiEnd=4.4</td>
+<td style="text-align:right">0.08 (0.04)</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">1</td>
 </tr>
 </tbody>
 </table>
@@ -374,6 +374,10 @@ that its inventor is linked to the <a href="https://en.wikipedia.org/wiki/Allais
     
     
         <li>
+            <a href="/post/cos_method_go_julia/">The Cos Method, Go and Julia<aside class="dates">Jan 18 2021</aside></a>
+        </li>
+    
+        <li>
             <a href="/post/implied_volatility_algorithms_go_julia/">The Fastest Implied Volatility Algorithms, Go vs. Julia<aside class="dates">Dec 2 2020</aside></a>
         </li>
     
@@ -409,10 +413,6 @@ that its inventor is linked to the <a href="https://en.wikipedia.org/wiki/Allais
             <a href="/post/particle_swarm_optimization/">Particle Swarm Optimization<aside class="dates">Jun 30 2017</aside></a>
         </li>
     
-        <li>
-            <a href="/post/differential_evolution_vs_simulated_annealing/">Differential evolution vs. Simulated annealing<aside class="dates">Jun 21 2017</aside></a>
-        </li>
-    
 </ul>
 
 
@@ -434,7 +434,7 @@ that its inventor is linked to the <a href="https://en.wikipedia.org/wiki/Allais
     
     <p class="small">
     
-       © Copyright 2020 <i class="fa fa-heart" aria-hidden="true"></i> Quants R Us
+       © Copyright 2021 <i class="fa fa-heart" aria-hidden="true"></i> Quants R Us
     
     </p>
 </footer>
