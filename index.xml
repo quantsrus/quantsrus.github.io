@@ -6,7 +6,17 @@
     <description>Recent content on Quants R Us</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 18 Jan 2021 21:50:22 +0200</lastBuildDate><atom:link href="https://quantsrus.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 12 Oct 2021 21:50:22 +0200</lastBuildDate><atom:link href="https://quantsrus.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Exponential B-Spline Collocation and Julia Automatic Differentiation</title>
+      <link>https://quantsrus.github.io/post/exp_b_spline_collocation_autodiff/</link>
+      <pubDate>Tue, 12 Oct 2021 21:50:22 +0200</pubDate>
+      
+      <guid>https://quantsrus.github.io/post/exp_b_spline_collocation_autodiff/</guid>
+      <description>I just added the exponential B-spline collocation to produce a flexible arbitrage-free interpolation of implied-volatilities to the book related github repo. I had written the polynomial collocation before, at the request of a reader of my book. The polynomial collocation is often what you will want to use but it has a few drawbacks sometimes:
+ It may not always fit well enough given the limited number of free-parameters. It sometimes produces artificial spikes in the extrapolation, even if the use of a specific regularization helps to address this.</description>
+    </item>
+    
     <item>
       <title>The Cos Method, Go and Julia</title>
       <link>https://quantsrus.github.io/post/cos_method_go_julia/</link>

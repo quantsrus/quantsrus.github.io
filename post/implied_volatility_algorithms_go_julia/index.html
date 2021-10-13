@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="author" content="Quants R Us">
 <meta name="description" content="A blog on quantitative finance">
-<meta name="generator" content="Hugo 0.75.1" />
+<meta name="generator" content="Hugo 0.88.1" />
 <title>The Fastest Implied Volatility Algorithms, Go vs. Julia</title>
 <link rel="shortcut icon" href="https://quantsrus.github.io/images/favicon.ico">
 <link rel="stylesheet" href="https://quantsrus.github.io/css/style.css">
@@ -28,21 +28,17 @@
 <meta property="og:title" content="The Fastest Implied Volatility Algorithms, Go vs. Julia" />
 <meta property="og:description" content="In the second edition of my book, I presented how to combine the good Black-Scholes implied volatility initial guess of Dan Stefanica and Rados Radoicic with a relatively simple solver.  Here, I present how to further enhance the performance, and compare as well implementations in the Go language vs. the Julia language." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://quantsrus.github.io/post/implied_volatility_algorithms_go_julia/" />
+<meta property="og:url" content="https://quantsrus.github.io/post/implied_volatility_algorithms_go_julia/" /><meta property="article:section" content="post" />
 <meta property="article:published_time" content="2020-12-02T21:50:22+02:00" />
 <meta property="article:modified_time" content="2020-12-02T21:50:22+02:00" />
 
 
+
 <meta itemprop="name" content="The Fastest Implied Volatility Algorithms, Go vs. Julia">
-<meta itemprop="description" content="In the second edition of my book, I presented how to combine the good Black-Scholes implied volatility initial guess of Dan Stefanica and Rados Radoicic with a relatively simple solver.  Here, I present how to further enhance the performance, and compare as well implementations in the Go language vs. the Julia language.">
-<meta itemprop="datePublished" content="2020-12-02T21:50:22+02:00" />
+<meta itemprop="description" content="In the second edition of my book, I presented how to combine the good Black-Scholes implied volatility initial guess of Dan Stefanica and Rados Radoicic with a relatively simple solver.  Here, I present how to further enhance the performance, and compare as well implementations in the Go language vs. the Julia language."><meta itemprop="datePublished" content="2020-12-02T21:50:22+02:00" />
 <meta itemprop="dateModified" content="2020-12-02T21:50:22+02:00" />
 <meta itemprop="wordCount" content="898">
-
-
-
 <meta itemprop="keywords" content="" />
-
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="The Fastest Implied Volatility Algorithms, Go vs. Julia"/>
 <meta name="twitter:description" content="In the second edition of my book, I presented how to combine the good Black-Scholes implied volatility initial guess of Dan Stefanica and Rados Radoicic with a relatively simple solver.  Here, I present how to further enhance the performance, and compare as well implementations in the Go language vs. the Julia language."/>
@@ -110,36 +106,31 @@
 <h3 id="alternative-algorithms">Alternative Algorithms</h3>
 <p>Next, I wondered how my Householder implementation on top of the good initial guess would fare with the Julia libraries. A key performance improvement is to not rely on the naive Black-Scholes implementation via the cumulative normal distribution, but to use Peter Jaeckel expression in terms of erfcx. This speeds up the algorithms by 30-40%.</p>
 <p>Another even more important trick is to apply the iteration on the logarithm of the option price. I noticed this, as I was experimenting with multiple precision support, and it turns out that for very low volatility, when the price is extremely small, Householder is very slow to converge. This can be seen in the plot below where it seems to take an exponentially longer time for very low volatilities.</p>
-<figure>
-    <img src="/post/iv_strike200_vols.png"/> <figcaption>
+<figure><img src="/post/iv_strike200_vols.png"/><figcaption>
             <h4>Time to imply the volatility from a 1y option of strike 200, forward 100, varying the reference vol.</h4>
         </figcaption>
 </figure>
 
 <p>Taking the log makes a tremendous difference:</p>
-<figure>
-    <img src="/post/iv_strike200_vols_log.png"/> <figcaption>
+<figure><img src="/post/iv_strike200_vols_log.png"/><figcaption>
             <h4>Time to imply the volatility from a 1y option of strike 200, forward 100, varying the reference vol - using log price.</h4>
         </figcaption>
 </figure>
 
 <p>The epsilon above denotes the limit at which the price is under machine epsilon. The timing, varying the strike, for a fixed vol is as good:</p>
-<figure>
-    <img src="/post/iv_strikes_vol10_log.png"/> <figcaption>
+<figure><img src="/post/iv_strikes_vol10_log.png"/><figcaption>
             <h4>Time to imply the volatility from a 1y option of forward 100, vol=10%, varying the option strike - using log price.</h4>
         </figcaption>
 </figure>
 
 <p>So far, Halley is almost as fast as Householder, this is not true anymore if we look at a fixed high vol (400%):</p>
-<figure>
-    <img src="/post/iv_strikes_vol400_log.png"/> <figcaption>
+<figure><img src="/post/iv_strikes_vol400_log.png"/><figcaption>
             <h4>Time to imply the volatility from a 1y option of forward 100, vol=400%, varying the option strike - using log price.</h4>
         </figcaption>
 </figure>
 
 <p>Peter Jaeckel algorithm is then always slower.  So it is not so difficult to write a much simpler, and faster algorithm. There is a place however where Peter Jaeckel really took a lot of care, it is to ensure a maximum accuracy, even in corner cases. My simple Householder algorithm &ldquo;only&rdquo; achieves an accuracy of around 1E-14 in implied volatility for a Call option of strike 200.0 and volatility 400%, while Peter Jaeckel algorithm pushes that up to 4E-15. In this case, Householder is within 2 machine epsilon accuracy in terms of price, while Jaeckel is within 1 machine epsilon accuracy.</p>
-<figure>
-    <img src="/post/iv_strike200_vols_error.png"/> <figcaption>
+<figure><img src="/post/iv_strike200_vols_error.png"/><figcaption>
             <h4>Error in the implied volatility from a 1y option of strike 200, forward 100, varying the reference vol.</h4>
         </figcaption>
 </figure>
@@ -181,6 +172,10 @@
     
     
         <li>
+            <a href="/post/exp_b_spline_collocation_autodiff/">Exponential B-Spline Collocation and Julia Automatic Differentiation<aside class="dates">Oct 12 2021</aside></a>
+        </li>
+    
+        <li>
             <a href="/post/cos_method_go_julia/">The Cos Method, Go and Julia<aside class="dates">Jan 18 2021</aside></a>
         </li>
     
@@ -214,10 +209,6 @@
     
         <li>
             <a href="/post/particle_swarm_optimization_heston_calibration/">Particle Swarm Optimization on Heston Small-Time Expansion<aside class="dates">Jul 6 2017</aside></a>
-        </li>
-    
-        <li>
-            <a href="/post/particle_swarm_optimization/">Particle Swarm Optimization<aside class="dates">Jun 30 2017</aside></a>
         </li>
     
 </ul>

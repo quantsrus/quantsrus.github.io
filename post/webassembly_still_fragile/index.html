@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="author" content="Quants R Us">
 <meta name="description" content="A blog on quantitative finance">
-<meta name="generator" content="Hugo 0.75.1" />
+<meta name="generator" content="Hugo 0.88.1" />
 <title>Webassembly still fragile</title>
 <link rel="shortcut icon" href="https://quantsrus.github.io/images/favicon.ico">
 <link rel="stylesheet" href="https://quantsrus.github.io/css/style.css">
@@ -28,21 +28,17 @@
 <meta property="og:title" content="Webassembly still fragile" />
 <meta property="og:description" content="As I am preparing the website for my upcoming book on equity derivatives models, I played around with webassembly to run some C&#43;&#43; code from your web browser..." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://quantsrus.github.io/post/webassembly_still_fragile/" />
+<meta property="og:url" content="https://quantsrus.github.io/post/webassembly_still_fragile/" /><meta property="article:section" content="post" />
 <meta property="article:published_time" content="2017-12-05T22:48:01+02:00" />
 <meta property="article:modified_time" content="2017-12-05T22:48:01+02:00" />
 
 
+
 <meta itemprop="name" content="Webassembly still fragile">
-<meta itemprop="description" content="As I am preparing the website for my upcoming book on equity derivatives models, I played around with webassembly to run some C&#43;&#43; code from your web browser...">
-<meta itemprop="datePublished" content="2017-12-05T22:48:01+02:00" />
+<meta itemprop="description" content="As I am preparing the website for my upcoming book on equity derivatives models, I played around with webassembly to run some C&#43;&#43; code from your web browser..."><meta itemprop="datePublished" content="2017-12-05T22:48:01+02:00" />
 <meta itemprop="dateModified" content="2017-12-05T22:48:01+02:00" />
 <meta itemprop="wordCount" content="302">
-
-
-
 <meta itemprop="keywords" content="" />
-
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Webassembly still fragile"/>
 <meta name="twitter:description" content="As I am preparing the website for my upcoming book on equity derivatives models, I played around with webassembly to run some C&#43;&#43; code from your web browser..."/>
@@ -86,7 +82,7 @@
         <p>As I am preparing the website for my upcoming book on equity derivatives models, I played around with <a href="http://webassembly.org/">webassembly</a> to run some C++ code from your web browser. In order to do that, I rely on <a href="http://kripken.github.io/emscripten-site/">emscripten</a>, which seems to be the most advanced toolkit to generate webassembly code.</p>
 <p>I did not expect the webassembly toolchain to be so fragile. At first I had trouble using some specific C code (not so complicated) from javascript through emscripten: there are multiple ways to do it. Many approaches failed and I did not manage to go very far to find out the root cause for the failure. One approach worked, the one described in the <a href="https://codelabs.developers.google.com/codelabs/web-assembly-intro/index.html">Google tutorial for Webassembly</a>.</p>
 <p>I still have some strange issues I could not fully resolve: if I compile with the flag -O3 then the generated wasm and javascript do not work, and without the flag, I have no issues. Here is the kind of error stack I get from the browser with -O3 (or -O2):</p>
-<p><div class="highlight"><pre class="chroma"><code class="language-txt" data-lang="txt">RuntimeError: integer result unrepresentable
+<p><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-txt" data-lang="txt">RuntimeError: integer result unrepresentable
     at wasm-function[42]:46
     at wasm-function[43]:251
     at wasm-function[44]:215
@@ -130,6 +126,10 @@ And looking at the line 42548 of the generated javascript file is not very helpf
     
     
         <li>
+            <a href="/post/exp_b_spline_collocation_autodiff/">Exponential B-Spline Collocation and Julia Automatic Differentiation<aside class="dates">Oct 12 2021</aside></a>
+        </li>
+    
+        <li>
             <a href="/post/cos_method_go_julia/">The Cos Method, Go and Julia<aside class="dates">Jan 18 2021</aside></a>
         </li>
     
@@ -163,10 +163,6 @@ And looking at the line 42548 of the generated javascript file is not very helpf
     
         <li>
             <a href="/post/particle_swarm_optimization_heston_calibration/">Particle Swarm Optimization on Heston Small-Time Expansion<aside class="dates">Jul 6 2017</aside></a>
-        </li>
-    
-        <li>
-            <a href="/post/particle_swarm_optimization/">Particle Swarm Optimization<aside class="dates">Jun 30 2017</aside></a>
         </li>
     
 </ul>

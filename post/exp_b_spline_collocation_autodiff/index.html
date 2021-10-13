@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en-us">
+	<head>
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="author" content="Quants R Us">
+<meta name="description" content="A blog on quantitative finance">
+<meta name="generator" content="Hugo 0.88.1" />
+<title>Exponential B-Spline Collocation and Julia Automatic Differentiation</title>
+<link rel="shortcut icon" href="https://quantsrus.github.io/images/favicon.ico">
+<link rel="stylesheet" href="https://quantsrus.github.io/css/style.css">
+<link rel="stylesheet" href="https://quantsrus.github.io/css/highlight.css">
+
+<link rel="stylesheet" href="https://quantsrus.github.io/override.css">
+
+<link rel="stylesheet" href="https://quantsrus.github.io/syntax.css">
+
+
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
+
+
+
+<link href="https://quantsrus.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Quants R Us" />
+
+
+<meta property="og:title" content="Exponential B-Spline Collocation and Julia Automatic Differentiation" />
+<meta property="og:description" content="New algorithms for polynomial stochastic collocation and exponential B-spline collocation are available now in my github repo. I had a few surprises while recreating those in Julia and using the forward automatic differentiation." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://quantsrus.github.io/post/exp_b_spline_collocation_autodiff/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2021-10-12T21:50:22+02:00" />
+<meta property="article:modified_time" content="2021-10-12T21:50:22+02:00" />
+
+
+
+<meta itemprop="name" content="Exponential B-Spline Collocation and Julia Automatic Differentiation">
+<meta itemprop="description" content="New algorithms for polynomial stochastic collocation and exponential B-spline collocation are available now in my github repo. I had a few surprises while recreating those in Julia and using the forward automatic differentiation."><meta itemprop="datePublished" content="2021-10-12T21:50:22+02:00" />
+<meta itemprop="dateModified" content="2021-10-12T21:50:22+02:00" />
+<meta itemprop="wordCount" content="563">
+<meta itemprop="keywords" content="" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Exponential B-Spline Collocation and Julia Automatic Differentiation"/>
+<meta name="twitter:description" content="New algorithms for polynomial stochastic collocation and exponential B-spline collocation are available now in my github repo. I had a few surprises while recreating those in Julia and using the forward automatic differentiation."/>
+<meta name="twitter:site" content="@https://twitter.com/JherekHealy"/>
+
+
+    </head>
+<body>
+    <nav class="main-nav">
+	
+		<a href='https://quantsrus.github.io/'> <span class="arrow">←</span>Home</a>
+	
+
+	
+ 		<a href='http://jherekhealy.github.io/'>My book</a>
+  	
+ 		<a href='/about/'>About</a>
+  	
+ 		<a href='/archive/'>Archive</a>
+  	
+
+	
+		<a class="cta" href="https://quantsrus.github.io/index.xml">Subscribe</a>
+	
+</nav>
+
+    <section id="wrapper">
+        
+        
+<article class="post">
+    <header>
+        <h1>Exponential B-Spline Collocation and Julia Automatic Differentiation</h1>
+        <h2 class="subtitle">New algorithms for polynomial stochastic collocation and exponential B-spline collocation are available now in my github repo. I had a few surprises while recreating those in Julia and using the forward automatic differentiation.</h2>
+        <h2 class="headline">
+        October 12, 2021
+        <br>
+        
+        </h2>
+    </header>
+    <section id="post-body">
+        <p>I <a href="https://github.com/jherekhealy/AQFED.jl/tree/master/src/collocation">just added</a> the exponential B-spline collocation to produce a flexible arbitrage-free interpolation of implied-volatilities to the <a href="https://github.com/jherekhealy/AQFED.jl">book related github repo</a>. I had written the polynomial collocation before, at the request of a reader of my book. The polynomial collocation is often what you will want to use but it has a few drawbacks sometimes:</p>
+<ul>
+<li>It may not always fit well enough given the limited number of free-parameters.</li>
+<li>It sometimes produces artificial spikes in the extrapolation, even if the use of a specific regularization helps to address this.</li>
+<li>There is absorption at zero.</li>
+</ul>
+<p>The exponential B-spline collocation offer as many parameters as anyone wants, avoids spikes (but also needs regularization in practice), and will map to  the open interval \( (0, +\infty) \): no absorption to deal with. An alternative, that I actually explored, would be a B-spline collocation towards the lognormal distribution. In general, the alternative is not interesting, since it produces a worse fit, for the same reasons as with a polynomial, as described <a href="https://chasethedevil.github.io/post/positive_stochastic_collocation/">out there</a>.</p>
+<p>Compared to the reference paper, I had to make a few modifications:</p>
+<ul>
+<li>a different kind of regularization for real market data such the TSLA examples (use the difference in  \(1/g'\) instead of \(g''\), as the probability density depends on \(1/g'\)).</li>
+<li>a proper choice of the first B-spline coefficient, such that the theoretical forward does not explode. The first coefficient may be chosen arbitrarily as it is then adjusted to match the market forward price.</li>
+<li>some care with NaNs due to the interaction of the exponential and normal cumulative distribution functions. This also interplays with automatic forward differentiation.</li>
+<li>the use of knots at x instead of in the middle avoids some oscillations in the absence of any regularization term.</li>
+</ul>
+<p>The third item is actually the trickiest one. Even though it is obvious after the facts, I did not think that forward automatic differentiation would lead to such subtle issues. While it is often not too difficult to deal with eventual NaNs in the evaluation of a given objective function (for example  in \( e^{x} f(x) \) with \( \lim_{x \to \infty} e^{x} f(x) = 0 \) the exponential will go to infinity even though the result must be zero), it is much less obvious to think about what could go wrong with the forward differentiation. There are trivial examples such as &hellip;.. but in my case, the differentiation happens over a non-trivial portion of code (and it&rsquo;s actually amazing that it works most of the time without issues).</p>
+<figure><img src="/post/jaeckel_expbspline_vol.png"/><figcaption>
+            <h4>Implied volatilities on the extreme market data of Peter Jaeckel.</h4>
+        </figcaption>
+</figure>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Method</th>
+<th style="text-align:right">RMSE in implied vol %</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">Polynomial degree 7</td>
+<td style="text-align:right">5.099</td>
+</tr>
+<tr>
+<td style="text-align:left">Exponential B-spline lambda=0</td>
+<td style="text-align:right">0.012</td>
+</tr>
+<tr>
+<td style="text-align:left">Exponential B-spline lambda=1e-2</td>
+<td style="text-align:right">0.050</td>
+</tr>
+</tbody>
+</table>
+<p>On real market data, it may be advantageous to use Gauss-Hermite nodes instead of the raw market implied nodes. With the same regularization (1e-2), and the same number of nodes, this leads to a very smooth implied density for the example of TSLA options of 18m maturity, much smoother than with the raw nodes without sacrifying too much accuracy. This is because the raw nodes are too close to each other when there are a lot of market observations and too far when there are few market observations.</p>
+<figure><img src="/post/tsla_expbsplinep_density.png"/><figcaption>
+            <h4>Implied probability density on TSLA option of maturity 18 months.</h4>
+        </figcaption>
+</figure>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Method</th>
+<th style="text-align:right">RMSE in implied vol %</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">Polynomial degree 7</td>
+<td style="text-align:right">1.31</td>
+</tr>
+<tr>
+<td style="text-align:left">Polynomial degree 11</td>
+<td style="text-align:right">0.93</td>
+</tr>
+<tr>
+<td style="text-align:left">Exponential B-spline lambda=0</td>
+<td style="text-align:right">0.35</td>
+</tr>
+<tr>
+<td style="text-align:left">Exponential B-spline lambda=1e-2</td>
+<td style="text-align:right">0.36</td>
+</tr>
+</tbody>
+</table>
+
+    </section>
+</article>
+
+<footer id="post-meta" class="clearfix">
+    <a href="https://twitter.com/JherekHealy">
+    <img class="avatar" src="https://quantsrus.github.io/images/avatar.png">
+    <div>
+        <span class="dark">Quants R Us</span>
+        <span>I am Jherek Healy.</span>
+    </div>
+    </a>
+    <section id="sharing">
+        <a class="twitter" href="https://twitter.com/intent/tweet?text=https%3a%2f%2fquantsrus.github.io%2fpost%2fexp_b_spline_collocation_autodiff%2f - Exponential%20B-Spline%20Collocation%20and%20Julia%20Automatic%20Differentiation by @JherekHealy"><span class="icon-twitter"> tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+    </section>
+</footer>
+
+
+
+<ul id="post-list" class="archive readmore">
+    <h3>Read more</h3>
+
+    
+    
+    
+        <li>
+            <a href="/post/cos_method_go_julia/">The Cos Method, Go and Julia<aside class="dates">Jan 18 2021</aside></a>
+        </li>
+    
+        <li>
+            <a href="/post/implied_volatility_algorithms_go_julia/">The Fastest Implied Volatility Algorithms, Go vs. Julia<aside class="dates">Dec 2 2020</aside></a>
+        </li>
+    
+        <li>
+            <a href="/post/why_did_i_choose_the_go_language/">Why did I choose the Go language?<aside class="dates">Jul 17 2019</aside></a>
+        </li>
+    
+        <li>
+            <a href="/post/rbf_collocation_of_2d_pde_and_precision/">Julia and Python for the RBF collocation of a 2D PDE with multiple precision arithmetic<aside class="dates">May 24 2019</aside></a>
+        </li>
+    
+        <li>
+            <a href="/post/constraints-in-levenberg-marquardt-least-squares-optimization/">Constraints in the Levenberg-Marquardt least-squares optimization<aside class="dates">Oct 8 2018</aside></a>
+        </li>
+    
+        <li>
+            <a href="/post/state_of_convex_quadratic_programming_solvers/">The state of open-source quadratic programming convex optimizers<aside class="dates">Jul 24 2018</aside></a>
+        </li>
+    
+        <li>
+            <a href="/post/staying-arbitrage-free-with-andreasen-huge-volatility-interpolation/">Staying arbitrage-free with Andreasen-Huge one-step interpolation<aside class="dates">Mar 8 2018</aside></a>
+        </li>
+    
+        <li>
+            <a href="/post/on-the-quality-of-research-publications/">On the Quality of Research Publications<aside class="dates">Feb 28 2018</aside></a>
+        </li>
+    
+        <li>
+            <a href="/post/webassembly_still_fragile/">Webassembly still fragile<aside class="dates">Dec 5 2017</aside></a>
+        </li>
+    
+        <li>
+            <a href="/post/particle_swarm_optimization_heston_calibration/">Particle Swarm Optimization on Heston Small-Time Expansion<aside class="dates">Jul 6 2017</aside></a>
+        </li>
+    
+</ul>
+
+
+
+        <footer id="footer">
+    
+        <div id="social">
+
+	
+	
+    <a class="symbol" href="https://twitter.com/JherekHealy">
+        <i class="fa fa-twitter"></i>
+    </a>
+    
+
+
+</div>
+
+    
+    <p class="small">
+    
+       © Copyright 2021 <i class="fa fa-heart" aria-hidden="true"></i> Quants R Us
+    
+    </p>
+</footer>
+<script type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+    </section>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://quantsrus.github.io/js/main.js"></script>
+
+
+
+
+
+
+</body>
+</html>

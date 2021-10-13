@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="author" content="Quants R Us">
 <meta name="description" content="A blog on quantitative finance">
-<meta name="generator" content="Hugo 0.75.1" />
+<meta name="generator" content="Hugo 0.88.1" />
 <title>Particle Swarm Optimization on Heston Small-Time Expansion</title>
 <link rel="shortcut icon" href="https://quantsrus.github.io/images/favicon.ico">
 <link rel="stylesheet" href="https://quantsrus.github.io/css/style.css">
@@ -28,21 +28,17 @@
 <meta property="og:title" content="Particle Swarm Optimization on Heston Small-Time Expansion" />
 <meta property="og:description" content="Here, I look at the problem of calibrating a Heston small-time expansion, the one from Forde &amp; Jacquier. This can be useful to find a good initial guess for the exact Heston calibration, computed with much costlier characteristic function Fourier numerical integration. I conclude with the madness of the life science inspired optimizers..." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://quantsrus.github.io/post/particle_swarm_optimization_heston_calibration/" />
+<meta property="og:url" content="https://quantsrus.github.io/post/particle_swarm_optimization_heston_calibration/" /><meta property="article:section" content="post" />
 <meta property="article:published_time" content="2017-07-06T07:48:01+02:00" />
 <meta property="article:modified_time" content="2017-07-06T07:48:01+02:00" />
 
 
+
 <meta itemprop="name" content="Particle Swarm Optimization on Heston Small-Time Expansion">
-<meta itemprop="description" content="Here, I look at the problem of calibrating a Heston small-time expansion, the one from Forde &amp; Jacquier. This can be useful to find a good initial guess for the exact Heston calibration, computed with much costlier characteristic function Fourier numerical integration. I conclude with the madness of the life science inspired optimizers...">
-<meta itemprop="datePublished" content="2017-07-06T07:48:01+02:00" />
+<meta itemprop="description" content="Here, I look at the problem of calibrating a Heston small-time expansion, the one from Forde &amp; Jacquier. This can be useful to find a good initial guess for the exact Heston calibration, computed with much costlier characteristic function Fourier numerical integration. I conclude with the madness of the life science inspired optimizers..."><meta itemprop="datePublished" content="2017-07-06T07:48:01+02:00" />
 <meta itemprop="dateModified" content="2017-07-06T07:48:01+02:00" />
 <meta itemprop="wordCount" content="1174">
-
-
-
 <meta itemprop="keywords" content="" />
-
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Particle Swarm Optimization on Heston Small-Time Expansion"/>
 <meta name="twitter:description" content="Here, I look at the problem of calibrating a Heston small-time expansion, the one from Forde &amp; Jacquier. This can be useful to find a good initial guess for the exact Heston calibration, computed with much costlier characteristic function Fourier numerical integration. I conclude with the madness of the life science inspired optimizers..."/>
@@ -89,26 +85,22 @@ Heston calibration, computed with much costlier characteristic function Fourier 
 <p>Unfortunately, as we see below, with the contour plots of the objective function
 (the RMSE in volatilities against market quotes), the problem is much less well behaved with the small-time expansion
 than with the numerical integration.
-<figure>
-    <img src="/post/forde_3d.png"/> <figcaption>
+<figure><img src="/post/forde_3d.png"/><figcaption>
             <h4>RMSE of the small-time Heston implied volatilities against SPX500 options volatilities in 1995 using v_0=0.009527, theta= 0.02318, sigma= 0.92745 and varying kappa and rho.</h4>
         </figcaption>
 </figure>
 
-<figure>
-    <img src="/post/forde_contour.png"/> <figcaption>
+<figure><img src="/post/forde_contour.png"/><figcaption>
             <h4>contour plot of the small-time RMSE</h4>
         </figcaption>
 </figure>
 
-<figure>
-    <img src="/post/flinn_3d.png"/> <figcaption>
+<figure><img src="/post/flinn_3d.png"/><figcaption>
             <h4>RMSE of the Fourier-based Heston implied volatilities against SPX500 options volatilities in 1995 using v_0=0.009527, theta= 0.02318, sigma= 0.92745 and varying kappa and rho.</h4>
         </figcaption>
 </figure>
 
-<figure>
-    <img src="/post/flinn_contour.png"/> <figcaption>
+<figure><img src="/post/flinn_contour.png"/><figcaption>
             <h4>contour plot of the Fourier-based (nearly exact) RMSE</h4>
         </figcaption>
 </figure>
@@ -286,14 +278,12 @@ Here is a table with the time needed to calibrate the minimizers with the best s
 <p>The time is however only indicative since it will be highly dependent on the stopping criteria, and each method use a different stopping criteria.</p>
 <p>Matt Lorig et al. provide <a href="https://arxiv.org/pdf/1306.5447">two different small-time Heston expansions</a> of order 2 and 3. Interestingly, they behave quite well on our example as evidenced by the 3d graph and the contour plot of
 the RMSE below.
-<figure>
-    <img src="/post/lpp2_3d.png"/> <figcaption>
+<figure><img src="/post/lpp2_3d.png"/><figcaption>
             <h4>RMSE of the small-time Heston implied volatilities against SPX500 options volatilities in 1995 using v_0=0.009527, theta= 0.02318, sigma= 0.92745 and varying kappa and rho.</h4>
         </figcaption>
 </figure>
 
-<figure>
-    <img src="/post/lpp2_contour.png"/> <figcaption>
+<figure><img src="/post/lpp2_contour.png"/><figcaption>
             <h4>contour plot of the small-time RMSE</h4>
         </figcaption>
 </figure>
@@ -374,6 +364,10 @@ that its inventor is linked to the <a href="https://en.wikipedia.org/wiki/Allais
     
     
         <li>
+            <a href="/post/exp_b_spline_collocation_autodiff/">Exponential B-Spline Collocation and Julia Automatic Differentiation<aside class="dates">Oct 12 2021</aside></a>
+        </li>
+    
+        <li>
             <a href="/post/cos_method_go_julia/">The Cos Method, Go and Julia<aside class="dates">Jan 18 2021</aside></a>
         </li>
     
@@ -407,10 +401,6 @@ that its inventor is linked to the <a href="https://en.wikipedia.org/wiki/Allais
     
         <li>
             <a href="/post/webassembly_still_fragile/">Webassembly still fragile<aside class="dates">Dec 5 2017</aside></a>
-        </li>
-    
-        <li>
-            <a href="/post/particle_swarm_optimization/">Particle Swarm Optimization<aside class="dates">Jun 30 2017</aside></a>
         </li>
     
 </ul>

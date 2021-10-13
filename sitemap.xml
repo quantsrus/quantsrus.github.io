@@ -1,104 +1,67 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
-  
   <url>
+    <loc>https://quantsrus.github.io/post/exp_b_spline_collocation_autodiff/</loc>
+    <lastmod>2021-10-12T21:50:22+02:00</lastmod>
+  </url><url>
     <loc>https://quantsrus.github.io/post/</loc>
-    <lastmod>2021-01-18T21:50:22+02:00</lastmod>
-  </url>
-  
-  <url>
+    <lastmod>2021-10-12T21:50:22+02:00</lastmod>
+  </url><url>
     <loc>https://quantsrus.github.io/</loc>
-    <lastmod>2021-01-18T21:50:22+02:00</lastmod>
-  </url>
-  
-  <url>
+    <lastmod>2021-10-12T21:50:22+02:00</lastmod>
+  </url><url>
     <loc>https://quantsrus.github.io/post/cos_method_go_julia/</loc>
     <lastmod>2021-01-18T21:50:22+02:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://quantsrus.github.io/post/implied_volatility_algorithms_go_julia/</loc>
     <lastmod>2020-12-02T21:50:22+02:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://quantsrus.github.io/post/why_did_i_choose_the_go_language/</loc>
     <lastmod>2019-07-17T15:50:22+02:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://quantsrus.github.io/post/rbf_collocation_of_2d_pde_and_precision/</loc>
     <lastmod>2019-05-24T15:50:22+02:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://quantsrus.github.io/post/constraints-in-levenberg-marquardt-least-squares-optimization/</loc>
     <lastmod>2018-10-08T22:48:01+02:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://quantsrus.github.io/post/state_of_convex_quadratic_programming_solvers/</loc>
     <lastmod>2018-07-24T22:48:01+02:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://quantsrus.github.io/post/staying-arbitrage-free-with-andreasen-huge-volatility-interpolation/</loc>
     <lastmod>2018-03-08T22:48:01+02:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://quantsrus.github.io/categories/</loc>
     <lastmod>2018-02-28T20:56:42+01:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://quantsrus.github.io/post/on-the-quality-of-research-publications/</loc>
     <lastmod>2018-02-28T20:56:42+01:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://quantsrus.github.io/categories/quant/</loc>
     <lastmod>2018-02-28T20:56:42+01:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://quantsrus.github.io/about/</loc>
     <lastmod>2017-12-17T10:05:07+01:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://quantsrus.github.io/archive/</loc>
     <lastmod>2017-12-17T10:05:07+01:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://quantsrus.github.io/post/webassembly_still_fragile/</loc>
     <lastmod>2017-12-05T22:48:01+02:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://quantsrus.github.io/post/particle_swarm_optimization_heston_calibration/</loc>
     <lastmod>2017-07-06T07:48:01+02:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://quantsrus.github.io/post/particle_swarm_optimization/</loc>
     <lastmod>2017-06-30T07:48:01+02:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://quantsrus.github.io/post/differential_evolution_vs_simulated_annealing/</loc>
     <lastmod>2017-06-21T22:48:01+02:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://quantsrus.github.io/post/andreasen_huge_spline/</loc>
     <lastmod>2017-05-11T22:48:01+02:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://quantsrus.github.io/tags/</loc>
   </url>
-  
 </urlset>
