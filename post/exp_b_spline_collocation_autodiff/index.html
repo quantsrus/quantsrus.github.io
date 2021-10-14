@@ -37,7 +37,7 @@
 <meta itemprop="name" content="Exponential B-Spline Collocation and Julia Automatic Differentiation">
 <meta itemprop="description" content="New algorithms for polynomial stochastic collocation and exponential B-spline collocation are available now in my github repo. I had a few surprises while recreating those in Julia and using the forward automatic differentiation."><meta itemprop="datePublished" content="2021-10-12T21:50:22+02:00" />
 <meta itemprop="dateModified" content="2021-10-12T21:50:22+02:00" />
-<meta itemprop="wordCount" content="563">
+<meta itemprop="wordCount" content="627">
 <meta itemprop="keywords" content="" />
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Exponential B-Spline Collocation and Julia Automatic Differentiation"/>
@@ -93,7 +93,14 @@
 <li>some care with NaNs due to the interaction of the exponential and normal cumulative distribution functions. This also interplays with automatic forward differentiation.</li>
 <li>the use of knots at x instead of in the middle avoids some oscillations in the absence of any regularization term.</li>
 </ul>
-<p>The third item is actually the trickiest one. Even though it is obvious after the facts, I did not think that forward automatic differentiation would lead to such subtle issues. While it is often not too difficult to deal with eventual NaNs in the evaluation of a given objective function (for example  in \( e^{x} f(x) \) with \( \lim_{x \to \infty} e^{x} f(x) = 0 \) the exponential will go to infinity even though the result must be zero), it is much less obvious to think about what could go wrong with the forward differentiation. There are trivial examples such as &hellip;.. but in my case, the differentiation happens over a non-trivial portion of code (and it&rsquo;s actually amazing that it works most of the time without issues).</p>
+<p>The third item is actually the trickiest one. Even though it is obvious after the facts, I did not think that forward automatic differentiation would lead to such subtle issues. While it is often not too difficult to deal with eventual NaNs in the evaluation of a given objective function (for example  in \( e^{x} f(x) \) with \( \lim_{x \to \infty} e^{x} f(x) = 0 \) the exponential will go to infinity even though the result must be zero), it is much less obvious to think about what could go wrong with the forward differentiation. There are trivial examples such as:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="k">using</span> <span class="n">ForwardDiff</span>
+<span class="n">g</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">))</span> 
+<span class="n">ForwardDiff</span><span class="o">.</span><span class="n">derivative</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span></code></pre></div>
+<p>the function evaluation is well defined, but the function is not differentiable at 0. For differentiation to work, the following definition is required:
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="n">g</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="o">?</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">))</span> <span class="o">:</span> <span class="n">zero</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></code></pre></div></p>
+<p>But in my case, the differentiation happens over a non-trivial portion of code (and it&rsquo;s actually amazing that it works most of the time without issues).</p>
+<p>It does not seem to uncommon for people to fight NaNs due to automatic forward differentation, see for example <a href="https://github.com/JuliaDiff/ForwardDiff.jl/issues/179">this thread</a> and <a href="https://github.com/JuliaDiff/ForwardDiff.jl/issues/181">related</a>, or <a href="https://discourse.julialang.org/t/forwarddiff-complicated-functions/31094">that one</a>.</p>
 <figure><img src="/post/jaeckel_expbspline_vol.png"/><figcaption>
             <h4>Implied volatilities on the extreme market data of Peter Jaeckel.</h4>
         </figcaption>
