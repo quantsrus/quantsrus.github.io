@@ -6,7 +6,16 @@
     <description>Recent content in Posts on Quants R Us</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 12 Oct 2021 21:50:22 +0200</lastBuildDate><atom:link href="https://quantsrus.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 28 Aug 2022 21:50:22 +0200</lastBuildDate><atom:link href="https://quantsrus.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Klein summation and Monte-Carlo simulations</title>
+      <link>https://quantsrus.github.io/post/klein_sum_and_monte_carlo_statistics/</link>
+      <pubDate>Sun, 28 Aug 2022 21:50:22 +0200</pubDate>
+      
+      <guid>https://quantsrus.github.io/post/klein_sum_and_monte_carlo_statistics/</guid>
+      <description>The straightforward and naive ways of calculating the mean and variance of the samples of a Monte-Carlo simulation may introduce artificial errors in the results. Monte-Carlo simulations are inherently parallelisable. It is possible and often desirable to run such a parallel simulation using a consistent set of random numbers, such that the results of the simulation are reproducible. However, the operating system scheduling of the simulation on the multiple cores or CPUs implies some randomness in the order of the completed batches of results, due to the varying load of the CPUs.</description>
+    </item>
+    
     <item>
       <title>Exponential B-Spline Collocation and Julia Automatic Differentiation</title>
       <link>https://quantsrus.github.io/post/exp_b_spline_collocation_autodiff/</link>

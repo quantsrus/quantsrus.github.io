@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="author" content="Quants R Us">
 <meta name="description" content="A blog on quantitative finance">
-<meta name="generator" content="Hugo 0.88.1" />
+<meta name="generator" content="Hugo 0.93.3" />
 <title>Exponential B-Spline Collocation and Julia Automatic Differentiation</title>
 <link rel="shortcut icon" href="https://quantsrus.github.io/images/favicon.ico">
 <link rel="stylesheet" href="https://quantsrus.github.io/css/style.css">
@@ -88,17 +88,17 @@
 <p>The exponential B-spline collocation offer as many parameters as anyone wants, avoids spikes (but also needs regularization in practice), and will map to  the open interval \( (0, +\infty) \): no absorption to deal with. An alternative, that I actually explored, would be a B-spline collocation towards the lognormal distribution. In general, the alternative is not interesting, since it produces a worse fit, for the same reasons as with a polynomial, as described <a href="https://chasethedevil.github.io/post/positive_stochastic_collocation/">out there</a>.</p>
 <p>Compared to the reference paper, I had to make a few modifications:</p>
 <ul>
-<li>a different kind of regularization for real market data such the TSLA examples (use the difference in  \(1/g'\) instead of \(g''\), as the probability density depends on \(1/g'\)).</li>
+<li>a different kind of regularization for real market data such the TSLA examples (use the difference in  \(1/g&rsquo;\) instead of \(g&rsquo;&rsquo;\), as the probability density depends on \(1/g&rsquo;\)).</li>
 <li>a proper choice of the first B-spline coefficient, such that the theoretical forward does not explode. The first coefficient may be chosen arbitrarily as it is then adjusted to match the market forward price.</li>
 <li>some care with NaNs due to the interaction of the exponential and normal cumulative distribution functions. This also interplays with automatic forward differentiation.</li>
 <li>the use of knots at x instead of in the middle avoids some oscillations in the absence of any regularization term.</li>
 </ul>
 <p>The third item is actually the trickiest one. Even though it is obvious after the facts, I did not think that forward automatic differentiation would lead to such subtle issues. While it is often not too difficult to deal with eventual NaNs in the evaluation of a given objective function (for example  in \( e^{x} f(x) \) with \( \lim_{x \to \infty} e^{x} f(x) = 0 \) the exponential will go to infinity even though the result must be zero), it is much less obvious to think about what could go wrong with the forward differentiation. There are trivial examples such as:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="k">using</span> <span class="n">ForwardDiff</span>
-<span class="n">g</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">))</span> 
-<span class="n">ForwardDiff</span><span class="o">.</span><span class="n">derivative</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span></code></pre></div>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="line"><span class="cl"><span class="k">using</span> <span class="n">ForwardDiff</span>
+</span></span><span class="line"><span class="cl"><span class="n">g</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">))</span> 
+</span></span><span class="line"><span class="cl"><span class="n">ForwardDiff</span><span class="o">.</span><span class="n">derivative</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span></span></span></code></pre></div>
 <p>the function evaluation is well defined, but the function is not differentiable at 0. For differentiation to work, the following definition is required:
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="n">g</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="o">?</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">))</span> <span class="o">:</span> <span class="n">zero</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></code></pre></div></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-julia" data-lang="julia"><span class="line"><span class="cl"><span class="n">g</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="o">?</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">))</span> <span class="o">:</span> <span class="n">zero</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></span></span></code></pre></div></p>
 <p>But in my case, the differentiation happens over a non-trivial portion of code (and it&rsquo;s actually amazing that it works most of the time without issues).</p>
 <p>It does not seem to uncommon for people to fight NaNs due to automatic forward differentation, see for example <a href="https://github.com/JuliaDiff/ForwardDiff.jl/issues/179">this thread</a> and <a href="https://github.com/JuliaDiff/ForwardDiff.jl/issues/181">related</a>, or <a href="https://discourse.julialang.org/t/forwarddiff-complicated-functions/31094">that one</a>.</p>
 <figure><img src="/post/jaeckel_expbspline_vol.png"/><figcaption>
@@ -195,43 +195,43 @@
     
     
         <li>
-            <a href="/post/cos_method_go_julia/">The Cos Method, Go and Julia<aside class="dates">Jan 18 2021</aside></a>
+            <a href="https://quantsrus.github.io/post/klein_sum_and_monte_carlo_statistics/">Klein summation and Monte-Carlo simulations<aside class="dates">Aug 28 2022</aside></a>
         </li>
     
         <li>
-            <a href="/post/implied_volatility_algorithms_go_julia/">The Fastest Implied Volatility Algorithms, Go vs. Julia<aside class="dates">Dec 2 2020</aside></a>
+            <a href="https://quantsrus.github.io/post/cos_method_go_julia/">The Cos Method, Go and Julia<aside class="dates">Jan 18 2021</aside></a>
         </li>
     
         <li>
-            <a href="/post/why_did_i_choose_the_go_language/">Why did I choose the Go language?<aside class="dates">Jul 17 2019</aside></a>
+            <a href="https://quantsrus.github.io/post/implied_volatility_algorithms_go_julia/">The Fastest Implied Volatility Algorithms, Go vs. Julia<aside class="dates">Dec 2 2020</aside></a>
         </li>
     
         <li>
-            <a href="/post/rbf_collocation_of_2d_pde_and_precision/">Julia and Python for the RBF collocation of a 2D PDE with multiple precision arithmetic<aside class="dates">May 24 2019</aside></a>
+            <a href="https://quantsrus.github.io/post/why_did_i_choose_the_go_language/">Why did I choose the Go language?<aside class="dates">Jul 17 2019</aside></a>
         </li>
     
         <li>
-            <a href="/post/constraints-in-levenberg-marquardt-least-squares-optimization/">Constraints in the Levenberg-Marquardt least-squares optimization<aside class="dates">Oct 8 2018</aside></a>
+            <a href="https://quantsrus.github.io/post/rbf_collocation_of_2d_pde_and_precision/">Julia and Python for the RBF collocation of a 2D PDE with multiple precision arithmetic<aside class="dates">May 24 2019</aside></a>
         </li>
     
         <li>
-            <a href="/post/state_of_convex_quadratic_programming_solvers/">The state of open-source quadratic programming convex optimizers<aside class="dates">Jul 24 2018</aside></a>
+            <a href="https://quantsrus.github.io/post/constraints-in-levenberg-marquardt-least-squares-optimization/">Constraints in the Levenberg-Marquardt least-squares optimization<aside class="dates">Oct 8 2018</aside></a>
         </li>
     
         <li>
-            <a href="/post/staying-arbitrage-free-with-andreasen-huge-volatility-interpolation/">Staying arbitrage-free with Andreasen-Huge one-step interpolation<aside class="dates">Mar 8 2018</aside></a>
+            <a href="https://quantsrus.github.io/post/state_of_convex_quadratic_programming_solvers/">The state of open-source quadratic programming convex optimizers<aside class="dates">Jul 24 2018</aside></a>
         </li>
     
         <li>
-            <a href="/post/on-the-quality-of-research-publications/">On the Quality of Research Publications<aside class="dates">Feb 28 2018</aside></a>
+            <a href="https://quantsrus.github.io/post/staying-arbitrage-free-with-andreasen-huge-volatility-interpolation/">Staying arbitrage-free with Andreasen-Huge one-step interpolation<aside class="dates">Mar 8 2018</aside></a>
         </li>
     
         <li>
-            <a href="/post/webassembly_still_fragile/">Webassembly still fragile<aside class="dates">Dec 5 2017</aside></a>
+            <a href="https://quantsrus.github.io/post/on-the-quality-of-research-publications/">On the Quality of Research Publications<aside class="dates">Feb 28 2018</aside></a>
         </li>
     
         <li>
-            <a href="/post/particle_swarm_optimization_heston_calibration/">Particle Swarm Optimization on Heston Small-Time Expansion<aside class="dates">Jul 6 2017</aside></a>
+            <a href="https://quantsrus.github.io/post/webassembly_still_fragile/">Webassembly still fragile<aside class="dates">Dec 5 2017</aside></a>
         </li>
     
 </ul>
@@ -255,7 +255,7 @@
     
     <p class="small">
     
-       © Copyright 2021 <i class="fa fa-heart" aria-hidden="true"></i> Quants R Us
+       © Copyright 2022 <i class="fa fa-heart" aria-hidden="true"></i> Quants R Us
     
     </p>
 </footer>

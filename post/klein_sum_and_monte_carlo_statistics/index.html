@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en-us">
+	<head>
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="author" content="Quants R Us">
+<meta name="description" content="A blog on quantitative finance">
+<meta name="generator" content="Hugo 0.93.3" />
+<title>Klein summation and Monte-Carlo simulations</title>
+<link rel="shortcut icon" href="https://quantsrus.github.io/images/favicon.ico">
+<link rel="stylesheet" href="https://quantsrus.github.io/css/style.css">
+<link rel="stylesheet" href="https://quantsrus.github.io/css/highlight.css">
+
+<link rel="stylesheet" href="https://quantsrus.github.io/override.css">
+
+<link rel="stylesheet" href="https://quantsrus.github.io/syntax.css">
+
+
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
+
+
+
+<link href="https://quantsrus.github.io/index.xml" rel="alternate" type="application/rss+xml" title="Quants R Us" />
+
+
+<meta property="og:title" content="Klein summation and Monte-Carlo simulations" />
+<meta property="og:description" content=" In parallelized Monte-Carlo simulations, the order of summation is not always the same. When the mean is calculated in running fashion, this may create an artificial randomness in results which ought to be reproducible. Does the Klein summation help addressing this issue? Are there better alternatives?" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://quantsrus.github.io/post/klein_sum_and_monte_carlo_statistics/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2022-08-28T21:50:22+02:00" />
+<meta property="article:modified_time" content="2022-08-28T21:50:22+02:00" />
+
+
+
+<meta itemprop="name" content="Klein summation and Monte-Carlo simulations">
+<meta itemprop="description" content=" In parallelized Monte-Carlo simulations, the order of summation is not always the same. When the mean is calculated in running fashion, this may create an artificial randomness in results which ought to be reproducible. Does the Klein summation help addressing this issue? Are there better alternatives?"><meta itemprop="datePublished" content="2022-08-28T21:50:22+02:00" />
+<meta itemprop="dateModified" content="2022-08-28T21:50:22+02:00" />
+<meta itemprop="wordCount" content="683">
+<meta itemprop="keywords" content="" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Klein summation and Monte-Carlo simulations"/>
+<meta name="twitter:description" content=" In parallelized Monte-Carlo simulations, the order of summation is not always the same. When the mean is calculated in running fashion, this may create an artificial randomness in results which ought to be reproducible. Does the Klein summation help addressing this issue? Are there better alternatives?"/>
+<meta name="twitter:site" content="@https://twitter.com/JherekHealy"/>
+
+
+    </head>
+<body>
+    <nav class="main-nav">
+	
+		<a href='https://quantsrus.github.io/'> <span class="arrow">←</span>Home</a>
+	
+
+	
+ 		<a href='http://jherekhealy.github.io/'>My book</a>
+  	
+ 		<a href='/about/'>About</a>
+  	
+ 		<a href='/archive/'>Archive</a>
+  	
+
+	
+		<a class="cta" href="https://quantsrus.github.io/index.xml">Subscribe</a>
+	
+</nav>
+
+    <section id="wrapper">
+        
+        
+<article class="post">
+    <header>
+        <h1>Klein summation and Monte-Carlo simulations</h1>
+        <h2 class="subtitle">In parallelized Monte-Carlo simulations, the order of summation is not always the same. When the mean is calculated in running fashion, this may create an artificial randomness in results which ought to be reproducible. Does the Klein summation help addressing this issue? Are there better alternatives?</h2>
+        <h2 class="headline">
+        August 28, 2022
+        <br>
+        
+        </h2>
+    </header>
+    <section id="post-body">
+        <p>The straightforward and naive ways of calculating the mean and variance of the samples of a Monte-Carlo simulation may introduce artificial errors in the results.
+Monte-Carlo simulations are inherently parallelisable. It is possible and often desirable to run such a parallel simulation using a consistent set of random numbers, such that the results of the simulation are reproducible. However, the operating system scheduling of the simulation on the multiple cores or CPUs
+implies some randomness in the order of the completed batches of results, due to the varying load of the CPUs. When the mean and variance of the Monte-Carlo simulation are calculated in running manner, the results obtained may differ due to the order of the terms in the summations involved, because of limits of accuracy imposed by the IEEE 64-bit floating-point standard. The differences may appear minor, but are
+amplified in finite-difference based sensitivities based on the mean, reusing the same random numbers (which is a standard practice).</p>
+<p>On one hand, the problem of calculating accurately the mean and variance has been studied in details, some recommended readings are Chan Golub and Leveque (1983) <a href="https://apps.dtic.mil/sti/pdfs/ADA133112.pdf">Algorithms for computing the sample variance: Analysis and recommendations</a>, Chan and Lewis (1979) <a href="https://dl.acm.org/doi/pdf/10.1145/359146.359152">Computing standard deviations: accuracy</a>.</p>
+<p>On the other hand, Kahan (1965) <a href="https://dl.acm.org/doi/pdf/10.1145/363707.363723">Pracniques: further remarks on reducing truncation errors</a>, Klein (2006) <a href="https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.582.288&amp;rep=rep1&amp;type=pdf">A generalized kahan-babuška-summation-algorithm</a> propose to add some correction terms for the problem of calculating a running sum with increased accuracy.</p>
+<p>Klein suggests a second order correction, and shows it to be more accurate than the more widely known Kahan summation on a example summing 50 million 32-bit floating point numbers uniformly distributed in the interval (0,1). This looked like a good candidate to try out on my problem. And indeed, this solves some visible issues we may see calculating mean, variance and Monte-Carlo greeks in 64-bit floating point arithmetic. But the simpler Kahan summation also solved the issues.</p>
+<p>Then I wondered if I could find a use case where Klein would prove more appropriate. As a first step, I tried to reproduce the results presented in Klein&rsquo;s 2006 paper. Somewhat surprisingly, I did not reproduce the results:</p>
+<ul>
+<li>Klein finds that his second-order iterative algorithm is more accurate than Kahan to compute the sum. I find the same accuracy as Kahan (close to 32-bit machine epsilon).</li>
+<li>When the set of random numbers is ordered, the second order iterative algorithm is significantly worse than Kahan. Kahan keeps the same accuracy as on the ordered set.</li>
+<li>Using longer or shorter sequences or different random number sequences lead to the same observations.</li>
+</ul>
+<figure><img src="/post/kahan_klein_error.png"/><figcaption>
+            <h4>Absolute errors on 10 random sequences of 50 million numbers in 32-bit arithmetic. The 7-th sequence shows a small difference in favor of Kahan.</h4>
+        </figcaption>
+</figure>
+
+<figure><img src="/post/kahan_ordered_error.png"/><figcaption>
+            <h4>Absolute errors on 10 random sequences of 50 million numbers in 32-bit arithmetic, comparing with the same set of numbers, used in ascending order for the algorithm of Kahan. No difference at all.</h4>
+        </figcaption>
+</figure>
+
+<figure><img src="/post/klein_klein_error.png"/><figcaption>
+            <h4>Absolute errors on 10 random sequences of 50 million numbers in 32-bit arithmetic, comparing with the same set of numbers, used in ascending order for the algorithm of Klein. Note the log scale and large error differences.</h4>
+        </figcaption>
+</figure>
+
+<p>I attempted to contact the author (who also works <a href="https://link.springer.com/book/10.1007/978-1-4471-5079-4#about-authors">on cryptography</a>) alas with no success (the various e-mail addresses are not valid anymore). I contacted two different developers who implemented the algorithm from Klein in their own libraries. Their feedback is interesting:</p>
+<ul>
+<li>Both did not try to reproduce the results of the paper. On one hand, this is slightly surprising, since the test seems so simple to try out. On the other hand, results of published papers are unfortunately rarely being reproduced, especially by referees.</li>
+<li>Both implemented a version hardcoded for 64-bit floating point numbers.</li>
+<li>One of the developers implemented this also in the context of parallel Monte-Carlo simulations. So it is a well known practical problem.</li>
+<li>One of the developers suggested Kahan was indeed as good on his problems.</li>
+</ul>
+<p>I wrote <a href="https://arxiv.org/abs/2206.10662">a note</a> based on my experiments, and with more details on:</p>
+<ul>
+<li>the kinds of Monte-Carlo simulations in finance,</li>
+<li>reproducible greeks,</li>
+<li>concrete examples</li>
+</ul>
+<p>The <a href="https://arxiv.org/abs/2206.10662">note in on arxiv</a>, with <a href="https://github.com/jherekhealy/MonteCarloMeanVarianceExamples.jl">code on github</a>.</p>
+
+    </section>
+</article>
+
+<footer id="post-meta" class="clearfix">
+    <a href="https://twitter.com/JherekHealy">
+    <img class="avatar" src="https://quantsrus.github.io/images/avatar.png">
+    <div>
+        <span class="dark">Quants R Us</span>
+        <span>I am Jherek Healy.</span>
+    </div>
+    </a>
+    <section id="sharing">
+        <a class="twitter" href="https://twitter.com/intent/tweet?text=https%3a%2f%2fquantsrus.github.io%2fpost%2fklein_sum_and_monte_carlo_statistics%2f - Klein%20summation%20and%20Monte-Carlo%20simulations by @JherekHealy"><span class="icon-twitter"> tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+    </section>
+</footer>
+
+
+
+<ul id="post-list" class="archive readmore">
+    <h3>Read more</h3>
+
+    
+    
+    
+        <li>
+            <a href="https://quantsrus.github.io/post/exp_b_spline_collocation_autodiff/">Exponential B-Spline Collocation and Julia Automatic Differentiation<aside class="dates">Oct 12 2021</aside></a>
+        </li>
+    
+        <li>
+            <a href="https://quantsrus.github.io/post/cos_method_go_julia/">The Cos Method, Go and Julia<aside class="dates">Jan 18 2021</aside></a>
+        </li>
+    
+        <li>
+            <a href="https://quantsrus.github.io/post/implied_volatility_algorithms_go_julia/">The Fastest Implied Volatility Algorithms, Go vs. Julia<aside class="dates">Dec 2 2020</aside></a>
+        </li>
+    
+        <li>
+            <a href="https://quantsrus.github.io/post/why_did_i_choose_the_go_language/">Why did I choose the Go language?<aside class="dates">Jul 17 2019</aside></a>
+        </li>
+    
+        <li>
+            <a href="https://quantsrus.github.io/post/rbf_collocation_of_2d_pde_and_precision/">Julia and Python for the RBF collocation of a 2D PDE with multiple precision arithmetic<aside class="dates">May 24 2019</aside></a>
+        </li>
+    
+        <li>
+            <a href="https://quantsrus.github.io/post/constraints-in-levenberg-marquardt-least-squares-optimization/">Constraints in the Levenberg-Marquardt least-squares optimization<aside class="dates">Oct 8 2018</aside></a>
+        </li>
+    
+        <li>
+            <a href="https://quantsrus.github.io/post/state_of_convex_quadratic_programming_solvers/">The state of open-source quadratic programming convex optimizers<aside class="dates">Jul 24 2018</aside></a>
+        </li>
+    
+        <li>
+            <a href="https://quantsrus.github.io/post/staying-arbitrage-free-with-andreasen-huge-volatility-interpolation/">Staying arbitrage-free with Andreasen-Huge one-step interpolation<aside class="dates">Mar 8 2018</aside></a>
+        </li>
+    
+        <li>
+            <a href="https://quantsrus.github.io/post/on-the-quality-of-research-publications/">On the Quality of Research Publications<aside class="dates">Feb 28 2018</aside></a>
+        </li>
+    
+        <li>
+            <a href="https://quantsrus.github.io/post/webassembly_still_fragile/">Webassembly still fragile<aside class="dates">Dec 5 2017</aside></a>
+        </li>
+    
+</ul>
+
+
+
+        <footer id="footer">
+    
+        <div id="social">
+
+	
+	
+    <a class="symbol" href="https://twitter.com/JherekHealy">
+        <i class="fa fa-twitter"></i>
+    </a>
+    
+
+
+</div>
+
+    
+    <p class="small">
+    
+       © Copyright 2022 <i class="fa fa-heart" aria-hidden="true"></i> Quants R Us
+    
+    </p>
+</footer>
+<script type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+    </section>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://quantsrus.github.io/js/main.js"></script>
+
+
+
+
+
+
+</body>
+</html>
