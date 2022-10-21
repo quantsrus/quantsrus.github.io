@@ -8,6 +8,15 @@
     <language>en-us</language>
     <lastBuildDate>Sun, 28 Aug 2022 21:50:22 +0200</lastBuildDate><atom:link href="https://quantsrus.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>Efficient Finite Difference Grid Stretching for Finance</title>
+      <link>https://quantsrus.github.io/post/efficient_finite_difference_grid_stretching/</link>
+      <pubDate>Sun, 28 Aug 2022 21:50:22 +0200</pubDate>
+      
+      <guid>https://quantsrus.github.io/post/efficient_finite_difference_grid_stretching/</guid>
+      <description>Partial differential equations sometimes have critical points where the solution or some of its derivatives are discontinuous. The simplest example is a discontinuity in the initial condition. It is well known that those decrease the accuracy of finite difference methods. A common remedy is to stretch the grid, such that many more grid points are present near the critical points, and fewer where the solution is deemed smooth. An alternative solution is to insert points such that the discontinuities fall in the middle of two grid points.</description>
+    </item>
+    
+    <item>
       <title>Klein summation and Monte-Carlo simulations</title>
       <link>https://quantsrus.github.io/post/klein_sum_and_monte_carlo_statistics/</link>
       <pubDate>Sun, 28 Aug 2022 21:50:22 +0200</pubDate>
